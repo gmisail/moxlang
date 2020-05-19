@@ -4,6 +4,8 @@ Mox is a programming language which focuses on combining simplicity with power. 
 a simple syntax which compiles directly into C (which in turn compiles into machine code.) Since it compiles into C,
 it is painless to interface with native C code (and for C to interface with Mox code.)
 
+Mox in its current state is very much an experiment, and is in no state ready to be used in production.
+
 ### Code Example
 
 ```
