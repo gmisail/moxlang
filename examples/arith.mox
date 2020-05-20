@@ -1,0 +1,19 @@
+function add(x : int, y : int) -> int
+    return x + y
+end
+
+function sub(x : int, y : int) -> int
+    return x - y
+end
+
+function main() -> int
+    var test : int = 100
+    var another : int = test + test
+
+    var foo : int = add(test, another)
+    var bar : int = sub(foo, 10)
+
+    var fizz : int = foo + bar
+
+    return 0
+end

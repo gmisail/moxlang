@@ -1,0 +1,14 @@
+function main() -> int
+
+    var x : int = 100
+
+    while(x > 0)
+        if(x % 2 == 0 and x % 3 == 0)
+            x = x - 1
+        end
+
+        x = x - 2
+    end
+
+    return 0
+end

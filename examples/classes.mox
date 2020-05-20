@@ -1,0 +1,27 @@
+class Vector
+
+    var x : int = 0
+    var y : int = 0
+
+    function new(x : int, y : int)
+        self.x = x
+        self.y = y
+    end
+
+    function dot(vec : Vector) -> int
+        return (self.x * vec.x) + (self.y * vec.y)
+    end
+
+end
+
+function main() -> int
+    var foo : Vector = new Vector(10, 4)
+    var bar : Vector = new Vector(3, 19)
+
+    print(foo.dot(bar))
+
+    delete foo
+    delete bar
+
+    return 0
+end

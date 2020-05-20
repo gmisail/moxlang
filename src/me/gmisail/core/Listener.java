@@ -211,11 +211,6 @@ public class Listener extends MoxBaseListener
     }
 
     @Override
-    public void enterFunctionCallParams(MoxParser.FunctionCallParamsContext ctx) {
-        super.enterFunctionCallParams(ctx);
-    }
-
-    @Override
     public void enterFunctionCallParam(MoxParser.FunctionCallParamContext ctx) {
         super.enterFunctionCallParam(ctx);
 
@@ -452,7 +447,6 @@ public class Listener extends MoxBaseListener
 
         program.peek().buffer.push("else if(");
     }
-
 
     @Override
     public void exitElseIfStatement(MoxParser.ElseIfStatementContext ctx) {
