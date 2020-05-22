@@ -18,6 +18,7 @@ statement: classDecl
          | returnStatement
          | ifElseIf
          | whileLoop
+         | forLoop
          ;
 
 expr: bool
@@ -41,7 +42,7 @@ moduleDecl: 'moduleNode' NAME classBlock 'end';
 
 /* Variables */
 variable: 'var' NAME ':' type variableAssignment?;
-variableAssignmentStatement: NAME variableAssignment;
+variableAssignmentStatement: variableAccess variableAssignment;
 variableAssignment: ' = ' (expr | variableCreate);
 variableAccess: NAME ('.' NAME)*;
 variableCreate: 'new' NAME '(' functionCallParams ')';
@@ -69,7 +70,10 @@ elseStatement: 'else';
 
 whileExpr: '(' expr ')';
 whileLoop: 'while' whileExpr block 'end';
-forLoop: 'for' '(' NAME 'in' NAME ')' block 'end';
+forLoop: forRangeLoop;
+forFromExpr: 'from' expr;
+forToExpr: 'to' expr;
+forRangeLoop: 'for' '(' NAME forFromExpr forToExpr')' block 'end';
 
 /* Operations */
 bitwise: '&' | '|' | '~' | '<<' | '>>';

@@ -1,25 +1,24 @@
-function add(x : int, y : int) -> int
-    return x + y
-end
+class Pair
 
-function sub(x : int, y : int) -> int
-    return x - y
-end
+    var x : int
+    var y : int
 
-function main() -> int
-    var test : int = 100
-    var another : int = test + test
-
-    var foo : int = add(test, another)
-    var bar : int = sub(foo, 10)
-
-    var fizz : int = foo + bar
-
-    if(fizz == bar and fizz != foo)
-        while(fizz == bar or fizz != foo)
-            fizz = fizz + 1
-        end
+    function Pair()
+        self.x = 0
+        self.y = 0
     end
 
-    return 0
+    function switch()
+        var temp : int = self.x
+        self.x = self.y
+        self.y = temp
+    end
+
+    function set(index : int, value : int)
+        if(index == 0)
+            self.x = value
+        else if(index == 1)
+            self.y = value
+        end
+    end
 end

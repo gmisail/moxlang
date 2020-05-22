@@ -310,6 +310,36 @@ public interface MoxListener extends ParseTreeListener {
 	 */
 	void exitForLoop(MoxParser.ForLoopContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MoxParser#forFromExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterForFromExpr(MoxParser.ForFromExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#forFromExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitForFromExpr(MoxParser.ForFromExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#forToExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterForToExpr(MoxParser.ForToExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#forToExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitForToExpr(MoxParser.ForToExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#forRangeLoop}.
+	 * @param ctx the parse tree
+	 */
+	void enterForRangeLoop(MoxParser.ForRangeLoopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#forRangeLoop}.
+	 * @param ctx the parse tree
+	 */
+	void exitForRangeLoop(MoxParser.ForRangeLoopContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MoxParser#bitwise}.
 	 * @param ctx the parse tree
 	 */

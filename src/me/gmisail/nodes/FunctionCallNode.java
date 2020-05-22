@@ -23,4 +23,5 @@ public class FunctionCallNode extends Node {
     }
     public String getBody() { return buffer.getCode(); }
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }

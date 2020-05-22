@@ -184,15 +184,36 @@ public class Listener extends MoxBaseListener
         super.enterFunctionCall(ctx);
 
         String name = "";
+        FunctionCallNode functionCallNode = new FunctionCallNode(name);
 
         // TODO: validate that the function is valid.
-        for (int i = 0; i < ctx.NAME().size(); i++) {
-            if(i > 0) name += "_";
 
-            name += ctx.NAME(i).getText();
+        if(Generator.currentContext().getType() == ContextTypes.CLASS) {
+            int initial = 0;
+
+            // the first NAME being "self" implies that it is a call to itself
+            if(ctx.NAME(0).getText().equals("self")) {
+                initial = 1;
+                name += Generator.currentContext().getName() + "_";
+                functionCallNode.buffer.push("self, ");
+            }
+
+            for (int i = initial; i < ctx.NAME().size(); i++) {
+                if(i > initial) name += "_";
+
+                name += ctx.NAME(i).getText();
+            }
+        } else {
+            for (int i = 0; i < ctx.NAME().size(); i++) {
+                if(i > 0) name += "_";
+
+                name += ctx.NAME(i).getText();
+            }
         }
 
-        program.push(new FunctionCallNode(name));
+        functionCallNode.setName(name);
+        program.push(functionCallNode);
+
     }
 
     @Override
@@ -208,6 +229,11 @@ public class Listener extends MoxBaseListener
             /* if it is not a standalone statement, then it must be used within another expression. Thus, add it to the parent */
             program.peek().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
         }
+    }
+
+    @Override
+    public void enterFunctionCallParams(MoxParser.FunctionCallParamsContext ctx) {
+        super.enterFunctionCallParams(ctx);
     }
 
     @Override
@@ -321,7 +347,7 @@ public class Listener extends MoxBaseListener
     public void enterVariableAssignmentStatement(MoxParser.VariableAssignmentStatementContext ctx) {
         super.enterVariableAssignmentStatement(ctx);
 
-        program.push(new VariableAssignmentNode(ctx.NAME().getText()));
+        program.push(new VariableAssignmentNode());
     }
 
     @Override
@@ -337,10 +363,47 @@ public class Listener extends MoxBaseListener
     public void enterVariableAccess(MoxParser.VariableAccessContext ctx) {
         super.enterVariableAccess(ctx);
 
-        for(int i = 0; i < ctx.NAME().size(); i++) {
-            if(i > 0) program.peek().buffer.push("_");
+        int initial = 0;
+        if(Generator.currentContext().getType() == ContextTypes.CLASS) {
+            if(ctx.NAME(0).getText().equals("self")) {
+                if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
+                    VariableAssignmentNode node = (VariableAssignmentNode) program.peek();
 
-            program.peek().buffer.push(ctx.NAME(i).getText());
+                    if(node.hasName())
+                        node.buffer.push("self->");
+                    else
+                        node.setName(node.getName() + "self->");
+                } else {
+                    program.peek().buffer.push("self->");
+                }
+
+                initial = 1;
+            }
+        }
+
+        for(int i = initial; i < ctx.NAME().size(); i++) {
+            if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
+                VariableAssignmentNode node = (VariableAssignmentNode) program.peek();
+
+                if(i > initial) {
+                    if(node.hasName())
+                        node.buffer.push("_");
+                    else
+                        node.setName(node.getName() + "_");
+                }
+
+                if(node.hasName())
+                    node.buffer.push(ctx.NAME(i).getText());
+                else
+                    node.setName(node.getName() + ctx.NAME(i).getText());
+
+                if(i == ctx.NAME().size() - 1)
+                    node.setHasName(true);
+
+            } else {
+                if(i > initial) program.peek().buffer.push("_");
+                program.peek().buffer.push(ctx.NAME(i).getText());
+            }
         }
     }
 
@@ -448,6 +511,7 @@ public class Listener extends MoxBaseListener
         program.peek().buffer.push("else if(");
     }
 
+
     @Override
     public void exitElseIfStatement(MoxParser.ElseIfStatementContext ctx) {
         super.exitElseIfStatement(ctx);
@@ -481,5 +545,34 @@ public class Listener extends MoxBaseListener
         super.exitWhileExpr(ctx);
 
         program.peek().buffer.push(")");
+    }
+
+    @Override
+    public void enterForRangeLoop(MoxParser.ForRangeLoopContext ctx) {
+        super.enterForRangeLoop(ctx);
+
+        String iterator = ctx.NAME().getText();
+
+        program.push(new ForNode(iterator));
+        program.peek().buffer.push("for(int " + iterator + " = ");
+    }
+
+
+    @Override
+    public void exitForFromExpr(MoxParser.ForFromExprContext ctx) {
+        super.exitForFromExpr(ctx);
+
+        ForNode forNode = (ForNode) program.peek();
+
+        program.peek().buffer.push("; " + forNode.getIterator() + " < ");
+    }
+
+    @Override
+    public void exitForToExpr(MoxParser.ForToExprContext ctx) {
+        super.exitForToExpr(ctx);
+
+        ForNode forNode = (ForNode) program.pop();
+        forNode.buffer.push("; " + forNode.getIterator() + "++)");
+        program.peek().buffer.push(forNode.buffer.getCode());
     }
 }

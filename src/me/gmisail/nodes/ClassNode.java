@@ -38,7 +38,7 @@ public class ClassNode extends Node {
             if(!memberVariables.get(i).getValue().getCode().equals(""))
                 output += "self->" + memberVariables.get(i).getName() + " = " + memberVariables.get(i).getValue().getCode() + ";\n";
         }
-        output += name + "_new(self);\n";
+        output += name + "_" + name + "(self);\n";
         output += "return self;\n";
         output += "}\n";
 
