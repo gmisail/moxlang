@@ -2,9 +2,9 @@
 
 Mox is a programming language which focuses on combining simplicity with power. It achieves this by leveraging
 a simple syntax which compiles directly into C (which in turn compiles into machine code.) Since it compiles into C,
-it is painless to interface with native C code (and for C to interface with Mox code.)
-
-Mox's syntax is similar to that of Lua with hints of Java and Haxe. There is manual memory management, however all pointer manipulation is done under the hood (the compiler manages pointers for you for ease-of-use and safety.) 
+it is painless to interface with native C code (and for C to interface with Mox code.) There is manual memory management, however all pointer manipulation is done under the hood (the compiler manages pointers for you for ease-of-use and safety.) 
+ 
+Mox's syntax is similar to that of Lua with hints of Java and Haxe. It uses ANTLR4 for generating its lexer and parser, however this dependency may be removed if it is decided to make the compiler self-hosted. Until then, ANTLR4 works just fine.
 
 **Mox in its current state is very much an experiment, and is in no state ready to be used in production.**
 
