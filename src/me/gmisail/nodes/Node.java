@@ -19,6 +19,11 @@ public class Node {
     public void addParam(String name, String type) {
         this.params.add(new ParameterNode(name, type));
     }
+
+    public ArrayList<ParameterNode> getParams() {
+        return params;
+    }
+
     public String code(){
         return "";
     }

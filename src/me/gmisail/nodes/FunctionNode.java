@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class FunctionNode extends Node {
 
     private String name;
+    private String localName;
     private String returnType;
 
     public FunctionNode(String name, String type) {
@@ -15,6 +16,11 @@ public class FunctionNode extends Node {
         this.returnType = type;
         this.params = new ArrayList<ParameterNode>();
     }
+
+    public void setLocalName(String localName) { this.localName = localName; }
+    public String getLocalName() { return localName; }
+    public String getName() { return name; }
+    public String getReturnType() { return returnType; }
 
     @Override
     public String code() {

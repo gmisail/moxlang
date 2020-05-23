@@ -165,6 +165,13 @@ public class Listener extends MoxBaseListener
 
         if(Generator.currentContext().getType().equals(ContextTypes.CLASS)) {
             func.addParam("self", Generator.currentContext().getName() + "*");
+
+            if(program.peek().type == NodeTypes.CLASS)
+            {
+                ClassNode node = (ClassNode) program.peek();
+                func.setLocalName(name);
+                node.addFunction(func);
+            }
         }
 
         program.push(func);
