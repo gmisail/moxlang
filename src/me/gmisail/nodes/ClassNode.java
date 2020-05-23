@@ -80,7 +80,7 @@ public class ClassNode extends Node {
                 output += "self->" + memberVariables.get(i).getName() + " = " + memberVariables.get(i).getValue().getCode() + ";\n";
         }
         output += name + "_init" + "(self";
-        
+
         for(int i = 0; i < functions.size(); i++)
         {
             /*

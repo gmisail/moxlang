@@ -13,6 +13,13 @@ public class VariableNode extends Node {
         this.returnType = type;
     }
 
+    /*
+    *   Let the variable be a pointer to the variable type
+    * */
+    public void makePointer() {
+        returnType += "*";
+    }
+
     public String getType() {
         return returnType;
     }
@@ -24,4 +31,5 @@ public class VariableNode extends Node {
     public Buffer getValue() {
         return buffer;
     }
+
 }

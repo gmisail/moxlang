@@ -366,7 +366,7 @@ public class Listener extends MoxBaseListener
         program.peek().buffer.push(assignment.getName() + " = " + assignment.getValue().getCode() + ";\n");
     }
 
-    @java.lang.Override
+    @Override
     public void enterVariableAccess(MoxParser.VariableAccessContext ctx) {
         super.enterVariableAccess(ctx);
 
@@ -418,9 +418,25 @@ public class Listener extends MoxBaseListener
     public void enterVariableCreate(MoxParser.VariableCreateContext ctx) {
         super.enterVariableCreate(ctx);
 
+        if(program.peek().type == NodeTypes.VARIABLE) {
+            VariableNode node = (VariableNode) program.peek();
+            node.makePointer();
+        }
+
         // ensure that the type you are allocating is equal to the type that you are assigning it too. Also, change the type of the variable to a pointer of the original
 
-        program.peek().buffer.push("malloc(sizeof(" + ctx.NAME().getText() + "))");
+        String name = ctx.NAME().getText() + "_alloc";
+        FunctionCallNode createVariable = new FunctionCallNode(name);
+
+        program.push(createVariable);
+    }
+
+    @Override
+    public void exitVariableCreate(MoxParser.VariableCreateContext ctx) {
+        super.exitVariableCreate(ctx);
+
+        FunctionCallNode functionCall = (FunctionCallNode) program.pop();
+        program.peek().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
     }
 
     @Override
