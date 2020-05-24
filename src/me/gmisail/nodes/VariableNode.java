@@ -7,6 +7,8 @@ public class VariableNode extends Node {
     String returnType;
     String name;
 
+    int scope = 0;
+
     public VariableNode(String name, String type) {
         this.name = name;
         this.type = NodeTypes.VARIABLE;
@@ -19,6 +21,9 @@ public class VariableNode extends Node {
     public void makePointer() {
         returnType += "*";
     }
+
+    public void setScope(int scope) { this.scope = scope; }
+    public int getScope() { return scope; }
 
     public String getType() {
         return returnType;

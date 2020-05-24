@@ -13,6 +13,7 @@ import java.util.Stack;
 public class Listener extends MoxBaseListener
 {
     private Stack<Node> program;
+    private VariableStack variables;
     private MoxParser parser;
 
     public Listener(MoxParser parser) {
@@ -27,6 +28,8 @@ public class Listener extends MoxBaseListener
 
         program = new Stack<Node>();
         program.push(new Node());
+
+        variables = new VariableStack();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
 
@@ -50,12 +53,16 @@ public class Listener extends MoxBaseListener
     public void enterBlock(MoxParser.BlockContext ctx) {
         super.enterBlock(ctx);
 
+        variables.enterScope();
+
         if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("{\n");
     }
 
     @Override
     public void exitBlock(MoxParser.BlockContext ctx) {
         super.exitBlock(ctx);
+
+        variables.exitScope();
 
         if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("}\n");
     }
@@ -329,7 +336,10 @@ public class Listener extends MoxBaseListener
             type = templateType + "* ";
         }
 
-        program.push(new VariableNode(name, type));
+        VariableNode node = new VariableNode(name, type);
+
+        variables.add(node);
+        program.push(node);
     }
 
     @Override
@@ -388,15 +398,23 @@ public class Listener extends MoxBaseListener
             }
         }
 
+        String delim = "_";
+
         for(int i = initial; i < ctx.NAME().size(); i++) {
             if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
                 VariableAssignmentNode node = (VariableAssignmentNode) program.peek();
 
                 if(i > initial) {
                     if(node.hasName())
-                        node.buffer.push("_");
+                        node.buffer.push(delim);
                     else
-                        node.setName(node.getName() + "_");
+                        node.setName(node.getName() + delim);
+                } else if(i == initial) {
+                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
+                        if(ctx.NAME().size() > 1) {
+                            delim = "->";
+                        }
+                    }
                 }
 
                 if(node.hasName())
@@ -408,7 +426,16 @@ public class Listener extends MoxBaseListener
                     node.setHasName(true);
 
             } else {
-                if(i > initial) program.peek().buffer.push("_");
+                if(i > initial)
+                    program.peek().buffer.push(delim);
+                else if(i == initial) {
+                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
+                        if(ctx.NAME().size() > 1) {
+                            delim = "->";
+                        }
+                    }
+                }
+
                 program.peek().buffer.push(ctx.NAME(i).getText());
             }
         }

@@ -3,22 +3,29 @@ class Pair
     var x : int
     var y : int
 
-    function init(x : int, y : int)
-        self.x = x
-        self.y = y
+    function init()
+        self.x = 0
+        self.y = 0
     end
 
-    function switch()
-        var temp : int = self.x
-        self.x = self.y
-        self.y = temp
+    function getProduct() -> int
+        return self.x * self.y
     end
 
-    function set(index : int, value : int)
-        if(index == 0)
-            self.x = value
-        else if(index == 1)
-            self.y = value
-        end
-    end
+end
+
+function main() -> int
+    var pair : Pair = new Pair()
+    pair.x = 4
+    pair.y = 10
+
+    printf("(%i, %i)\n", pair.x, pair.y)
+
+    var temp : int = pair.x
+    pair.x = pair.y
+    pair.y = temp
+
+    printf("(%i, %i)\n", pair.x, pair.y)
+
+    delete pair
 end

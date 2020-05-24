@@ -8,7 +8,9 @@ Mox's syntax is similar to that of Lua with hints of Java and Haxe. It uses ANTL
 
 **Mox in its current state is very much an experiment, and is in no state ready to be used in production.**
 
-### Code Example
+### Code Examples
+
+#### Declaring Variables & Functions
 
 ```
 function add(x : int, y : int) -> int
@@ -66,3 +68,80 @@ fizz = fizz + 1;
 return 0;
 }
 ```
+
+#### Defining Objects
+
+The following example demonstrates how classes (or rather objects) are
+defined in Mox.
+
+```lua
+class Pair
+
+    var x : int
+    var y : int
+
+    function init()
+        self.x = 0
+        self.y = 0
+    end
+
+    function getProduct() -> int
+        return self.x * self.y
+    end
+
+end
+
+function main() -> int
+    var pair : Pair = new Pair()
+    pair.x = 4
+    pair.y = 10
+
+    printf("(%i, %i)\n", pair.x, pair.y)
+
+    var temp : int = pair.x
+    pair.x = pair.y
+    pair.y = temp
+
+    printf("(%i, %i)\n", pair.x, pair.y)
+
+    delete pair
+end
+```
+
+This code compiles into the following:
+
+```c++
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct {
+int x;
+int y;
+} Pair;
+void Pair_init(Pair* self)
+{
+self->x = 0;
+self->y = 0;
+}
+int Pair_getProduct(Pair* self)
+{
+return self->x * self->y;
+}
+Pair* Pair_alloc() {
+Pair* self = malloc(sizeof(Pair));
+Pair_init(self);
+return self;
+}
+int main()
+{
+Pair* pair = Pair_alloc();
+pair->x = 4;
+pair->y = 10;
+printf("(%i, %i)\n", pair->x, pair->y);
+int temp = pair->x;
+pair->x = pair->y;
+pair->y = temp;
+printf("(%i, %i)\n", pair->x, pair->y);
+free(pair);
+}
+```
+
