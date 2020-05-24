@@ -12,7 +12,7 @@ Mox's syntax is similar to that of Lua with hints of Java and Haxe. It uses ANTL
 
 #### Declaring Variables & Functions
 
-```
+```lua
 function add(x : int, y : int) -> int
     return x + y
 end
@@ -42,7 +42,7 @@ end
 
 This trivial code example compiles into the following C code, which can be compiled by your favorite C compiler.
 
-```
+```c
 #include <stdio.h>
 #include <stdlib.h>
 int add(int x, int y)
@@ -110,7 +110,7 @@ end
 
 This code compiles into the following:
 
-```c++
+```c
 #include <stdio.h>
 #include <stdlib.h>
 typedef struct {
