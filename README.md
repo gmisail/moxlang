@@ -1,4 +1,4 @@
-# 🐶 Mox Programming Language
+# Mox Programming Language
 
 Mox is a programming language which focuses on combining simplicity with power. It achieves this by leveraging
 a simple syntax which compiles directly into C (which in turn compiles into machine code.) Since it compiles into C,
