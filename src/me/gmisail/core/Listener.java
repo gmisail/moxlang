@@ -198,31 +198,36 @@ public class Listener extends MoxBaseListener
         super.enterFunctionCall(ctx);
 
         String name = "";
+        String delim = "_";
+        int initial = 0;
+
         FunctionCallNode functionCallNode = new FunctionCallNode(name);
 
         // TODO: validate that the function is valid.
 
         if(Generator.currentContext().getType() == ContextTypes.CLASS) {
-            int initial = 0;
-
             // the first NAME being "self" implies that it is a call to itself
             if(ctx.NAME(0).getText().equals("self")) {
                 initial = 1;
-                name += Generator.currentContext().getName() + "_";
+                name += Generator.currentContext().getName() + delim;
                 functionCallNode.buffer.push("self, ");
             }
+        }
 
-            for (int i = initial; i < ctx.NAME().size(); i++) {
-                if(i > initial) name += "_";
+        if(variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
+            if(ctx.NAME().size() > 1) {
+                name += Generator.dereference(variables.getTypeOf(ctx.NAME(0).getText())) + "_";
+                initial++;
 
-                name += ctx.NAME(i).getText();
+                functionCallNode.buffer.push(ctx.NAME(0).getText());
+                functionCallNode.addParamCount();
             }
-        } else {
-            for (int i = 0; i < ctx.NAME().size(); i++) {
-                if(i > 0) name += "_";
+        }
 
-                name += ctx.NAME(i).getText();
-            }
+        for (int i = initial; i < ctx.NAME().size(); i++) {
+            if(i > initial) name += delim;
+
+            name += ctx.NAME(i).getText();
         }
 
         functionCallNode.setName(name);

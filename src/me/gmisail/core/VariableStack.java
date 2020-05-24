@@ -27,7 +27,10 @@ public class VariableStack {
     }
 
     public void exitScope() {
-        VariableNode node = stack.peek();
+        VariableNode node = null;
+
+        if(stack.size() > 0)
+            node = stack.peek();
 
         while(node != null && node.getScope() == scope) {
             if(stack.size() > 0)
@@ -37,6 +40,16 @@ public class VariableStack {
         }
 
         scope--;
+    }
+
+    public String getTypeOf(String name) {
+        for(int i = 0; i < stack.size(); i++) {
+            if(stack.elementAt(i).getName().equals(name)) {
+                return stack.elementAt(i).getType();
+            }
+        }
+
+        return "void";
     }
 
     public boolean hasClassInstanceNamed(String name) {

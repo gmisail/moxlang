@@ -87,4 +87,10 @@ public class Generator
 
         return output;
     }
+
+    public static String dereference(String pointer) {
+        String out = "";
+        out = pointer.replace("*", "");
+        return out;
+    }
 }

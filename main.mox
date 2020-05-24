@@ -12,6 +12,13 @@ class Pair
         return self.x * self.y
     end
 
+    function set(i : int, value : int) -> void
+        if(i == 0)
+            self.x = value
+        else if(i == 1)
+            self.y = value
+        end
+    end
 end
 
 function main() -> int
@@ -21,9 +28,8 @@ function main() -> int
 
     printf("(%i, %i)\n", pair.x, pair.y)
 
-    var temp : int = pair.x
-    pair.x = pair.y
-    pair.y = temp
+    pair.set(0, 10)
+    pair.set(1, 5)
 
     printf("(%i, %i)\n", pair.x, pair.y)
 
