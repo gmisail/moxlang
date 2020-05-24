@@ -410,7 +410,7 @@ public class Listener extends MoxBaseListener
                     else
                         node.setName(node.getName() + delim);
                 } else if(i == initial) {
-                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
+                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
                         if(ctx.NAME().size() > 1) {
                             delim = "->";
                         }
