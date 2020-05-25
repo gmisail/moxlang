@@ -5,6 +5,7 @@ public enum NodeTypes {
     FUNCTION_CALL,
     MODULE,
     CLASS,
+    DELETE,
     DEFAULT,
     PARAMETER,
     RETURN,

@@ -475,14 +475,21 @@ public class Listener extends MoxBaseListener
     public void enterVariableDelete(MoxParser.VariableDeleteContext ctx) {
         super.enterVariableDelete(ctx);
 
-        program.peek().buffer.push("free(");
+        program.push(new DeleteNode());
     }
 
     @Override
     public void exitVariableDelete(MoxParser.VariableDeleteContext ctx) {
         super.exitVariableDelete(ctx);
 
-        program.peek().buffer.push(");\n");
+        DeleteNode node = (DeleteNode) program.pop();
+
+        System.out.println(variables.hasClassInstanceNamed(node.buffer.getCode()));
+
+        if(variables.hasClassInstanceNamed(node.buffer.getCode())) {
+            node.setTarget(variables.getVariableWithName(node.buffer.getCode()));
+            program.peek().buffer.push(node.code());
+        }
     }
 
     /*

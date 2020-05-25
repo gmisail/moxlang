@@ -42,6 +42,16 @@ public class VariableStack {
         scope--;
     }
 
+    public VariableNode getVariableWithName(String name) {
+        for(int i = 0; i < stack.size(); i++) {
+            if(stack.elementAt(i).getName().equals(name)) {
+                return stack.elementAt(i);
+            }
+        }
+
+        return null;
+    }
+
     public String getTypeOf(String name) {
         for(int i = 0; i < stack.size(); i++) {
             if(stack.elementAt(i).getName().equals(name)) {
