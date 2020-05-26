@@ -34,6 +34,10 @@ public class Generator
         return context.pop();
     }
 
+    public static String createInclude(String file) {
+        return "#include<" + file + ">\n";
+    }
+
     public static String createSemicolon() {
         return ";\n";
     }

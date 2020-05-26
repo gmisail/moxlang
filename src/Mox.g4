@@ -38,7 +38,7 @@ expr: bool
 boundedExpr: '(' expr ')';
 
 classDecl: 'class' NAME classBlock 'end';
-moduleDecl: 'moduleNode' NAME classBlock 'end';
+moduleDecl: 'module' NAME classBlock 'end';
 
 /* Variables */
 variable: 'var' NAME ':' type variableAssignment?;

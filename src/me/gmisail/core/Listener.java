@@ -26,16 +26,18 @@ public class Listener extends MoxBaseListener
     public void enterProgram(MoxParser.ProgramContext ctx) {
         super.enterProgram(ctx);
 
+        Node root = new Node();
+
         program = new Stack<Node>();
-        program.push(new Node());
+        program.push(root);
 
         variables = new VariableStack();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
 
         /* before generation, set up includes */
-        System.out.println("#include <stdio.h>");
-        System.out.println("#include <stdlib.h>");
+        root.buffer.push(Generator.createInclude("stdio.h"));
+        root.buffer.push(Generator.createInclude("stdlib.h"));
     }
 
     @java.lang.Override
@@ -483,8 +485,6 @@ public class Listener extends MoxBaseListener
         super.exitVariableDelete(ctx);
 
         DeleteNode node = (DeleteNode) program.pop();
-
-        System.out.println(variables.hasClassInstanceNamed(node.buffer.getCode()));
 
         if(variables.hasClassInstanceNamed(node.buffer.getCode())) {
             node.setTarget(variables.getVariableWithName(node.buffer.getCode()));
