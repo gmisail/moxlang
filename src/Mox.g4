@@ -10,9 +10,11 @@ classBlock: (variable | function)*;
 
 statement: classDecl
          | moduleDecl
+         | extern
          | variable
          | variableDelete
          | variableAssignmentStatement
+         | variableArrayAssignment
          | function
          | functionCall
          | returnStatement
@@ -25,6 +27,7 @@ expr: bool
      | STRING
      | NUM
      | variableAccess
+     | variableArrayAccess
      | functionCall
      | boundedExpr
      | expr mulDivMod expr
@@ -43,16 +46,23 @@ moduleDecl: 'module' NAME classBlock 'end';
 /* Variables */
 variable: 'var' NAME ':' type variableAssignment?;
 variableAssignmentStatement: variableAccess variableAssignment;
+variableArrayAssignment: variableArrayAccess variableAssignment;
 variableAssignment: ' = ' (expr | variableCreate);
 variableAccess: NAME ('.' NAME)*;
 variableCreate: 'new' NAME '(' functionCallParams ')';
 variableDelete: 'delete' variableAccess;
+variableArrayAccess: variableAccess '[' expr ']';
 
 /* Functions */
 function: 'function' NAME funcParams funcReturnType? block 'end';
 funcReturnType: '->' type;
 funcParam: NAME ':' type;
 funcParams: '(' paramList? ')';
+
+/* External */
+extern: funcExtern | varExtern;
+funcExtern: 'extern' 'function' NAME funcParams funcReturnType?;
+varExtern: 'extern' variableAccess '->' type;
 
 /* Function Call */
 functionCall: NAME ('.' NAME)* '(' functionCallParams ')';
@@ -83,7 +93,7 @@ operatorOr: 'or';
 mulDivMod: '*' | '/' | '%';
 bool: 'true' | 'false';
 
-conditionals: '==' | '>=' | '<=' | '!=';
+conditionals: '==' | '>=' | '<=' | '!=' | '<' | '>' ;
 
 /* Other */
 type: NAME (templateType)?;

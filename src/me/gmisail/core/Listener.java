@@ -449,6 +449,30 @@ public class Listener extends MoxBaseListener
     }
 
     @Override
+    public void exitVariableAccess(MoxParser.VariableAccessContext ctx) {
+        super.exitVariableAccess(ctx);
+
+        if(program.peek().type == NodeTypes.ARRAY_ACCESS) {
+            ArrayAccessNode node = (ArrayAccessNode) program.peek();
+            node.saveName();
+        }
+    }
+
+
+    public void enterVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) {
+        super.enterVariableArrayAssignment(ctx);
+
+        program.push(new ArrayAssignmentNode());
+    }
+
+    public void exitVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) {
+        super.exitVariableArrayAssignment(ctx);
+
+        ArrayAssignmentNode node = (ArrayAssignmentNode) program.pop();
+        program.peek().buffer.push(node.code());
+    }
+
+    @Override
     public void enterVariableCreate(MoxParser.VariableCreateContext ctx) {
         super.enterVariableCreate(ctx);
 
@@ -636,5 +660,52 @@ public class Listener extends MoxBaseListener
         ForNode forNode = (ForNode) program.pop();
         forNode.buffer.push("; " + forNode.getIterator() + "++)");
         program.peek().buffer.push(forNode.buffer.getCode());
+    }
+
+    /*
+    *  EXTERNS
+    */
+
+    @Override
+    public void enterFuncExtern(MoxParser.FuncExternContext ctx) {
+        super.enterFuncExtern(ctx);
+
+        program.push(new FunctionNode(ctx.NAME().getText(), ctx.funcReturnType().type().NAME().getText()));
+    }
+
+    @Override
+    public void exitFuncExtern(MoxParser.FuncExternContext ctx) {
+        super.exitFuncExtern(ctx);
+
+        FunctionNode node = (FunctionNode) program.pop();
+
+        // register function
+    }
+
+    @Override
+    public void enterVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx) {
+        super.enterVariableArrayAccess(ctx);
+
+        ArrayAccessNode node = new ArrayAccessNode();
+        program.push(node);
+    }
+
+    @Override
+    public void exitVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx) {
+        super.exitVariableArrayAccess(ctx);
+
+        ArrayAccessNode node = (ArrayAccessNode) program.pop();
+
+        if(program.peek().type == NodeTypes.ARRAY_ASSIGNMENT) {
+            ArrayAssignmentNode assignmentNode = (ArrayAssignmentNode) program.peek();
+
+            if(!assignmentNode.hasVariableName()) {
+                assignmentNode.setVariable(node);
+            } else {
+                program.peek().buffer.push(node.code());
+            }
+        } else {
+            program.peek().buffer.push(node.code());
+        }
     }
 }

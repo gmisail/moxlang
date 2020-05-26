@@ -18,6 +18,9 @@ public class Buffer {
     public void push(String code) {
         this.code += code;
     }
+
+    public void erase() { this.code = ""; }
+
     public String getCode() { return code; };
 
 }

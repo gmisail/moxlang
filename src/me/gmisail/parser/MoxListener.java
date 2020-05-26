@@ -1,4 +1,4 @@
-// Generated from Mox.g4 by ANTLR 4.7.2
+// Generated from Mox.g4 by ANTLR 4.7.1
 
     package me.gmisail.parser;
 
@@ -110,6 +110,16 @@ public interface MoxListener extends ParseTreeListener {
 	 */
 	void exitVariableAssignmentStatement(MoxParser.VariableAssignmentStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MoxParser#variableArrayAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#variableArrayAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MoxParser#variableAssignment}.
 	 * @param ctx the parse tree
 	 */
@@ -150,6 +160,16 @@ public interface MoxListener extends ParseTreeListener {
 	 */
 	void exitVariableDelete(MoxParser.VariableDeleteContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MoxParser#variableArrayAccess}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#variableArrayAccess}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MoxParser#function}.
 	 * @param ctx the parse tree
 	 */
@@ -189,6 +209,36 @@ public interface MoxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFuncParams(MoxParser.FuncParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#extern}.
+	 * @param ctx the parse tree
+	 */
+	void enterExtern(MoxParser.ExternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#extern}.
+	 * @param ctx the parse tree
+	 */
+	void exitExtern(MoxParser.ExternContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#funcExtern}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncExtern(MoxParser.FuncExternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#funcExtern}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncExtern(MoxParser.FuncExternContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#varExtern}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarExtern(MoxParser.VarExternContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#varExtern}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarExtern(MoxParser.VarExternContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MoxParser#functionCall}.
 	 * @param ctx the parse tree

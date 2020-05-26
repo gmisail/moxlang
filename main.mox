@@ -1,5 +1,3 @@
-
-
 class Array
 
     var size : int
@@ -10,6 +8,20 @@ class Array
         self.data = calloc(self.size, sizeof(int))
     end
 
+    function get(index : int) -> int
+        if(index < self.size and index >= 0)
+            return self.data[index]
+        else
+            return 0
+        end
+    end
+
+    function set(index : int, value : int) -> void
+        if(index < self.size and index >= 0)
+            self.data[index] = value
+        end
+    end
+
     function destroy()
         free(self.data)
     end
@@ -17,6 +29,14 @@ end
 
 function main() -> int
     var array : Array = new Array(10)
-    
+
+    for(i from 0 to 10)
+        array.set(i, i)
+    end
+
+    for(i from 0 to 10)
+        printf("The value at %i is %i\n", i, array.get(i))
+    end
+
     delete array
 end

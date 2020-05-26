@@ -1,4 +1,4 @@
-// Generated from Mox.g4 by ANTLR 4.7.2
+// Generated from Mox.g4 by ANTLR 4.7.1
 
     package me.gmisail.parser;
 
@@ -138,6 +138,18 @@ public class MoxBaseListener implements MoxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVariableAssignment(MoxParser.VariableAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -186,6 +198,18 @@ public class MoxBaseListener implements MoxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction(MoxParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -229,6 +253,42 @@ public class MoxBaseListener implements MoxListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFuncParams(MoxParser.FuncParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExtern(MoxParser.ExternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExtern(MoxParser.ExternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFuncExtern(MoxParser.FuncExternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncExtern(MoxParser.FuncExternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarExtern(MoxParser.VarExternContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarExtern(MoxParser.VarExternContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
