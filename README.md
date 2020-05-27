@@ -2,9 +2,9 @@
 
 Mox is a programming language which focuses on combining simplicity with power. It achieves this by leveraging
 a simple syntax which compiles directly into C (which in turn compiles into machine code.) Since it compiles into C,
-it is painless to interface with native C code (and for C to interface with Mox code.) There is manual memory management, however all pointer manipulation is done under the hood (the compiler manages pointers for you for ease-of-use and safety.) 
- 
-Mox's syntax is similar to that of Lua with hints of Java and Haxe. It uses ANTLR4 for generating its lexer and parser, however this dependency may be removed if it is decided to make the compiler self-hosted. Until then, ANTLR4 works just fine.
+it is painless to interface with native C code (and for C to interface with Mox code.) There is manual memory management, however all pointer manipulation is done under the hood (the compiler manages pointers for you for ease-of-use and safety.)
+
+Mox's syntax is similar to that of Lua with hints of Java and Haxe. Instead of being garbage collected like its inspiration, it uses manual memory allocation. So, all classes must be explicitly deleted. It uses ANTLR4 for generating its lexer and parser, however this dependency may be removed if it is decided to make the compiler self-hosted. Until then, ANTLR4 works just fine.
 
 **Mox in its current state is very much an experiment, and is in no state ready to be used in production.**
 
@@ -51,6 +51,10 @@ class Pair
     function init()
         self.x = 0
         self.y = 0
+    end
+    
+    function destroy()
+    
     end
 
     function getProduct() -> int
@@ -171,4 +175,6 @@ function main() -> int
     delete vector
 end
 ```
+
+Notice how in the class there is a `init()` and `destroy()` function? These are the constructor and destructor, and both are required for every Mox class. Both are called implicitly when needed (`init()` on construction and `destroy()` before it is deallocated.)
 
