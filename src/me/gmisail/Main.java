@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import me.gmisail.parser.*;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main
@@ -24,7 +25,8 @@ public class Main
         Registry.create();
         Generator.create();
 
-        ParseTreeWalker.DEFAULT.walk(new Listener(parser), parser.program());
+        FileWriter file = new FileWriter("./main.c");
+        ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
 
         System.out.println("Complete.");
     }

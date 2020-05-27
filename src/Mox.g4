@@ -26,6 +26,7 @@ statement: classDecl
 expr: bool
      | STRING
      | NUM
+     | CHAR
      | variableAccess
      | variableArrayAccess
      | functionCall
@@ -104,7 +105,8 @@ nameList: NAME (',' NAME)*;
     Lexer
 */
 NAME: [a-zA-Z_][a-zA-Z_0-9]*;
-STRING : '"' ~ ["\r\n]* '"';
+STRING : '"' ~["\r\n]* '"';
+CHAR : '\'' ~['] '\'';
 NUM: INT | FLOAT;
 INT: Digit+;
 FLOAT: Digit+ '.' Digit* ExponentPart? | '.' Digit+ ExponentPart? | Digit+ ExponentPart;
@@ -117,3 +119,6 @@ fragment HexExponentPart : [pP] [+-]? Digit+;
 
 NEWLINE: ('\r'? '\n' | '\r')+ -> skip;
 WS: [ \t\u000C\r\n]+ -> skip;
+
+LINE_COMMENT: '#' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '##' .*? '##' -> skip;

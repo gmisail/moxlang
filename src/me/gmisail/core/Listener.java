@@ -8,6 +8,9 @@ import me.gmisail.nodes.*;
 import me.gmisail.parser.MoxBaseListener;
 import me.gmisail.parser.MoxParser;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Stack;
 
 public class Listener extends MoxBaseListener
@@ -16,10 +19,13 @@ public class Listener extends MoxBaseListener
     private VariableStack variables;
     private MoxParser parser;
 
-    public Listener(MoxParser parser) {
+    private FileWriter file;
+
+    public Listener(MoxParser parser, FileWriter file) {
         super();
 
         this.parser = parser;
+        this.file = file;
     }
 
     @Override
@@ -38,6 +44,7 @@ public class Listener extends MoxBaseListener
         /* before generation, set up includes */
         root.buffer.push(Generator.createInclude("stdio.h"));
         root.buffer.push(Generator.createInclude("stdlib.h"));
+        root.buffer.push(Generator.createInclude("string.h"));
     }
 
     @java.lang.Override
@@ -48,7 +55,15 @@ public class Listener extends MoxBaseListener
 
         /* if there is an error, then do *not* overwrite the original code */
 
-        System.out.print(root.buffer.getCode());
+        try {
+            file.write(root.buffer.getCode());
+            file.close();
+
+            Runtime.getRuntime().exec("gcc main.c -o main");
+        } catch (IOException e) {
+            Logger.error("Error writing to file.");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -98,6 +113,10 @@ public class Listener extends MoxBaseListener
             program.peek().buffer.push(ctx.NUM().getText());
         else if(ctx.STRING() != null)
             program.peek().buffer.push(ctx.STRING().getText());
+        else if(ctx.CHAR() != null) {
+            program.peek().buffer.push(ctx.CHAR().getText());
+            Logger.write(ctx.CHAR().getText().length() + "");
+        }
     }
 
     @Override

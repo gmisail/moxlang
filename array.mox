@@ -1,0 +1,28 @@
+class Array
+
+    var size : int
+    var data : Pointer<int>
+
+    function init(size : int)
+        self.size = size
+        self.data = calloc(self.size, sizeof(int))
+    end
+
+    function get(index : int) -> int
+        if(index < self.size and index >= 0)
+            return self.data[index]
+        else
+            return 0
+        end
+    end
+
+    function set(index : int, value : int) -> void
+        if(index < self.size and index >= 0)
+            self.data[index] = value
+        end
+    end
+
+    function destroy()
+        free(self.data)
+    end
+end
