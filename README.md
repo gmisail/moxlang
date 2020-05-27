@@ -40,39 +40,7 @@ function main() -> int
 end
 ```
 
-This trivial code example compiles into the following C code, which can be compiled by your favorite C compiler.
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-int add(int x, int y)
-{
-return x + y;
-}
-int sub(int x, int y)
-{
-return x - y;
-}
-int main()
-{
-int test = 100;
-int another = test + test;
-int foo = add(test, another);
-int bar = sub(foo, 10);
-int fizz = foo + bar;
-if (fizz == bar && fizz != foo){
-while(fizz == bar || fizz != foo){
-fizz = fizz + 1;
-}
-}
-return 0;
-}
-```
-
 #### Defining Objects
-
-The following example demonstrates how classes (or rather objects) are
-defined in Mox.
 
 ```lua
 class Pair
@@ -108,40 +76,99 @@ function main() -> int
 end
 ```
 
-This code compiles into the following:
+### Vector implementation
 
-```c
-#include <stdio.h>
-#include <stdlib.h>
-typedef struct {
-int x;
-int y;
-} Pair;
-void Pair_init(Pair* self)
-{
-self->x = 0;
-self->y = 0;
-}
-int Pair_getProduct(Pair* self)
-{
-return self->x * self->y;
-}
-Pair* Pair_alloc() {
-Pair* self = malloc(sizeof(Pair));
-Pair_init(self);
-return self;
-}
-int main()
-{
-Pair* pair = Pair_alloc();
-pair->x = 4;
-pair->y = 10;
-printf("(%i, %i)\n", pair->x, pair->y);
-int temp = pair->x;
-pair->x = pair->y;
-pair->y = temp;
-printf("(%i, %i)\n", pair->x, pair->y);
-free(pair);
-}
+```lua
+class Vector
+
+    var data : Pointer<int> = NULL
+    var size : int = 0
+    var count : int = 0
+
+    function init()
+
+    end
+
+    function destroy()
+        free(self.data)
+    end
+
+    function count() -> int
+        return self.count
+    end
+
+    function push(value : int)
+        if(self.size == 0)
+            self.size = 4
+            self.data = calloc(self.size, sizeof(int))
+
+            for(i from 0 to self.size)
+                self.data[i] = 0
+            end
+        end
+
+        if(self.size == self.count)
+            self.size = self.size * 2
+            self.data = realloc(self.data, sizeof(int) * self.size)
+        end
+
+        self.data[self.count] = value
+        self.count = self.count + 1
+    end
+
+    function set(index : int, value : int)
+        if(index < self.count and index >= 0)
+            self.data[index] = value
+        end
+    end
+
+    function get(index : int) -> int
+        if(index < self.count and index >= 0)
+            return self.data[index]
+        end
+
+        return 0
+    end
+
+    function pop() -> int
+        var val : int = self.get(self.count - 1)
+        self.set(self.count - 1, 0)
+        self.count = self.count - 1
+
+        return val
+    end
+
+    function print()
+        printf("[")
+        for(i from 0 to self.count)
+            if(i > 0)
+                printf(", ")
+            end
+
+            printf("%i", self.get(i))
+        end
+        printf("]\n")
+    end
+
+end
+
+#
+#   Simple example which allocates a vector, pushes 15 values and then pops all 15 values.
+#
+function main() -> int
+    var vector : Vector = new Vector()
+
+    for(i from 0 to 15)
+        vector.push(i)
+        vector.print()
+    end
+
+    for(i from 0 to 15)
+        vector.pop()
+        vector.print()
+    end
+
+    delete vector
+end
 ```
 
