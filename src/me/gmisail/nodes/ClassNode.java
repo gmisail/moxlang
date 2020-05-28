@@ -23,6 +23,7 @@ public class ClassNode extends Node {
     public void addVariable(VariableNode var) {
         memberVariables.add(var);
     }
+    public ArrayList<VariableNode> getMemberVariables() { return memberVariables; }
     public void addFunction(FunctionNode func) { functions.add(func); }
 
     @Override

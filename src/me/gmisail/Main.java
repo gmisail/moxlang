@@ -2,6 +2,7 @@ package me.gmisail;
 
 import me.gmisail.codegen.Generator;
 import me.gmisail.codegen.Registry;
+import me.gmisail.core.External;
 import me.gmisail.core.Listener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -24,10 +25,9 @@ public class Main
 
         Registry.create();
         Generator.create();
+        External.create();
 
         FileWriter file = new FileWriter("./main.c");
         ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
-
-        System.out.println("Complete.");
     }
 }

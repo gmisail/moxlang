@@ -63,7 +63,7 @@ funcParams: '(' paramList? ')';
 /* External */
 extern: funcExtern | varExtern;
 funcExtern: 'extern' 'function' NAME funcParams funcReturnType?;
-varExtern: 'extern' variableAccess '->' type;
+varExtern: 'extern' NAME '->' type;
 
 /* Function Call */
 functionCall: NAME ('.' NAME)* '(' functionCallParams ')';

@@ -1547,9 +1547,7 @@ public class MoxParser extends Parser {
 	}
 
 	public static class VarExternContext extends ParserRuleContext {
-		public VariableAccessContext variableAccess() {
-			return getRuleContext(VariableAccessContext.class,0);
-		}
+		public TerminalNode NAME() { return getToken(MoxParser.NAME, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -1576,7 +1574,7 @@ public class MoxParser extends Parser {
 			setState(254);
 			match(T__15);
 			setState(255);
-			variableAccess();
+			match(NAME);
 			setState(256);
 			match(T__14);
 			setState(257);
@@ -2921,7 +2919,7 @@ public class MoxParser extends Parser {
 		"\u00f6\u00f8\5.\30\2\u00f7\u00f5\3\2\2\2\u00f7\u00f6\3\2\2\2\u00f8+\3"+
 		"\2\2\2\u00f9\u00fa\7\22\2\2\u00fa\u00fb\7\20\2\2\u00fb\u00fc\7\60\2\2"+
 		"\u00fc\u00fe\5(\25\2\u00fd\u00ff\5$\23\2\u00fe\u00fd\3\2\2\2\u00fe\u00ff"+
-		"\3\2\2\2\u00ff-\3\2\2\2\u0100\u0101\7\22\2\2\u0101\u0102\5\32\16\2\u0102"+
+		"\3\2\2\2\u00ff-\3\2\2\2\u0100\u0101\7\22\2\2\u0101\u0102\7\60\2\2\u0102"+
 		"\u0103\7\21\2\2\u0103\u0104\5\\/\2\u0104/\3\2\2\2\u0105\u010a\7\60\2\2"+
 		"\u0106\u0107\7\13\2\2\u0107\u0109\7\60\2\2\u0108\u0106\3\2\2\2\u0109\u010c"+
 		"\3\2\2\2\u010a\u0108\3\2\2\2\u010a\u010b\3\2\2\2\u010b\u010d\3\2\2\2\u010c"+

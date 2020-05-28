@@ -75,11 +75,11 @@ return self;
 int main()
 {
 Vector* vector = Vector_alloc();
-for(int i = 0; i < 15; i++){
+for(int i = 0; i < 5; i++){
 Vector_push(vector, i);
 Vector_print(vector);
 }
-for(int i = 0; i < 15; i++){
+for(int i = 0; i < 5; i++){
 Vector_pop(vector);
 Vector_print(vector);
 }

@@ -1,3 +1,6 @@
+extern NULL -> any
+extern int -> any
+
 class Vector
 
     var data : Pointer<int> = NULL
@@ -51,6 +54,7 @@ class Vector
 
     function pop() -> int
         var val : int = self.get(self.count - 1)
+
         self.set(self.count - 1, 0)
         self.count = self.count - 1
 
@@ -74,12 +78,12 @@ end
 function main() -> int
     var vector : Vector = new Vector()
 
-    for(i from 0 to 15)
+    for(i from 0 to 5)
         vector.push(i)
         vector.print()
     end
 
-    for(i from 0 to 15)
+    for(i from 0 to 5)
         vector.pop()
         vector.print()
     end

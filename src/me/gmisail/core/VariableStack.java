@@ -1,6 +1,7 @@
 package me.gmisail.core;
 
 import me.gmisail.nodes.NodeTypes;
+import me.gmisail.codegen.Scope;
 import me.gmisail.nodes.VariableNode;
 
 import java.util.Stack;
@@ -11,41 +12,41 @@ public class VariableStack {
     // global scope = 0
     private int scope = 0;
 
-    private Stack<VariableNode> stack;
+    private Stack<Scope> stack;
 
     public VariableStack() {
-        stack = new Stack<VariableNode>();
+        stack = new Stack<Scope>();
     }
 
     public void add(VariableNode node) {
         node.setScope(scope);
-        stack.push(node);
+        stack.peek().addVariable(node);
     }
 
     public void enterScope() {
         scope++;
+
+        stack.push(new Scope());
     }
 
     public void exitScope() {
-        VariableNode node = null;
-
-        if(stack.size() > 0)
-            node = stack.peek();
-
-        while(node != null && node.getScope() == scope) {
-            if(stack.size() > 0)
-                node = stack.pop();
-            else
-                break;
-        }
-
         scope--;
+
+        stack.pop();
+    }
+
+    public void printVariablesInScope() {
+        Logger.write("--------------------");
+        for(int i = 0; i < stack.size(); i++) {
+            stack.elementAt(i).printVariables();
+        }
     }
 
     public VariableNode getVariableWithName(String name) {
         for(int i = 0; i < stack.size(); i++) {
-            if(stack.elementAt(i).getName().equals(name)) {
-                return stack.elementAt(i);
+            VariableNode node = stack.elementAt(i).getVariable(name);
+            if(node != null) {
+                return node;
             }
         }
 
@@ -54,8 +55,9 @@ public class VariableStack {
 
     public String getTypeOf(String name) {
         for(int i = 0; i < stack.size(); i++) {
-            if(stack.elementAt(i).getName().equals(name)) {
-                return stack.elementAt(i).getType();
+            VariableNode node = stack.elementAt(i).getVariable(name);
+            if(node != null) {
+                return node.getType();
             }
         }
 
@@ -64,7 +66,8 @@ public class VariableStack {
 
     public boolean hasClassInstanceNamed(String name) {
         for(int i = 0; i < stack.size(); i++) {
-            if(stack.elementAt(i).getName().equals(name)) {
+            VariableNode node = stack.elementAt(i).getVariable(name);
+            if(node != null) {
                 return true;
             }
         }

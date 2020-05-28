@@ -16,6 +16,7 @@ import java.util.Stack;
 public class Listener extends MoxBaseListener
 {
     private Stack<Node> program;
+
     private VariableStack variables;
     private MoxParser parser;
 
@@ -59,7 +60,8 @@ public class Listener extends MoxBaseListener
             file.write(root.buffer.getCode());
             file.close();
 
-            Runtime.getRuntime().exec("gcc main.c -o main");
+            Process compilation = Runtime.getRuntime().exec("gcc main.c -o main");
+
         } catch (IOException e) {
             Logger.error("Error writing to file.");
             e.printStackTrace();
@@ -71,6 +73,24 @@ public class Listener extends MoxBaseListener
         super.enterBlock(ctx);
 
         variables.enterScope();
+
+        /*
+        *   When a function is defined, add all of the arguments to scope.
+        * */
+        if(program.peek().type == NodeTypes.FUNCTION) {
+            FunctionNode node = (FunctionNode) program.peek();
+
+           // System.out.println("#############");
+           // System.out.println("function: " + ((FunctionNode) program.peek()).getName());
+
+            for(int i = 0; i < node.getParams().size(); i++) {
+                ParameterNode param = node.getParams().get(i);
+
+                variables.add(new VariableNode(param.name, param.type));
+            }
+
+         //   System.out.println("#############");
+        }
 
         if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("{\n");
     }
@@ -186,7 +206,7 @@ public class Listener extends MoxBaseListener
         String name = ctx.NAME().getText();
 
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
-            System.err.println("[moxc] Redefinition of function " + name);
+            Logger.error("Redefinition of function " + name);
         }
 
         FunctionNode func = new FunctionNode(Generator.createFunction(type, name), type);
@@ -235,7 +255,7 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        if(variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
+        if(initial == 0 && variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
             if(ctx.NAME().size() > 1) {
                 name += Generator.dereference(variables.getTypeOf(ctx.NAME(0).getText())) + "_";
                 initial++;
@@ -355,7 +375,7 @@ public class Listener extends MoxBaseListener
             templateType = ctx.type().templateType().type().NAME().getText();
 
         if (!Registry.saveVariable(name)) {
-            System.out.println("Redefinition of variable " + name + "!");
+            Logger.error("Redefinition of variable " + name + "!");
         }
 
         if(type.equals("Pointer")) {
@@ -425,6 +445,33 @@ public class Listener extends MoxBaseListener
         }
 
         String delim = "_";
+
+        boolean inScope = false;
+
+        for(int i = 0; i < program.size(); i++) {
+            if(program.elementAt(i).type == NodeTypes.CLASS) {
+                ClassNode classNode = (ClassNode) program.elementAt(i);
+
+                for(int j = 0; j < classNode.getMemberVariables().size(); j++) {
+                    if(classNode.getMemberVariables().get(j).getName().equals(ctx.NAME(initial).getText())) {
+                        inScope = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // System.out.println("------------------------");
+        // System.out.println("variable: " + ctx.NAME(initial).getText() + "\nin scope: " + inScope + "\nhas variable: " + variables.hasClassInstanceNamed(ctx.NAME(initial).getText()) + "\nis extern: " + External.variableExists(ctx.NAME(initial).getText()));
+
+        if(!inScope &&
+                !variables.hasClassInstanceNamed(ctx.NAME(initial).getText()) &&
+                !External.variableExists(ctx.NAME(initial).getText())) {
+
+            Logger.write(program.peek().type.toString());
+
+            Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
+        }
 
         for(int i = initial; i < ctx.NAME().size(); i++) {
             if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
@@ -546,7 +593,7 @@ public class Listener extends MoxBaseListener
         super.enterModuleDecl(ctx);
 
         if(!Registry.saveModule(ctx.NAME().getText())) {
-            System.err.println("[moxc] Redefinition of module '" + ctx.NAME().getText() + "'");
+            Logger.error("Redefinition of module '" + ctx.NAME().getText() + "'");
         }
 
         Generator.enterContext(new Context(ctx.NAME().getText(), ContextTypes.MODULE));
@@ -660,6 +707,8 @@ public class Listener extends MoxBaseListener
 
         program.push(new ForNode(iterator));
         program.peek().buffer.push("for(int " + iterator + " = ");
+
+        variables.add(new VariableNode(iterator, "int"));
     }
 
 
@@ -726,5 +775,15 @@ public class Listener extends MoxBaseListener
         } else {
             program.peek().buffer.push(node.code());
         }
+    }
+
+    @Override
+    public void enterVarExtern(MoxParser.VarExternContext ctx) {
+        super.enterVarExtern(ctx);
+
+        String name = ctx.NAME().getText();
+        String type = ctx.type().NAME().getText();
+
+        External.addVariable(new VariableNode(name, type));
     }
 }
