@@ -6,8 +6,6 @@ it is painless to interface with native C code (and for C to interface with Mox 
 
 Mox's syntax is similar to that of Lua with hints of Java and Haxe. Instead of being garbage collected like its inspiration, it uses manual memory allocation. So, all classes must be explicitly deleted. It uses ANTLR4 for generating its lexer and parser, however this dependency may be removed if it is decided to make the compiler self-hosted. Until then, ANTLR4 works just fine.
 
-**Mox in its current state is very much an experiment, and is in no state ready to be used in production.**
-
 ### Code Examples
 
 #### Declaring Variables & Functions
