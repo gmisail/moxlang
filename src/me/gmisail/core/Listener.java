@@ -402,6 +402,10 @@ public class Listener extends MoxBaseListener
             classNode.addVariable(variable);
         } else {
             // not a member function, so just spit it out.
+
+            if(!Types.exists(variable.getType()))
+                variable.makePointer();
+
             program.peek().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
         }
     }
@@ -541,11 +545,6 @@ public class Listener extends MoxBaseListener
     @Override
     public void enterVariableCreate(MoxParser.VariableCreateContext ctx) {
         super.enterVariableCreate(ctx);
-
-        if(program.peek().type == NodeTypes.VARIABLE) {
-            VariableNode node = (VariableNode) program.peek();
-            node.makePointer();
-        }
 
         // ensure that the type you are allocating is equal to the type that you are assigning it too. Also, change the type of the variable to a pointer of the original
 
