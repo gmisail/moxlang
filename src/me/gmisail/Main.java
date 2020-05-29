@@ -4,6 +4,7 @@ import me.gmisail.codegen.Generator;
 import me.gmisail.codegen.Registry;
 import me.gmisail.core.External;
 import me.gmisail.core.Listener;
+import me.gmisail.core.Types;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -26,6 +27,7 @@ public class Main
         Registry.create();
         Generator.create();
         External.create();
+        Types.create();
 
         FileWriter file = new FileWriter("./main.c");
         ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
