@@ -1,6 +1,18 @@
-class Human
-    var age : int
-    var friend : Human          # this should be a pointer to Human
+class Node
+
+    var next : Node
+    var prev : Node
+
+    var value : Any
+
+    function init() end
+    function destroy() end
+end
+
+class List
+
+    var head : Node
+    var tail : Node
 
     function init()
 
@@ -9,19 +21,9 @@ class Human
     function destroy()
 
     end
+
 end
 
 function main() -> int
-    # the scope of local variable 'age' should not interfere with variable human.age
-    var age : int = 19
-    var another_test : int
 
-
-
-    another_test = 3
-    # var human : Human = new Human()    <------- this should be equal to
-    var human : Human               #    ...
-    human = new Human()             #    <------- this
-
-    delete human
 end

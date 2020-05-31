@@ -80,16 +80,12 @@ public class Listener extends MoxBaseListener
         if(program.peek().type == NodeTypes.FUNCTION) {
             FunctionNode node = (FunctionNode) program.peek();
 
-           // System.out.println("#############");
-           // System.out.println("function: " + ((FunctionNode) program.peek()).getName());
-
             for(int i = 0; i < node.getParams().size(); i++) {
                 ParameterNode param = node.getParams().get(i);
 
                 variables.add(new VariableNode(param.name, param.type));
             }
 
-         //   System.out.println("#############");
         }
 
         if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("{\n");
@@ -128,7 +124,6 @@ public class Listener extends MoxBaseListener
     public void enterExpr(MoxParser.ExprContext ctx) {
         super.enterExpr(ctx);
 
-
         if(ctx.NUM() != null)
             program.peek().buffer.push(ctx.NUM().getText());
         else if(ctx.STRING() != null)
@@ -157,7 +152,9 @@ public class Listener extends MoxBaseListener
     public void enterAddSub(MoxParser.AddSubContext ctx) {
         super.enterAddSub(ctx);
 
-        program.peek().buffer.push(" " + ctx.getText() + " ");
+        String sign = ctx.getText();
+
+        program.peek().buffer.push(" " + sign + " ");
     }
 
     @Override
@@ -406,6 +403,7 @@ public class Listener extends MoxBaseListener
             if(!Types.exists(variable.getType()))
                 variable.makePointer();
 
+            // var <name> : <type> = <value>. If value is undefined, then do not output it.
             if(variable.getValue().getCode().length() > 0)
                 program.peek().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
             else

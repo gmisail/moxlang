@@ -1,6 +1,7 @@
 package me.gmisail.nodes;
 
 import me.gmisail.core.Logger;
+import me.gmisail.core.Types;
 
 import java.util.ArrayList;
 
@@ -31,11 +32,25 @@ public class ClassNode extends Node {
         String output = "";
 
         /*
-        *   Create a struct with all of the member variable definitions
+        *   Create a struct with all of the member variable definitions. This solution is kinda wack. So basically, we
+        *   are defining a struct with name X and then making a typedef for it with the same name. This will allow
+        *   us to drop the 'struct' keyword when referencing it, but it also allows the user to have references to itself
+        *   within each class.
         * */
-        output += "typedef struct {\n";
+        output += "typedef struct " + this.name;
+        output += " {\n";
         for(int i = 0; i < memberVariables.size(); i++) {
-            output += memberVariables.get(i).getType() + " " + memberVariables.get(i).getName() + ";\n";
+            String variableName = memberVariables.get(i).getName();
+
+            if(!Types.exists(memberVariables.get(i).getType())) {
+                /* pointer to itself. Since the name isn't defined, add a struct keyword. */
+                if(memberVariables.get(i).getType().equals(this.name))
+                    output += "struct ";
+
+                memberVariables.get(i).makePointer();
+            }
+
+            output += memberVariables.get(i).getType() + " " + variableName + ";\n";
         }
         output += "} " + this.name + ";\n";
 
