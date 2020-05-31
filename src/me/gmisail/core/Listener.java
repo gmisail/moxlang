@@ -11,6 +11,7 @@ import me.gmisail.parser.MoxParser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Listener extends MoxBaseListener
@@ -20,6 +21,8 @@ public class Listener extends MoxBaseListener
     private VariableStack variables;
     private MoxParser parser;
 
+    ArrayList<ClassNode> classes;
+
     private FileWriter file;
 
     public Listener(MoxParser parser, FileWriter file) {
@@ -28,6 +31,22 @@ public class Listener extends MoxBaseListener
         this.parser = parser;
         this.file = file;
     }
+
+    public ClassNode findClass(String name)
+    {
+        name = Generator.dereference(name);
+
+        for(int i = 0; i < classes.size(); i++)
+        {
+            if(classes.get(i).getName().equals(name))
+            {
+                return classes.get(i);
+            }
+        }
+
+        return null;
+    }
+
 
     @Override
     public void enterProgram(MoxParser.ProgramContext ctx) {
@@ -39,6 +58,8 @@ public class Listener extends MoxBaseListener
         program.push(root);
 
         variables = new VariableStack();
+
+        classes = new ArrayList<ClassNode>();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
 
@@ -231,6 +252,16 @@ public class Listener extends MoxBaseListener
         program.peek().buffer.push(func.buffer.getCode());
     }
 
+    /*
+    *   Let's say we have the function call self.parent.print()
+    *   This should be equal to: Parent_print(self->parent);
+    *   So, we have the find the highest order object, which is
+    *   parent. Then, we must find the object type, which is Parent.
+    *   So, at this point we know and can confirm that print() is a
+    *   function within Parent; the statement so far is Parent_print(.
+    *   Since we are calling this function on the self->parent object,
+    *   we must pass it as the first parameter. So: Parent_print(self->parent);
+    * */
     @Override
     public void enterFunctionCall(MoxParser.FunctionCallContext ctx) {
         super.enterFunctionCall(ctx);
@@ -239,30 +270,98 @@ public class Listener extends MoxBaseListener
         String delim = "_";
         int initial = 0;
 
+        ClassNode classNode = null;
+
+        int numberOfElements = ctx.NAME().size();
+
         FunctionCallNode functionCallNode = new FunctionCallNode(name);
 
         // TODO: validate that the function is valid.
 
         if(Generator.currentContext().getType() == ContextTypes.CLASS) {
             // the first NAME being "self" implies that it is a call to itself
-            if(ctx.NAME(0).getText().equals("self")) {
+            // self.print()
+            if(ctx.NAME(0).getText().equals("self") && numberOfElements <= 2) {
                 initial = 1;
                 name += Generator.currentContext().getName() + delim;
                 functionCallNode.buffer.push("self, ");
             }
-        }
 
-        if(initial == 0 && variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
-            if(ctx.NAME().size() > 1) {
-                name += Generator.dereference(variables.getTypeOf(ctx.NAME(0).getText())) + "_";
-                initial++;
+            // calling a function from a member class object
+            // so, var foo : Foo = new Foo()
+            //     self.foo.sayHello()     # <------ 3 elements!
+            // should be:
+            //     Foo_sayHello(self->foo);
+            if(ctx.NAME(0).getText().equals("self") && numberOfElements > 2) {
+                // find class def in the program stack
+                ClassNode parentClassNode = null;
+                for(int i = 0; i < program.size(); i++) {
+                    if (program.elementAt(i).type == NodeTypes.CLASS) {
+                        classNode = (ClassNode) program.elementAt(i);
+                        parentClassNode = classNode;
+                    }
+                }
 
-                functionCallNode.buffer.push(ctx.NAME(0).getText());
+                for(int i = 1; i < numberOfElements - 1; i++) {
+                    VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
+                    String subclassType = Generator.dereference(subclassVariable.getType());
+
+                    // if we are accessing the class in which it is defined, then it will
+                    // not show up in findClass. So, we save the parent class and then
+                    // check to see if they match. If so, then set it to classNode.
+                    if(subclassType.equals(parentClassNode.getName()))
+                        classNode = parentClassNode;
+                    else
+                        classNode = findClass(subclassType);
+                }
+
+                name = classNode.getName() + delim;
+
+                // the calling object is every element followed by '->', minus the function
+                for(int i = 0; i < numberOfElements - 1; i++) {
+                    if(i > 0) functionCallNode.buffer.push("->");
+                    functionCallNode.buffer.push(ctx.NAME(i).getText());
+                }
+
+                initial = numberOfElements - 1;
+
                 functionCallNode.addParamCount();
             }
         }
 
-        for (int i = initial; i < ctx.NAME().size(); i++) {
+        // doesn't start with self., and the first keyword is a class instance.
+        if(initial == 0 && variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
+            if(numberOfElements > 1) {
+                classNode = findClass(variables.getTypeOf(ctx.NAME(0).getText()));
+
+                for(int i = 1; i < numberOfElements - 1; i++) {
+                    VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
+
+                    if(subclassVariable == null) {
+                        Logger.error("Cannot find '" + ctx.NAME(i).getText() + "' in " + classNode.getName());
+                        return;
+                    }
+
+                    String subclassType = Generator.dereference(subclassVariable.getType());
+
+                    classNode = findClass(subclassType);
+                }
+
+                name = classNode.getName() + delim;
+
+                // the calling object is every element followed by '->', minus the function
+                for(int i = 0; i < numberOfElements - 1; i++) {
+                    if(i > 0) functionCallNode.buffer.push("->");
+                    functionCallNode.buffer.push(ctx.NAME(i).getText());
+                }
+
+                functionCallNode.addParamCount();
+
+                initial = numberOfElements - 1;
+            }
+        }
+
+        for (int i = initial; i < numberOfElements; i++) {
             if(i > initial) name += delim;
 
             name += ctx.NAME(i).getText();
@@ -270,7 +369,6 @@ public class Listener extends MoxBaseListener
 
         functionCallNode.setName(name);
         program.push(functionCallNode);
-
     }
 
     @Override
@@ -431,6 +529,8 @@ public class Listener extends MoxBaseListener
     public void enterVariableAccess(MoxParser.VariableAccessContext ctx) {
         super.enterVariableAccess(ctx);
 
+        String type = "";
+
         int initial = 0;
         if(Generator.currentContext().getType() == ContextTypes.CLASS) {
             if(ctx.NAME(0).getText().equals("self")) {
@@ -452,7 +552,6 @@ public class Listener extends MoxBaseListener
         String delim = "_";
 
         boolean inScope = false;
-
         for(int i = 0; i < program.size(); i++) {
             if(program.elementAt(i).type == NodeTypes.CLASS) {
                 ClassNode classNode = (ClassNode) program.elementAt(i);
@@ -466,12 +565,10 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        if(!inScope &&
-                !variables.hasClassInstanceNamed(ctx.NAME(initial).getText()) &&
-                !External.variableExists(ctx.NAME(initial).getText())) {
+        if(!inScope && !variables.hasClassInstanceNamed(ctx.NAME(initial).getText())
+                && !External.variableExists(ctx.NAME(initial).getText())) {
 
             Logger.write(program.peek().type.toString());
-
             Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
         }
 
@@ -513,6 +610,19 @@ public class Listener extends MoxBaseListener
 
                 program.peek().buffer.push(ctx.NAME(i).getText());
             }
+        }
+
+
+        if(program.peek().type == NodeTypes.DELETE) {
+            DeleteNode delete = (DeleteNode) program.peek();
+
+            //delete.setTarget(new VariableNode("", );
+
+            /*
+            * get the type of the first element. If it is self, then the type is the current class.
+            * for every string, check if it is the current class. If there are more strings, set the
+            * current class to that variables type. Continue...
+            * */
         }
     }
 
@@ -627,6 +737,7 @@ public class Listener extends MoxBaseListener
         super.exitClassDecl(ctx);
 
         ClassNode classNode = (ClassNode) program.pop();
+        classes.add(classNode);
 
         program.peek().buffer.push(classNode.code());
 

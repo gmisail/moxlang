@@ -17,7 +17,7 @@ class Node
         printf("%i -> ", self.value)
 
         if(self.next != NULL)
-            self.next.print()
+           # self.next.print()
         end
     end
 end
@@ -25,7 +25,6 @@ end
 class List
 
     var head : Node
-    var tail : Node
 
     var num : int = 0
 
@@ -38,26 +37,20 @@ class List
     end
 
     function print()
-        self.head.print()
+       # self.head.print()
     end
 
 end
 
 function main() -> int
     var list : List = new List()
-
-    # nested variable tests
     list.head = new Node()
     list.head.value = 10
 
     list.head.next = new Node()
     list.head.next.value = 20
 
-    # function test
     list.print()
-
-    # nested functions
-    list.head.print()
 
     delete list
 end
