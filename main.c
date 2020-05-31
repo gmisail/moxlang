@@ -19,7 +19,10 @@ return self;
 int main()
 {
 int age = 19;
-Human* human = Human_alloc();
+int another_test;
+another_test = 3;
+Human* human;
+human = Human_alloc();
 Human_destroy(human);
 free(human);
 }

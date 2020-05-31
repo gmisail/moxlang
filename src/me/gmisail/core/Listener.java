@@ -406,7 +406,10 @@ public class Listener extends MoxBaseListener
             if(!Types.exists(variable.getType()))
                 variable.makePointer();
 
-            program.peek().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
+            if(variable.getValue().getCode().length() > 0)
+                program.peek().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
+            else
+                program.peek().buffer.push(variable.getType() + " " + variable.getName() + ";\n");
         }
     }
 
@@ -464,9 +467,6 @@ public class Listener extends MoxBaseListener
                 }
             }
         }
-
-        // System.out.println("------------------------");
-        // System.out.println("variable: " + ctx.NAME(initial).getText() + "\nin scope: " + inScope + "\nhas variable: " + variables.hasClassInstanceNamed(ctx.NAME(initial).getText()) + "\nis extern: " + External.variableExists(ctx.NAME(initial).getText()));
 
         if(!inScope &&
                 !variables.hasClassInstanceNamed(ctx.NAME(initial).getText()) &&

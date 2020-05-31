@@ -14,6 +14,11 @@ end
 function main() -> int
     # the scope of local variable 'age' should not interfere with variable human.age
     var age : int = 19
+    var another_test : int
+
+
+
+    another_test = 3
     # var human : Human = new Human()    <------- this should be equal to
     var human : Human               #    ...
     human = new Human()             #    <------- this
