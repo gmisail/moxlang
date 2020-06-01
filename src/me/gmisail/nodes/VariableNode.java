@@ -6,6 +6,7 @@ public class VariableNode extends Node {
 
     String returnType;
     String name;
+    boolean isPointer = false;
 
     int scope = 0;
 
@@ -19,8 +20,14 @@ public class VariableNode extends Node {
     *   Let the variable be a pointer to the variable type
     * */
     public void makePointer() {
+        isPointer = true;
         returnType += "*";
     }
+
+    public boolean isPointer() {
+        return isPointer;
+    }
+
 
     public void setScope(int scope) { this.scope = scope; }
     public int getScope() { return scope; }

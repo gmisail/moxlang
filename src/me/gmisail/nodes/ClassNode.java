@@ -69,7 +69,8 @@ public class ClassNode extends Node {
                 if(memberVariables.get(i).getType().equals(this.name))
                     output += "struct ";
 
-                memberVariables.get(i).makePointer();
+                if(!memberVariables.get(i).isPointer)
+                    memberVariables.get(i).makePointer();
             }
 
             output += memberVariables.get(i).getType() + " " + variableName + ";\n";

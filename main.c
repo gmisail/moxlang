@@ -1,60 +1,86 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-typedef struct Node {
-struct Node* next;
-int value;
-} Node;
-void Node_init(Node* self)
+typedef struct Array {
+int size;
+int* data;
+} Array;
+void Array_init(Array* self, int size)
 {
+self->size = size;
+self->data = calloc(self->size, sizeof(int));
 }
-void Node_destroy(Node* self)
+int Array_get(Array* self, int index)
 {
-if (self->next != NULL){
+if (index < self->size && index >= 0){
+return self->data[index];
+}
+else{
+return 0;
 }
 }
-void Node_print(Node* self)
+void Array_set(Array* self, int index, int value)
 {
-printf("%i -> ", self->value);
-if (self->next != NULL){
-Node_print(self->next);
+if (index < self->size && index >= 0){
+self->data[index] = value;
 }
 }
-Node* Node_alloc() {
-Node* self = malloc(sizeof(Node));
-Node_init(self);
+void Array_destroy(Array* self)
+{
+free(self->data);
+}
+Array* Array_alloc(int size) {
+Array* self = malloc(sizeof(Array));
+Array_init(self, size);
 return self;
 }
-typedef struct List {
-Node* head;
-Node* tail;
-int num;
-} List;
-void List_init(List* self)
+typedef struct Grid {
+Array* data;
+int width;
+int height;
+} Grid;
+void Grid_init(Grid* self)
+{
+self->data = Array_alloc(self->width * self->height);
+for(int y = 0; y < self->height; y++){
+for(int x = 0; x < self->width; x++){
+int id = 0;
+if (x % 2 == 0 && y % 2 == 0){
+id = 1;
+}
+Array_set(self->data, y * 10 + x, id);
+}
+}
+}
+void Grid_render(Grid* self)
+{
+for(int y = 0; y < self->height; y++){
+for(int x = 0; x < self->width; x++){
+if (Array_get(self->data, y * self->width + x) == 0){
+printf("@");
+}
+else{
+printf("#");
+}
+}
+printf("\n");
+}
+}
+void Grid_destroy(Grid* self)
 {
 }
-void List_destroy(List* self)
-{
-}
-void List_print(List* self)
-{
-Node_print(self->head);
-}
-List* List_alloc() {
-List* self = malloc(sizeof(List));
-self->num = 0;
-List_init(self);
+Grid* Grid_alloc() {
+Grid* self = malloc(sizeof(Grid));
+self->width = 10;
+self->height = 10;
+Grid_init(self);
 return self;
 }
 int main()
 {
-List* list = List_alloc();
-list->head = Node_alloc();
-list->head->value = 10;
-list->head->next = Node_alloc();
-list->head->next->value = 20;
-List_print(list);
-Node_print(list->head);
-List_destroy(list);
-free(list);
+Grid* grid = Grid_alloc();
+Grid_render(grid);
+Grid_destroy(grid);
+free(grid);
+return 0;
 }

@@ -37,7 +37,7 @@ class List
     end
 
     function print()
-       # self.head.print()
+       self.head.print()
     end
 
 end

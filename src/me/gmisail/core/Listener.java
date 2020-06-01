@@ -479,11 +479,17 @@ public class Listener extends MoxBaseListener
             Logger.error("Redefinition of variable " + name + "!");
         }
 
+        boolean isPointer = false;
+
         if(type.equals("Pointer")) {
-            type = templateType + "* ";
+            type = templateType;
+            isPointer = true;
         }
 
         VariableNode node = new VariableNode(name, type);
+
+        if(isPointer)
+            node.makePointer();
 
         variables.add(node);
         program.push(node);
@@ -504,7 +510,7 @@ public class Listener extends MoxBaseListener
         } else {
             // not a member function, so just spit it out.
 
-            if(!Types.exists(variable.getType()))
+            if(!Types.exists(variable.getType()) && !variable.isPointer())
                 variable.makePointer();
 
             // var <name> : <type> = <value>. If value is undefined, then do not output it.
