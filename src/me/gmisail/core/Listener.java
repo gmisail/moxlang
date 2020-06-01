@@ -628,13 +628,41 @@ public class Listener extends MoxBaseListener
         if(program.peek().type == NodeTypes.DELETE) {
             DeleteNode delete = (DeleteNode) program.peek();
 
-            //delete.setTarget(new VariableNode("", );
-
             /*
             * get the type of the first element. If it is self, then the type is the current class.
             * for every string, check if it is the current class. If there are more strings, set the
             * current class to that variables type. Continue...
             * */
+
+            ClassNode classNode = null;
+            if(ctx.NAME(0).getText().equals("self")) {
+                for(int i = 0; i < program.size(); i++) {
+                    if (program.elementAt(i).type == NodeTypes.CLASS) {
+                        classNode = (ClassNode) program.elementAt(i);
+                    }
+                }
+            } else {
+                /*
+                *   Get the root node variable (ROOT.variable.variable...) --> get type --> get class definition
+                * */
+                VariableNode rootNode = variables.getVariableWithName(ctx.NAME(0).getText());
+                String rootNodeType = rootNode.getType();
+                classNode = findClass(rootNodeType);
+            }
+
+            for(int i = 1; i < ctx.NAME().size(); i++) {
+                VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
+
+                if(subclassVariable == null) {
+                    Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
+                    return;
+                }
+
+                String subclassType = Generator.dereference(subclassVariable.getType());
+                classNode = findClass(subclassType);
+            }
+
+            delete.setTarget(new VariableNode(program.peek().buffer.getCode(), classNode.getName()));
         }
     }
 
