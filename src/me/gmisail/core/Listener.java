@@ -304,6 +304,12 @@ public class Listener extends MoxBaseListener
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
+
+                    if(subclassVariable == null) {
+                        Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
+                        return;
+                    }
+
                     String subclassType = Generator.dereference(subclassVariable.getType());
 
                     // if we are accessing the class in which it is defined, then it will
@@ -338,7 +344,7 @@ public class Listener extends MoxBaseListener
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
 
                     if(subclassVariable == null) {
-                        Logger.error("Cannot find '" + ctx.NAME(i).getText() + "' in " + classNode.getName());
+                        Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
                         return;
                     }
 
