@@ -935,4 +935,11 @@ public class Listener extends MoxBaseListener
 
         External.addVariable(new VariableNode(name, type));
     }
+
+    @Override
+    public void enterImportStatement(MoxParser.ImportStatementContext ctx) {
+        super.enterImportStatement(ctx);
+
+        System.out.println("importing " + ctx.STRING().getText());
+    }
 }

@@ -4,7 +4,22 @@ grammar Mox;
     package me.gmisail.parser;
 }
 
-program: block EOF;
+/*
+
+IMPORTS
+
+import "array"
+import "stdlib"
+
+BLOCK
+
+function main() -> int
+    print("hello")
+end
+
+*/
+
+program: importStatement* block EOF;
 block: statement*;
 classBlock: (variable | function)*;
 
@@ -85,6 +100,8 @@ forLoop: forRangeLoop;
 forFromExpr: 'from' expr;
 forToExpr: 'to' expr;
 forRangeLoop: 'for' '(' NAME forFromExpr forToExpr')' block 'end';
+
+importStatement: 'import' STRING;
 
 /* Operations */
 bitwise: '&' | '|' | '~' | '<<' | '>>';
