@@ -151,7 +151,6 @@ public class Listener extends MoxBaseListener
             program.peek().buffer.push(ctx.STRING().getText());
         else if(ctx.CHAR() != null) {
             program.peek().buffer.push(ctx.CHAR().getText());
-            Logger.write(ctx.CHAR().getText().length() + "");
         }
     }
 
@@ -580,7 +579,6 @@ public class Listener extends MoxBaseListener
         if(!inScope && !variables.hasClassInstanceNamed(ctx.NAME(initial).getText())
                 && !External.variableExists(ctx.NAME(initial).getText())) {
 
-            Logger.write(program.peek().type.toString());
             Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
         }
 
@@ -639,6 +637,7 @@ public class Listener extends MoxBaseListener
                 for(int i = 0; i < program.size(); i++) {
                     if (program.elementAt(i).type == NodeTypes.CLASS) {
                         classNode = (ClassNode) program.elementAt(i);
+                        break;
                     }
                 }
             } else {
@@ -723,8 +722,10 @@ public class Listener extends MoxBaseListener
 
         DeleteNode node = (DeleteNode) program.pop();
 
-        if(variables.hasClassInstanceNamed(node.buffer.getCode())) {
+        if(variables.hasClassInstanceNamed(node.buffer.getCode()) && node.getTarget() != null) {
             node.setTarget(variables.getVariableWithName(node.buffer.getCode()));
+            program.peek().buffer.push(node.code());
+        } else {
             program.peek().buffer.push(node.code());
         }
     }

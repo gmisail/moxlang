@@ -68,6 +68,9 @@ printf("\n");
 }
 void Grid_destroy(Grid* self)
 {
+printf("destroying grid object");
+Array_destroy(self->data);
+free(self->data);
 }
 Grid* Grid_alloc() {
 Grid* self = malloc(sizeof(Grid));

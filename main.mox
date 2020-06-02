@@ -1,3 +1,6 @@
+# required for sizeof(int)
+extern int -> any
+
 class Array
 
     var size : int
@@ -64,6 +67,7 @@ class Grid
     end
 
     function destroy()
+        printf("destroying grid object")
         delete self.data
     end
 
