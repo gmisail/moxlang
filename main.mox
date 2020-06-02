@@ -5,7 +5,7 @@ class Array
 
     var size : int
     var data : Pointer<int>
-
+    
     function init(size : int)
         self.size = size
         self.data = calloc(self.size, sizeof(int))

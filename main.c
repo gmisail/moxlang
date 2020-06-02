@@ -5,11 +5,6 @@ typedef struct Array {
 int size;
 int* data;
 } Array;
-void Array_init(Array* self, int size)
-{
-self->size = size;
-self->data = calloc(self->size, sizeof(int));
-}
 int Array_get(Array* self, int index)
 {
 if (index < self->size && index >= 0){
@@ -25,13 +20,11 @@ if (index < self->size && index >= 0){
 self->data[index] = value;
 }
 }
-void Array_destroy(Array* self)
-{
-free(self->data);
-}
-Array* Array_alloc(int size) {
+void Array_init(Array* self){}
+void Array_destroy(Array* self){}
+Array* Array_alloc() {
 Array* self = malloc(sizeof(Array));
-Array_init(self, size);
+Array_init(self);
 return self;
 }
 typedef struct Grid {

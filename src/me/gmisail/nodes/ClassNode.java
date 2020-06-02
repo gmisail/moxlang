@@ -90,6 +90,7 @@ public class ClassNode extends Node {
         * */
 
         FunctionNode initFunc = null;
+        FunctionNode destroyFunc = null;
 
         for(int i = 0; i < functions.size(); i++)
         {
@@ -98,8 +99,21 @@ public class ClassNode extends Node {
              * */
             if(functions.get(i).getLocalName().equals("init")) {
                 initFunc = functions.get(i);
-                break;
             }
+
+            if(functions.get(i).getLocalName().equals("destroy")) {
+                destroyFunc = functions.get(i);
+            }
+        }
+
+        if(initFunc == null)
+        {
+            output += "void " + name + "_init(" + name + "* self){}\n";
+        }
+
+        if(destroyFunc == null)
+        {
+            output += "void " + name + "_destroy(" + name + "* self){}\n";
         }
 
         output += name + "* " + name + "_alloc(";
@@ -131,9 +145,7 @@ public class ClassNode extends Node {
             }
         }
 
-        if(initFunc == null) {
-            Logger.error("Class '" + this.name + "' does not have an initializer function (init).");
-        } else {
+        if(initFunc != null) {
             for(int i = 1; i < initFunc.getParams().size(); i++) {              // the first value of the function declaration should be a pointer to self, which we already included. So, skip it.
                 output += ", " + initFunc.getParams().get(i).name;
             }
