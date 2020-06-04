@@ -1,17 +1,36 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-int fib(int n)
+typedef struct Vector {
+int x;
+int y;
+} Vector;
+void Vector_init(Vector* self, int x, int y)
 {
-if (n == 0 || n == 1){
-return n;
+self->x = x;
+self->y = y;
 }
-else{
-return fib(n - 2) + fib(n - 1);
+int Vector_dot(Vector* self, Vector* vec)
+{
+return (self->x * vec->x) + (self->y * vec->y);
 }
+void Vector_destroy(Vector* self)
+{
+}
+Vector* Vector_alloc(int x, int y) {
+Vector* self = malloc(sizeof(Vector));
+Vector_init(self, x, y);
+return self;
 }
 int main()
 {
-printf("%i", fib(10));
+Vector* foo = Vector_alloc(10, 5);
+Vector* bar = Vector_alloc(5, 10);
+int result = Vector_dot(foo, bar);
+printf("the result is %i", result);
+Vector_destroy(foo);
+free(foo);
+Vector_destroy(bar);
+free(bar);
 return 0;
 }

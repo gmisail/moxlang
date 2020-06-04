@@ -1,5 +1,7 @@
 package me.gmisail.nodes;
 
+import me.gmisail.core.Types;
+
 import java.util.ArrayList;
 
 public class FunctionNode extends Node {
@@ -29,7 +31,11 @@ public class FunctionNode extends Node {
         for(int i = 0; i < this.params.size(); i++) {
             if(i > 0) output += ", ";
 
-            output += this.params.get(i).type + " " + this.params.get(i).name;
+            if(!this.params.get(i).name.equals("self") && !Types.exists(this.params.get(i).type)) {
+                output += this.params.get(i).type + "* " + this.params.get(i).name;
+            } else {
+                output += this.params.get(i).type + " " + this.params.get(i).name;
+            }
         }
 
         output += ")";
