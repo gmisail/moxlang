@@ -176,5 +176,5 @@ function main() -> int
 end
 ```
 
-Notice how in the class there is a `init()` and `destroy()` function? These are the constructor and destructor, and both are required for every Mox class. Both are called implicitly when needed (`init()` on construction and `destroy()` before it is deallocated.)
+Notice how in the class there is a `init()` and `destroy()` function? These are the constructor and destructor, and both are required for every Mox class. Both are called implicitly when needed (`init()` on construction and `destroy()` before it is deallocated.) Although `init()` and `destroy()` are created automatically if they are not defined (the compiler assumes that every class has `init` and `destroy` methods), it is best practice to manually define them.
 
