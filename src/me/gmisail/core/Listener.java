@@ -17,7 +17,6 @@ import java.util.Stack;
 public class Listener extends MoxBaseListener
 {
     private Stack<Node> program;
-
     private VariableStack variables;
     private MoxParser parser;
 
@@ -474,8 +473,18 @@ public class Listener extends MoxBaseListener
         if(ctx.type().templateType() != null)
             templateType = ctx.type().templateType().type().NAME().getText();
 
-        if (!Registry.saveVariable(name)) {
-            Logger.error("Redefinition of variable " + name + "!");
+        if (!Registry.saveVariable(name) && variables.hasClassInstanceNamed(name)) {
+            VariableNode referencedVariable = variables.getVariableWithName(name);
+
+            /*
+            *   Ensure that the variable is in scope AND is not a member variable. If it is, then
+            *   there are no conflicts.
+            * */
+            if(!referencedVariable.isMemberVariable()) {
+                Logger.error("Redefinition of variable " + name + "!");
+
+                return;
+            }
         }
 
         boolean isPointer = false;
@@ -505,6 +514,7 @@ public class Listener extends MoxBaseListener
             moduleNode.addVariable(variable);
         } else if(program.peek() != null && program.peek().type == NodeTypes.CLASS) {
             ClassNode classNode = (ClassNode) program.peek();
+            variable.makeMemberVariable();
             classNode.addVariable(variable);
         } else {
             // not a member function, so just spit it out.

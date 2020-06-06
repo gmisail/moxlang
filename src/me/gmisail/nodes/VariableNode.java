@@ -6,7 +6,16 @@ public class VariableNode extends Node {
 
     String returnType;
     String name;
+
+    /*
+    *   Is this variable a pointer?     e.g.         Vector* vec...
+    * */
     boolean isPointer = false;
+
+    /*
+     *  Does this variable belong to a class?       e.g.            vec.x, vec.y, etc.
+     */
+    boolean isMemberVariable = false;
 
     int scope = 0;
 
@@ -24,10 +33,14 @@ public class VariableNode extends Node {
         returnType += "*";
     }
 
+    public void makeMemberVariable() {
+        isMemberVariable = true;
+    }
+
     public boolean isPointer() {
         return isPointer;
     }
-
+    public boolean isMemberVariable() { return isMemberVariable; }
 
     public void setScope(int scope) { this.scope = scope; }
     public int getScope() { return scope; }

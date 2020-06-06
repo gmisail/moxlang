@@ -23,6 +23,12 @@ function main() -> int
     var foo : Vector = new Vector(10, 5)
     var bar : Vector = new Vector(5, 10)
 
+    var x : int = 10
+    var y : int = 100
+
+    var res : int = x + y
+    printf("the result of x + y is %i", x + y)
+
     var result : int = foo.dot(bar)
 
     printf("the result is %i", result)
