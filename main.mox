@@ -1,6 +1,4 @@
-
 class Vector
-
     var x : int
     var y : int
 
@@ -16,7 +14,6 @@ class Vector
     function destroy()
 
     end
-
 end
 
 function main() -> int

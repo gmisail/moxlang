@@ -16,13 +16,13 @@ return (self->x * vec->x) + (self->y * vec->y);
 }
 void Vector_destroy(Vector* self)
 {
-int x = 100;
 }
 Vector* Vector_alloc(int x, int y) {
 Vector* self = malloc(sizeof(Vector));
 Vector_init(self, x, y);
 return self;
 }
+int x;
 int main()
 {
 Vector* foo = Vector_alloc(10, 5);

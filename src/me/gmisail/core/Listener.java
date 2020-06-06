@@ -112,6 +112,20 @@ public class Listener extends MoxBaseListener
     }
 
     @Override
+    public void enterClassBlock(MoxParser.ClassBlockContext ctx) {
+        super.exitClassBlock(ctx);
+
+        variables.enterScope();
+    }
+
+    @Override
+    public void exitClassBlock(MoxParser.ClassBlockContext ctx) {
+        super.exitClassBlock(ctx);
+
+        variables.exitScope();
+    }
+
+    @Override
     public void exitBlock(MoxParser.BlockContext ctx) {
         super.exitBlock(ctx);
 
@@ -474,17 +488,7 @@ public class Listener extends MoxBaseListener
             templateType = ctx.type().templateType().type().NAME().getText();
 
         if (!Registry.saveVariable(name) && variables.hasClassInstanceNamed(name)) {
-            VariableNode referencedVariable = variables.getVariableWithName(name);
-
-            /*
-            *   Ensure that the variable is in scope AND is not a member variable. If it is, then
-            *   there are no conflicts.
-            * */
-            if(!referencedVariable.isMemberVariable()) {
-                Logger.error("Redefinition of variable " + name + "!");
-
-                return;
-            }
+            Logger.error("Redefinition of variable " + name + "!");
         }
 
         boolean isPointer = false;
