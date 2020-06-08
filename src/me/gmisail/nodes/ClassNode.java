@@ -25,12 +25,7 @@ public class ClassNode extends Node {
 
     public boolean hasVariable(String name)
     {
-        for(int i = 0; i < memberVariables.size(); i++) {
-            if(memberVariables.get(i).getName().equals(name))
-                return true;
-        }
-
-        return false;
+        return getVariable(name) != null;
     }
 
     public VariableNode getVariable(String name)
@@ -50,6 +45,7 @@ public class ClassNode extends Node {
             memberVariables.add(var);
         }
     }
+
     public ArrayList<VariableNode> getMemberVariables() { return memberVariables; }
     public void addFunction(FunctionNode func) { functions.add(func); }
 

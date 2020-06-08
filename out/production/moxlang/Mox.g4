@@ -45,6 +45,7 @@ expr: bool
      | variableAccess
      | variableArrayAccess
      | functionCall
+     | funcSize
      | boundedExpr
      | expr mulDivMod expr
      | expr addSub expr
@@ -75,6 +76,8 @@ funcReturnType: '->' type;
 funcParam: NAME ':' type;
 funcParams: '(' paramList? ')';
 
+funcSize: 'size' '(' type ')';
+
 /* External */
 extern: funcExtern | varExtern;
 funcExtern: 'extern' 'function' NAME funcParams funcReturnType?;
@@ -96,6 +99,7 @@ elseStatement: 'else';
 
 whileExpr: '(' expr ')';
 whileLoop: 'while' whileExpr block 'end';
+
 forLoop: forRangeLoop;
 forFromExpr: 'from' expr;
 forToExpr: 'to' expr;

@@ -24,6 +24,7 @@ public class Types {
         //other
         builtin.add("bool");
 
+        builtin.add("any");
     }
 
     /*

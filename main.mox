@@ -1,37 +1,40 @@
-class Vector
-    var x : int
-    var y : int
+class Array
 
-    function init(x : int, y : int)
-        self.x = x
-        self.y = y
+    var data : Pointer<int>
+    var length : int
+
+    function init(length : int)
+        self.length = length
+        self.data = malloc(self.length * size(int))
     end
 
-    function dot(vec : Vector) -> int
-        return (self.x * vec.x) + (self.y * vec.y)
+    function set(index : int, value : int)
+        self.data[index] = value
+    end
+
+    function get(index : int) -> int
+        return self.data[index]
     end
 
     function destroy()
-
+        free(self.data)
     end
+
 end
 
 function main() -> int
-    var foo : Vector = new Vector(10, 5)
-    var bar : Vector = new Vector(5, 10)
+    var array : Array = new Array(4)
 
-    var x : int = 10
-    var y : int = 100
+    array.set(0, 0)
+    array.set(1, 0)
+    array.set(2, 4)
+    array.set(3, 8)
 
-    var res : int = x + y
-    printf("the result of x + y is %i", x + y)
+    for(i from 0 to 4)
+        printf("%i", array.get(i))
+    end
 
-    var result : int = foo.dot(bar)
-
-    printf("the result is %i", result)
-
-    delete foo
-    delete bar
+    delete array
 
     return 0
 end

@@ -1,41 +1,43 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-typedef struct Vector {
-int x;
-int y;
-} Vector;
-void Vector_init(Vector* self, int x, int y)
+typedef struct Array {
+int* data;
+int length;
+} Array;
+void Array_init(Array* self, int length)
 {
-self->x = x;
-self->y = y;
+self->length = length;
+self->data = malloc(self->length * sizeof(int));
 }
-int Vector_dot(Vector* self, Vector* vec)
+void Array_set(Array* self, int index, int value)
 {
-return (self->x * vec->x) + (self->y * vec->y);
+self->data[index] = value;
 }
-void Vector_destroy(Vector* self)
+int Array_get(Array* self, int index)
 {
+return self->data[index];
 }
-Vector* Vector_alloc(int x, int y) {
-Vector* self = malloc(sizeof(Vector));
-Vector_init(self, x, y);
+void Array_destroy(Array* self)
+{
+free(self->data);
+}
+Array* Array_alloc(int length) {
+Array* self = malloc(sizeof(Array));
+Array_init(self, length);
 return self;
 }
-int x;
 int main()
 {
-Vector* foo = Vector_alloc(10, 5);
-Vector* bar = Vector_alloc(5, 10);
-int x = 10;
-int y = 100;
-int res = x + y;
-printf("the result of x + y is %i", x + y);
-int result = Vector_dot(foo, bar);
-printf("the result is %i", result);
-Vector_destroy(foo);
-free(foo);
-Vector_destroy(bar);
-free(bar);
+Array* array = Array_alloc(4);
+Array_set(array, 0, 0);
+Array_set(array, 1, 0);
+Array_set(array, 2, 4);
+Array_set(array, 3, 8);
+for(int i = 0; i < 4; i++){
+printf("%i", Array_get(array, i));
+}
+Array_destroy(array);
+free(array);
 return 0;
 }

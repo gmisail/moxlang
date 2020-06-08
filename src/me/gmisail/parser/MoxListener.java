@@ -210,6 +210,16 @@ public interface MoxListener extends ParseTreeListener {
 	 */
 	void exitFuncParams(MoxParser.FuncParamsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MoxParser#funcSize}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncSize(MoxParser.FuncSizeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#funcSize}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncSize(MoxParser.FuncSizeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MoxParser#extern}.
 	 * @param ctx the parse tree
 	 */

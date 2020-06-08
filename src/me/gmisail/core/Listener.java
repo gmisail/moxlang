@@ -231,6 +231,10 @@ public class Listener extends MoxBaseListener
         String type = "void";
         if(ctx.funcReturnType() != null) {
             type = ctx.funcReturnType().type().NAME().getText();
+
+            if(type.equals("any")) {
+                type = "void*";
+            }
         }
 
         String name = ctx.NAME().getText();
@@ -447,8 +451,9 @@ public class Listener extends MoxBaseListener
         if(type.equals("Pointer")) {
             String template = "void";
 
-            if(ctx.type().templateType() != null)
+            if(ctx.type().templateType() != null) {
                 template = ctx.type().templateType().type().NAME().getText();
+            }
 
             type = template + "*";
         } else if(type.equals("Reference")) {
@@ -496,6 +501,16 @@ public class Listener extends MoxBaseListener
         if(type.equals("Pointer")) {
             type = templateType;
             isPointer = true;
+
+            if(templateType.equals("any")) {
+                // any is equivalent to a void*
+                type = "void*";
+            }
+        } else if(type.equals("any")) {
+            // any is equivalent to a void*
+
+            type = "void";
+            isPointer = true;
         }
 
         VariableNode node = new VariableNode(name, type);
@@ -519,6 +534,7 @@ public class Listener extends MoxBaseListener
         } else if(program.peek() != null && program.peek().type == NodeTypes.CLASS) {
             ClassNode classNode = (ClassNode) program.peek();
             variable.makeMemberVariable();
+
             classNode.addVariable(variable);
         } else {
             // not a member function, so just spit it out.
@@ -955,5 +971,31 @@ public class Listener extends MoxBaseListener
         super.enterImportStatement(ctx);
 
         System.out.println("importing " + ctx.STRING().getText());
+    }
+
+    @Override
+    public void enterFuncSize(MoxParser.FuncSizeContext ctx) {
+        super.enterFuncSize(ctx);
+
+        String type = ctx.type().NAME().getText();
+
+        program.peek().buffer.push("sizeof(");
+
+        if(type.equals("Pointer")) {
+            String template = ctx.type().templateType().type().NAME().getText();
+
+            if(template.equals("any")) {
+                template = "void*";
+            }
+
+            type = template + "*";
+        } else {
+            if(type.equals("any")) {
+                type = "void*";
+            }
+        }
+
+        program.peek().buffer.push(type);
+        program.peek().buffer.push(")");
     }
 }

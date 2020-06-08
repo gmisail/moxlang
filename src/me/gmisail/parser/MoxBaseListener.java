@@ -258,6 +258,18 @@ public class MoxBaseListener implements MoxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFuncSize(MoxParser.FuncSizeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncSize(MoxParser.FuncSizeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExtern(MoxParser.ExternContext ctx) { }
 	/**
 	 * {@inheritDoc}

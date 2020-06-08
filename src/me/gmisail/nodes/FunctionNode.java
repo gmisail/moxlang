@@ -34,7 +34,13 @@ public class FunctionNode extends Node {
             if(!this.params.get(i).name.equals("self") && !Types.exists(this.params.get(i).type)) {
                 output += this.params.get(i).type + "* " + this.params.get(i).name;
             } else {
-                output += this.params.get(i).type + " " + this.params.get(i).name;
+                if(this.params.get(i).type.equals("any")) {
+                    output += "void*";
+                } else {
+                    output += this.params.get(i).type;
+                }
+
+                output += " " + this.params.get(i).name;
             }
         }
 
