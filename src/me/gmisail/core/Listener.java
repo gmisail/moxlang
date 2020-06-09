@@ -1,5 +1,6 @@
 package me.gmisail.core;
 
+import me.gmisail.Mox;
 import me.gmisail.codegen.Context;
 import me.gmisail.codegen.ContextTypes;
 import me.gmisail.codegen.Generator;
@@ -16,11 +17,7 @@ import java.util.Stack;
 
 public class Listener extends MoxBaseListener
 {
-    private Stack<Node> program;
-    private VariableStack variables;
     private MoxParser parser;
-
-    ArrayList<ClassNode> classes;
 
     private FileWriter file;
 
@@ -35,11 +32,11 @@ public class Listener extends MoxBaseListener
     {
         name = Generator.dereference(name);
 
-        for(int i = 0; i < classes.size(); i++)
+        for(int i = 0; i < Mox.classes.size(); i++)
         {
-            if(classes.get(i).getName().equals(name))
+            if(Mox.classes.get(i).getName().equals(name))
             {
-                return classes.get(i);
+                return Mox.classes.get(i);
             }
         }
 
@@ -51,28 +48,21 @@ public class Listener extends MoxBaseListener
     public void enterProgram(MoxParser.ProgramContext ctx) {
         super.enterProgram(ctx);
 
-        Node root = new Node();
-
-        program = new Stack<Node>();
-        program.push(root);
-
-        variables = new VariableStack();
-
-        classes = new ArrayList<ClassNode>();
+        Mox.classes = new ArrayList<ClassNode>();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
 
         /* before generation, set up includes */
-        root.buffer.push(Generator.createInclude("stdio.h"));
-        root.buffer.push(Generator.createInclude("stdlib.h"));
-        root.buffer.push(Generator.createInclude("string.h"));
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdio.h"));
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdlib.h"));
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("string.h"));
     }
 
     @java.lang.Override
     public void exitProgram(MoxParser.ProgramContext ctx) {
         super.exitProgram(ctx);
 
-        Node root = program.pop();
+        Node root = Mox.state.getProgram().pop();
 
         /* if there is an error, then do *not* overwrite the original code */
 
@@ -92,46 +82,48 @@ public class Listener extends MoxBaseListener
     public void enterBlock(MoxParser.BlockContext ctx) {
         super.enterBlock(ctx);
 
-        variables.enterScope();
+        Mox.variables.enterScope();
 
         /*
         *   When a function is defined, add all of the arguments to scope.
         * */
-        if(program.peek().type == NodeTypes.FUNCTION) {
-            FunctionNode node = (FunctionNode) program.peek();
+        if(Mox.state.getProgram().currentType() == NodeTypes.FUNCTION) {
+            FunctionNode node = (FunctionNode) Mox.state.getProgram().current();
 
             for(int i = 0; i < node.getParams().size(); i++) {
                 ParameterNode param = node.getParams().get(i);
 
-                variables.add(new VariableNode(param.name, param.type));
+                Mox.variables.add(new VariableNode(param.name, param.type));
             }
 
         }
 
-        if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("{\n");
+        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
+            Mox.state.getProgram().current().buffer.push("{\n");
     }
 
     @Override
     public void enterClassBlock(MoxParser.ClassBlockContext ctx) {
         super.exitClassBlock(ctx);
 
-        variables.enterScope();
+        Mox.variables.enterScope();
     }
 
     @Override
     public void exitClassBlock(MoxParser.ClassBlockContext ctx) {
         super.exitClassBlock(ctx);
 
-        variables.exitScope();
+        Mox.variables.exitScope();
     }
 
     @Override
     public void exitBlock(MoxParser.BlockContext ctx) {
         super.exitBlock(ctx);
 
-        variables.exitScope();
+        Mox.variables.exitScope();
 
-        if(program.peek().type != NodeTypes.DEFAULT) program.peek().buffer.push("}\n");
+        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
+            Mox.state.getProgram().current().buffer.push("}\n");
     }
 
     /*
@@ -144,7 +136,7 @@ public class Listener extends MoxBaseListener
     public void enterBool(MoxParser.BoolContext ctx) {
         super.enterBool(ctx);
 
-        program.peek().buffer.push(Generator.createBoolean(ctx.getText()));
+        Mox.state.getProgram().current().buffer.push(Generator.createBoolean(ctx.getText()));
     }
 
 
@@ -159,11 +151,11 @@ public class Listener extends MoxBaseListener
         super.enterExpr(ctx);
 
         if(ctx.NUM() != null)
-            program.peek().buffer.push(ctx.NUM().getText());
+            Mox.state.getProgram().current().buffer.push(ctx.NUM().getText());
         else if(ctx.STRING() != null)
-            program.peek().buffer.push(ctx.STRING().getText());
+            Mox.state.getProgram().current().buffer.push(ctx.STRING().getText());
         else if(ctx.CHAR() != null) {
-            program.peek().buffer.push(ctx.CHAR().getText());
+            Mox.state.getProgram().current().buffer.push(ctx.CHAR().getText());
         }
     }
 
@@ -171,14 +163,14 @@ public class Listener extends MoxBaseListener
     public void enterBoundedExpr(MoxParser.BoundedExprContext ctx) {
         super.enterBoundedExpr(ctx);
 
-        program.peek().buffer.push("(");
+        Mox.state.getProgram().current().buffer.push("(");
     }
 
     @Override
     public void exitBoundedExpr(MoxParser.BoundedExprContext ctx) {
         super.exitBoundedExpr(ctx);
 
-        program.peek().buffer.push(")");
+        Mox.state.getProgram().current().buffer.push(")");
     }
 
     @Override
@@ -187,35 +179,35 @@ public class Listener extends MoxBaseListener
 
         String sign = ctx.getText();
 
-        program.peek().buffer.push(" " + sign + " ");
+        Mox.state.getProgram().current().buffer.push(" " + sign + " ");
     }
 
     @Override
     public void enterMulDivMod(MoxParser.MulDivModContext ctx) {
         super.enterMulDivMod(ctx);
 
-        program.peek().buffer.push(" " + ctx.getText() + " ");
+        Mox.state.getProgram().current().buffer.push(" " + ctx.getText() + " ");
     }
 
     @Override
     public void enterConditionals(MoxParser.ConditionalsContext ctx) {
         super.enterConditionals(ctx);
 
-        program.peek().buffer.push(" " + ctx.getText() + " ");
+        Mox.state.getProgram().current().buffer.push(" " + ctx.getText() + " ");
     }
 
     @Override
     public void enterOperatorAnd(MoxParser.OperatorAndContext ctx) {
         super.enterOperatorAnd(ctx);
 
-        program.peek().buffer.push(" && ");
+        Mox.state.getProgram().current().buffer.push(" && ");
     }
 
     @Override
     public void enterOperatorOr(MoxParser.OperatorOrContext ctx) {
         super.enterOperatorOr(ctx);
 
-        program.peek().buffer.push(" || ");
+        Mox.state.getProgram().current().buffer.push(" || ");
     }
 
     /*
@@ -248,24 +240,24 @@ public class Listener extends MoxBaseListener
         if(Generator.currentContext().getType().equals(ContextTypes.CLASS)) {
             func.addParam("self", Generator.currentContext().getName() + "*");
 
-            if(program.peek().type == NodeTypes.CLASS)
+            if(Mox.state.getProgram().currentType() == NodeTypes.CLASS)
             {
-                ClassNode node = (ClassNode) program.peek();
+                ClassNode node = (ClassNode) Mox.state.getProgram().current();
                 func.setLocalName(name);
                 node.addFunction(func);
             }
         }
 
-        program.push(func);
+        Mox.state.getProgram().push(func);
     }
 
     @Override
     public void exitFunction(MoxParser.FunctionContext ctx) {
         super.exitFunction(ctx);
 
-        FunctionNode func = (FunctionNode) program.pop();
+        FunctionNode func = (FunctionNode) Mox.state.getProgram().pop();
 
-        program.peek().buffer.push(func.buffer.getCode());
+        Mox.state.getProgram().current().buffer.push(func.buffer.getCode());
     }
 
     /*
@@ -311,9 +303,9 @@ public class Listener extends MoxBaseListener
             if(ctx.NAME(0).getText().equals("self") && numberOfElements > 2) {
                 // find class def in the program stack
                 ClassNode parentClassNode = null;
-                for(int i = 0; i < program.size(); i++) {
-                    if (program.elementAt(i).type == NodeTypes.CLASS) {
-                        classNode = (ClassNode) program.elementAt(i);
+                for(int i = 0; i < Mox.state.getProgram().size(); i++) {
+                    if (Mox.state.getProgram().at(i).type == NodeTypes.CLASS) {
+                        classNode = (ClassNode) Mox.state.getProgram().at(i);
                         parentClassNode = classNode;
                     }
                 }
@@ -352,9 +344,9 @@ public class Listener extends MoxBaseListener
         }
 
         // doesn't start with self., and the first keyword is a class instance.
-        if(initial == 0 && variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
+        if(initial == 0 && Mox.variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.classes.
             if(numberOfElements > 1) {
-                classNode = findClass(variables.getTypeOf(ctx.NAME(0).getText()));
+                classNode = findClass(Mox.variables.getTypeOf(ctx.NAME(0).getText()));
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
@@ -390,21 +382,21 @@ public class Listener extends MoxBaseListener
         }
 
         functionCallNode.setName(name);
-        program.push(functionCallNode);
+        Mox.state.getProgram().push(functionCallNode);
     }
 
     @Override
     public void exitFunctionCall(MoxParser.FunctionCallContext ctx) {
         super.exitFunctionCall(ctx);
 
-        FunctionCallNode functionCall = (FunctionCallNode) program.pop();
+        FunctionCallNode functionCall = (FunctionCallNode) Mox.state.getProgram().pop();
 
         /* when the function is called, is it called as a statement or expression? If it is a statement, the it must have a semicolon */
         if(parser.getRuleNames()[ctx.getParent().getRuleIndex()].equals("statement")) {
-            program.peek().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ");\n");
+            Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ");\n");
         } else {
             /* if it is not a standalone statement, then it must be used within another expression. Thus, add it to the parent */
-            program.peek().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
+            Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
         }
     }
 
@@ -417,7 +409,7 @@ public class Listener extends MoxBaseListener
     public void enterFunctionCallParam(MoxParser.FunctionCallParamContext ctx) {
         super.enterFunctionCallParam(ctx);
 
-        FunctionCallNode functionCall = (FunctionCallNode) program.peek();
+        FunctionCallNode functionCall = (FunctionCallNode) Mox.state.getProgram().current();
 
         if(functionCall.getParamCount() > 0) {
             functionCall.buffer.push(", ");
@@ -430,16 +422,16 @@ public class Listener extends MoxBaseListener
     public void enterReturnStatement(MoxParser.ReturnStatementContext ctx) {
         super.enterReturnStatement(ctx);
 
-        program.push(new ReturnNode());
+        Mox.state.getProgram().push(new ReturnNode());
     }
 
     @Override
     public void exitReturnStatement(MoxParser.ReturnStatementContext ctx) {
         super.exitReturnStatement(ctx);
 
-        ReturnNode ret = (ReturnNode) program.pop();
+        ReturnNode ret = (ReturnNode) Mox.state.getProgram().pop();
 
-        program.peek().buffer.push("return " + ret.buffer.getCode() + ";\n");
+        Mox.state.getProgram().current().buffer.push("return " + ret.buffer.getCode() + ";\n");
     }
 
     @Override
@@ -465,7 +457,7 @@ public class Listener extends MoxBaseListener
             type = template + "&";
         }
 
-        FunctionNode func = (FunctionNode) program.peek();
+        FunctionNode func = (FunctionNode) Mox.state.getProgram().current();
         func.addParam(ctx.NAME().getText(), type);
     }
 
@@ -473,8 +465,8 @@ public class Listener extends MoxBaseListener
     public void exitFuncParams(MoxParser.FuncParamsContext ctx) {
         super.exitFuncParams(ctx);
 
-        FunctionNode func = (FunctionNode) program.peek();
-        program.peek().buffer.push(func.code() + "\n");
+        FunctionNode func = (FunctionNode) Mox.state.getProgram().current();
+        Mox.state.getProgram().current().buffer.push(func.code() + "\n");
     }
 
     /*
@@ -492,7 +484,7 @@ public class Listener extends MoxBaseListener
         if(ctx.type().templateType() != null)
             templateType = ctx.type().templateType().type().NAME().getText();
 
-        if (!Registry.saveVariable(name) && variables.hasClassInstanceNamed(name)) {
+        if (!Registry.saveVariable(name) && Mox.variables.hasClassInstanceNamed(name)) {
             Logger.error("Redefinition of variable " + name + "!");
         }
 
@@ -518,21 +510,21 @@ public class Listener extends MoxBaseListener
         if(isPointer)
             node.makePointer();
 
-        variables.add(node);
-        program.push(node);
+        Mox.variables.add(node);
+        Mox.state.getProgram().push(node);
     }
 
     @Override
     public void exitVariable(MoxParser.VariableContext ctx) {
         super.exitVariable(ctx);
 
-        VariableNode variable = (VariableNode) program.pop();
+        VariableNode variable = (VariableNode) Mox.state.getProgram().pop();
 
-        if(program.peek() != null && program.peek().type == NodeTypes.MODULE) {
-            ModuleNode moduleNode = (ModuleNode) program.peek();
+        if(Mox.state.getProgram().current() != null && Mox.state.getProgram().currentType() == NodeTypes.MODULE) {
+            ModuleNode moduleNode = (ModuleNode) Mox.state.getProgram().current();
             moduleNode.addVariable(variable);
-        } else if(program.peek() != null && program.peek().type == NodeTypes.CLASS) {
-            ClassNode classNode = (ClassNode) program.peek();
+        } else if(Mox.state.getProgram().current() != null && Mox.state.getProgram().currentType() == NodeTypes.CLASS) {
+            ClassNode classNode = (ClassNode) Mox.state.getProgram().current();
             variable.makeMemberVariable();
 
             classNode.addVariable(variable);
@@ -544,9 +536,9 @@ public class Listener extends MoxBaseListener
 
             // var <name> : <type> = <value>. If value is undefined, then do not output it.
             if(variable.getValue().getCode().length() > 0)
-                program.peek().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
+                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
             else
-                program.peek().buffer.push(variable.getType() + " " + variable.getName() + ";\n");
+                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + ";\n");
         }
     }
 
@@ -554,16 +546,16 @@ public class Listener extends MoxBaseListener
     public void enterVariableAssignmentStatement(MoxParser.VariableAssignmentStatementContext ctx) {
         super.enterVariableAssignmentStatement(ctx);
 
-        program.push(new VariableAssignmentNode());
+        Mox.state.getProgram().push(new VariableAssignmentNode());
     }
 
     @Override
     public void exitVariableAssignmentStatement(MoxParser.VariableAssignmentStatementContext ctx) {
         super.enterVariableAssignmentStatement(ctx);
 
-        VariableAssignmentNode assignment = (VariableAssignmentNode) program.pop();
+        VariableAssignmentNode assignment = (VariableAssignmentNode) Mox.state.getProgram().pop();
 
-        program.peek().buffer.push(assignment.getName() + " = " + assignment.getValue().getCode() + ";\n");
+        Mox.state.getProgram().current().buffer.push(assignment.getName() + " = " + assignment.getValue().getCode() + ";\n");
     }
 
     @Override
@@ -575,15 +567,15 @@ public class Listener extends MoxBaseListener
         int initial = 0;
         if(Generator.currentContext().getType() == ContextTypes.CLASS) {
             if(ctx.NAME(0).getText().equals("self")) {
-                if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
-                    VariableAssignmentNode node = (VariableAssignmentNode) program.peek();
+                if(Mox.state.getProgram().currentType() == NodeTypes.VARIABLE_ASSIGNMENT) {
+                    VariableAssignmentNode node = (VariableAssignmentNode) Mox.state.getProgram().current();
 
                     if(node.hasName())
                         node.buffer.push("self->");
                     else
                         node.setName(node.getName() + "self->");
                 } else {
-                    program.peek().buffer.push("self->");
+                    Mox.state.getProgram().current().buffer.push("self->");
                 }
 
                 initial = 1;
@@ -593,9 +585,9 @@ public class Listener extends MoxBaseListener
         String delim = "_";
 
         boolean inScope = false;
-        for(int i = 0; i < program.size(); i++) {
-            if(program.elementAt(i).type == NodeTypes.CLASS) {
-                ClassNode classNode = (ClassNode) program.elementAt(i);
+        for(int i = 0; i < Mox.state.getProgram().size(); i++) {
+            if(Mox.state.getProgram().at(i).type == NodeTypes.CLASS) {
+                ClassNode classNode = (ClassNode) Mox.state.getProgram().at(i);
 
                 for(int j = 0; j < classNode.getMemberVariables().size(); j++) {
                     if(classNode.getMemberVariables().get(j).getName().equals(ctx.NAME(initial).getText())) {
@@ -606,15 +598,15 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        if(!inScope && !variables.hasClassInstanceNamed(ctx.NAME(initial).getText())
+        if(!inScope && !Mox.variables.hasClassInstanceNamed(ctx.NAME(initial).getText())
                 && !External.variableExists(ctx.NAME(initial).getText())) {
 
             Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
         }
 
         for(int i = initial; i < ctx.NAME().size(); i++) {
-            if(program.peek().type == NodeTypes.VARIABLE_ASSIGNMENT) {
-                VariableAssignmentNode node = (VariableAssignmentNode) program.peek();
+            if(Mox.state.getProgram().currentType() == NodeTypes.VARIABLE_ASSIGNMENT) {
+                VariableAssignmentNode node = (VariableAssignmentNode) Mox.state.getProgram().current();
 
                 if(i > initial) {
                     if(node.hasName())
@@ -622,7 +614,7 @@ public class Listener extends MoxBaseListener
                     else
                         node.setName(node.getName() + delim);
                 } else if(i == initial) {
-                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to classes.
+                    if(Mox.variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.classes.
                         if(ctx.NAME().size() > 1) {
                             delim = "->";
                         }
@@ -639,22 +631,22 @@ public class Listener extends MoxBaseListener
 
             } else {
                 if(i > initial)
-                    program.peek().buffer.push(delim);
+                    Mox.state.getProgram().current().buffer.push(delim);
                 else if(i == initial) {
-                    if(variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
+                    if(Mox.variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
                         if(ctx.NAME().size() > 1) {
                             delim = "->";
                         }
                     }
                 }
 
-                program.peek().buffer.push(ctx.NAME(i).getText());
+                Mox.state.getProgram().current().buffer.push(ctx.NAME(i).getText());
             }
         }
 
 
-        if(program.peek().type == NodeTypes.DELETE) {
-            DeleteNode delete = (DeleteNode) program.peek();
+        if(Mox.state.getProgram().currentType() == NodeTypes.DELETE) {
+            DeleteNode delete = (DeleteNode) Mox.state.getProgram().current();
 
             /*
             * get the type of the first element. If it is self, then the type is the current class.
@@ -664,9 +656,9 @@ public class Listener extends MoxBaseListener
 
             ClassNode classNode = null;
             if(ctx.NAME(0).getText().equals("self")) {
-                for(int i = 0; i < program.size(); i++) {
-                    if (program.elementAt(i).type == NodeTypes.CLASS) {
-                        classNode = (ClassNode) program.elementAt(i);
+                for(int i = 0; i < Mox.state.getProgram().size(); i++) {
+                    if (Mox.state.getProgram().at(i).type == NodeTypes.CLASS) {
+                        classNode = (ClassNode) Mox.state.getProgram().at(i);
                         break;
                     }
                 }
@@ -674,7 +666,7 @@ public class Listener extends MoxBaseListener
                 /*
                 *   Get the root node variable (ROOT.variable.variable...) --> get type --> get class definition
                 * */
-                VariableNode rootNode = variables.getVariableWithName(ctx.NAME(0).getText());
+                VariableNode rootNode = Mox.variables.getVariableWithName(ctx.NAME(0).getText());
                 String rootNodeType = rootNode.getType();
                 classNode = findClass(rootNodeType);
             }
@@ -691,7 +683,7 @@ public class Listener extends MoxBaseListener
                 classNode = findClass(subclassType);
             }
 
-            delete.setTarget(new VariableNode(program.peek().buffer.getCode(), classNode.getName()));
+            delete.setTarget(new VariableNode(Mox.state.getProgram().current().buffer.getCode(), classNode.getName()));
         }
     }
 
@@ -699,8 +691,8 @@ public class Listener extends MoxBaseListener
     public void exitVariableAccess(MoxParser.VariableAccessContext ctx) {
         super.exitVariableAccess(ctx);
 
-        if(program.peek().type == NodeTypes.ARRAY_ACCESS) {
-            ArrayAccessNode node = (ArrayAccessNode) program.peek();
+        if(Mox.state.getProgram().currentType() == NodeTypes.ARRAY_ACCESS) {
+            ArrayAccessNode node = (ArrayAccessNode) Mox.state.getProgram().current();
             node.saveName();
         }
     }
@@ -709,14 +701,14 @@ public class Listener extends MoxBaseListener
     public void enterVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) {
         super.enterVariableArrayAssignment(ctx);
 
-        program.push(new ArrayAssignmentNode());
+        Mox.state.getProgram().push(new ArrayAssignmentNode());
     }
 
     public void exitVariableArrayAssignment(MoxParser.VariableArrayAssignmentContext ctx) {
         super.exitVariableArrayAssignment(ctx);
 
-        ArrayAssignmentNode node = (ArrayAssignmentNode) program.pop();
-        program.peek().buffer.push(node.code());
+        ArrayAssignmentNode node = (ArrayAssignmentNode) Mox.state.getProgram().pop();
+        Mox.state.getProgram().current().buffer.push(node.code());
     }
 
     @Override
@@ -728,35 +720,35 @@ public class Listener extends MoxBaseListener
         String name = ctx.NAME().getText() + "_alloc";
         FunctionCallNode createVariable = new FunctionCallNode(name);
 
-        program.push(createVariable);
+        Mox.state.getProgram().push(createVariable);
     }
 
     @Override
     public void exitVariableCreate(MoxParser.VariableCreateContext ctx) {
         super.exitVariableCreate(ctx);
 
-        FunctionCallNode functionCall = (FunctionCallNode) program.pop();
-        program.peek().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
+        FunctionCallNode functionCall = (FunctionCallNode) Mox.state.getProgram().pop();
+        Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
     }
 
     @Override
     public void enterVariableDelete(MoxParser.VariableDeleteContext ctx) {
         super.enterVariableDelete(ctx);
 
-        program.push(new DeleteNode());
+        Mox.state.getProgram().push(new DeleteNode());
     }
 
     @Override
     public void exitVariableDelete(MoxParser.VariableDeleteContext ctx) {
         super.exitVariableDelete(ctx);
 
-        DeleteNode node = (DeleteNode) program.pop();
+        DeleteNode node = (DeleteNode) Mox.state.getProgram().pop();
 
-        if(variables.hasClassInstanceNamed(node.buffer.getCode()) && node.getTarget() != null) {
-            node.setTarget(variables.getVariableWithName(node.buffer.getCode()));
-            program.peek().buffer.push(node.code());
+        if(Mox.variables.hasClassInstanceNamed(node.buffer.getCode()) && node.getTarget() != null) {
+            node.setTarget(Mox.variables.getVariableWithName(node.buffer.getCode()));
+            Mox.state.getProgram().current().buffer.push(node.code());
         } else {
-            program.peek().buffer.push(node.code());
+            Mox.state.getProgram().current().buffer.push(node.code());
         }
     }
 
@@ -775,7 +767,7 @@ public class Listener extends MoxBaseListener
         }
 
         Generator.enterContext(new Context(ctx.NAME().getText(), ContextTypes.MODULE));
-        program.push(new ModuleNode(ctx.NAME().getText()));
+        Mox.state.getProgram().push(new ModuleNode(ctx.NAME().getText()));
     }
 
     @Override
@@ -784,14 +776,14 @@ public class Listener extends MoxBaseListener
 
         Generator.exitContext();
 
-        ModuleNode moduleNode = (ModuleNode) program.pop();
+        ModuleNode moduleNode = (ModuleNode) Mox.state.getProgram().pop();
 
-        program.peek().buffer.push(moduleNode.code() + "\n");
+        Mox.state.getProgram().current().buffer.push(moduleNode.code() + "\n");
     }
 
     /*
     *
-    *   CLASSES
+    *   CLASS
     *
     * */
 
@@ -799,7 +791,7 @@ public class Listener extends MoxBaseListener
     public void enterClassDecl(MoxParser.ClassDeclContext ctx) {
         super.enterClassDecl(ctx);
 
-        program.push(new ClassNode(ctx.NAME().getText()));
+        Mox.state.getProgram().push(new ClassNode(ctx.NAME().getText()));
         Generator.enterContext(new Context(ctx.NAME().getText(), ContextTypes.CLASS));
     }
 
@@ -807,10 +799,10 @@ public class Listener extends MoxBaseListener
     public void exitClassDecl(MoxParser.ClassDeclContext ctx) {
         super.exitClassDecl(ctx);
 
-        ClassNode classNode = (ClassNode) program.pop();
-        classes.add(classNode);
-
-        program.peek().buffer.push(classNode.code());
+        ClassNode classNode = (ClassNode) Mox.state.getProgram().pop();
+        
+        Mox.classes.add(classNode);
+        Mox.state.getProgram().current().buffer.push(classNode.code());
 
         Generator.exitContext();
     }
@@ -825,21 +817,21 @@ public class Listener extends MoxBaseListener
     public void enterIfStatement(MoxParser.IfStatementContext ctx) {
         super.enterIfStatement(ctx);
 
-        program.peek().buffer.push("if (");
+        Mox.state.getProgram().current().buffer.push("if (");
     }
 
     @Override
     public void exitIfStatement(MoxParser.IfStatementContext ctx) {
         super.exitIfStatement(ctx);
 
-        program.peek().buffer.push(")");
+        Mox.state.getProgram().current().buffer.push(")");
     }
 
     @Override
     public void enterElseIfStatement(MoxParser.ElseIfStatementContext ctx) {
         super.enterElseIfStatement(ctx);
 
-        program.peek().buffer.push("else if(");
+        Mox.state.getProgram().current().buffer.push("else if(");
     }
 
 
@@ -847,35 +839,35 @@ public class Listener extends MoxBaseListener
     public void exitElseIfStatement(MoxParser.ElseIfStatementContext ctx) {
         super.exitElseIfStatement(ctx);
 
-        program.peek().buffer.push(")");
+        Mox.state.getProgram().current().buffer.push(")");
     }
 
     @Override
     public void enterElseStatement(MoxParser.ElseStatementContext ctx) {
         super.enterElseStatement(ctx);
 
-        program.peek().buffer.push("else");
+        Mox.state.getProgram().current().buffer.push("else");
     }
 
     @Override
     public void enterWhileLoop(MoxParser.WhileLoopContext ctx) {
         super.enterWhileLoop(ctx);
 
-        program.peek().buffer.push("while");
+        Mox.state.getProgram().current().buffer.push("while");
     }
 
     @Override
     public void enterWhileExpr(MoxParser.WhileExprContext ctx) {
         super.enterWhileExpr(ctx);
 
-        program.peek().buffer.push("(");
+        Mox.state.getProgram().current().buffer.push("(");
     }
 
     @Override
     public void exitWhileExpr(MoxParser.WhileExprContext ctx) {
         super.exitWhileExpr(ctx);
 
-        program.peek().buffer.push(")");
+        Mox.state.getProgram().current().buffer.push(")");
     }
 
     @Override
@@ -884,10 +876,10 @@ public class Listener extends MoxBaseListener
 
         String iterator = ctx.NAME().getText();
 
-        program.push(new ForNode(iterator));
-        program.peek().buffer.push("for(int " + iterator + " = ");
+        Mox.state.getProgram().push(new ForNode(iterator));
+        Mox.state.getProgram().current().buffer.push("for(int " + iterator + " = ");
 
-        variables.add(new VariableNode(iterator, "int"));
+        Mox.variables.add(new VariableNode(iterator, "int"));
     }
 
 
@@ -895,18 +887,18 @@ public class Listener extends MoxBaseListener
     public void exitForFromExpr(MoxParser.ForFromExprContext ctx) {
         super.exitForFromExpr(ctx);
 
-        ForNode forNode = (ForNode) program.peek();
+        ForNode forNode = (ForNode) Mox.state.getProgram().current();
 
-        program.peek().buffer.push("; " + forNode.getIterator() + " < ");
+        Mox.state.getProgram().current().buffer.push("; " + forNode.getIterator() + " < ");
     }
 
     @Override
     public void exitForToExpr(MoxParser.ForToExprContext ctx) {
         super.exitForToExpr(ctx);
 
-        ForNode forNode = (ForNode) program.pop();
+        ForNode forNode = (ForNode) Mox.state.getProgram().pop();
         forNode.buffer.push("; " + forNode.getIterator() + "++)");
-        program.peek().buffer.push(forNode.buffer.getCode());
+        Mox.state.getProgram().current().buffer.push(forNode.buffer.getCode());
     }
 
     /*
@@ -917,14 +909,14 @@ public class Listener extends MoxBaseListener
     public void enterFuncExtern(MoxParser.FuncExternContext ctx) {
         super.enterFuncExtern(ctx);
 
-        program.push(new FunctionNode(ctx.NAME().getText(), ctx.funcReturnType().type().NAME().getText()));
+        Mox.state.getProgram().push(new FunctionNode(ctx.NAME().getText(), ctx.funcReturnType().type().NAME().getText()));
     }
 
     @Override
     public void exitFuncExtern(MoxParser.FuncExternContext ctx) {
         super.exitFuncExtern(ctx);
 
-        FunctionNode node = (FunctionNode) program.pop();
+        FunctionNode node = (FunctionNode) Mox.state.getProgram().pop();
 
         // register function
     }
@@ -934,25 +926,25 @@ public class Listener extends MoxBaseListener
         super.enterVariableArrayAccess(ctx);
 
         ArrayAccessNode node = new ArrayAccessNode();
-        program.push(node);
+        Mox.state.getProgram().push(node);
     }
 
     @Override
     public void exitVariableArrayAccess(MoxParser.VariableArrayAccessContext ctx) {
         super.exitVariableArrayAccess(ctx);
 
-        ArrayAccessNode node = (ArrayAccessNode) program.pop();
+        ArrayAccessNode node = (ArrayAccessNode) Mox.state.getProgram().pop();
 
-        if(program.peek().type == NodeTypes.ARRAY_ASSIGNMENT) {
-            ArrayAssignmentNode assignmentNode = (ArrayAssignmentNode) program.peek();
+        if(Mox.state.getProgram().currentType() == NodeTypes.ARRAY_ASSIGNMENT) {
+            ArrayAssignmentNode assignmentNode = (ArrayAssignmentNode) Mox.state.getProgram().current();
 
             if(!assignmentNode.hasVariableName()) {
                 assignmentNode.setVariable(node);
             } else {
-                program.peek().buffer.push(node.code());
+                Mox.state.getProgram().current().buffer.push(node.code());
             }
         } else {
-            program.peek().buffer.push(node.code());
+            Mox.state.getProgram().current().buffer.push(node.code());
         }
     }
 
@@ -967,19 +959,12 @@ public class Listener extends MoxBaseListener
     }
 
     @Override
-    public void enterImportStatement(MoxParser.ImportStatementContext ctx) {
-        super.enterImportStatement(ctx);
-
-        System.out.println("importing " + ctx.STRING().getText());
-    }
-
-    @Override
     public void enterFuncSize(MoxParser.FuncSizeContext ctx) {
         super.enterFuncSize(ctx);
 
         String type = ctx.type().NAME().getText();
 
-        program.peek().buffer.push("sizeof(");
+        Mox.state.getProgram().current().buffer.push("sizeof(");
 
         if(type.equals("Pointer")) {
             String template = ctx.type().templateType().type().NAME().getText();
@@ -995,7 +980,7 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        program.peek().buffer.push(type);
-        program.peek().buffer.push(")");
+        Mox.state.getProgram().current().buffer.push(type);
+        Mox.state.getProgram().current().buffer.push(")");
     }
 }
