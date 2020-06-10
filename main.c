@@ -1,43 +1,36 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-typedef struct Array {
-int* data;
-int length;
-} Array;
-void Array_init(Array* self, int length)
+typedef struct Coordinate {
+int x;
+int y;
+} Coordinate;
+void Coordinate_init(Coordinate* self)
 {
-self->length = length;
-self->data = malloc(self->length * sizeof(int));
+self->x = 0;
+self->y = 0;
 }
-void Array_set(Array* self, int index, int value)
+void Coordinate_print(Coordinate* self)
 {
-self->data[index] = value;
 }
-int Array_get(Array* self, int index)
+void Coordinate_destroy(Coordinate* self)
 {
-return self->data[index];
 }
-void Array_destroy(Array* self)
-{
-free(self->data);
+Coordinate* Coordinate_alloc() {
+Coordinate* self = malloc(sizeof(Coordinate));
+Coordinate_init(self);
+return self;
 }
-Array* Array_alloc(int length) {
-Array* self = malloc(sizeof(Array));
-Array_init(self, length);
+typedef struct Coordinate {
+} Coordinate;
+void Coordinate_init(Coordinate* self){}
+void Coordinate_destroy(Coordinate* self){}
+Coordinate* Coordinate_alloc() {
+Coordinate* self = malloc(sizeof(Coordinate));
+Coordinate_init(self);
 return self;
 }
 int main()
 {
-Array* array = Array_alloc(4);
-Array_set(array, 0, 0);
-Array_set(array, 1, 0);
-Array_set(array, 2, 4);
-Array_set(array, 3, 8);
-for(int i = 0; i < 4; i++){
-printf("%i", Array_get(array, i));
-}
-Array_destroy(array);
-free(array);
 return 0;
 }

@@ -32,11 +32,11 @@ public class Listener extends MoxBaseListener
     {
         name = Generator.dereference(name);
 
-        for(int i = 0; i < Mox.classes.size(); i++)
+        for(int i = 0; i < Mox.state.getClasses().size(); i++)
         {
-            if(Mox.classes.get(i).getName().equals(name))
+            if(Mox.state.getClasses().get(i).getName().equals(name))
             {
-                return Mox.classes.get(i);
+                return Mox.state.getClasses().get(i);
             }
         }
 
@@ -47,8 +47,6 @@ public class Listener extends MoxBaseListener
     @Override
     public void enterProgram(MoxParser.ProgramContext ctx) {
         super.enterProgram(ctx);
-
-        Mox.classes = new ArrayList<ClassNode>();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
 
@@ -82,7 +80,7 @@ public class Listener extends MoxBaseListener
     public void enterBlock(MoxParser.BlockContext ctx) {
         super.enterBlock(ctx);
 
-        Mox.variables.enterScope();
+        Mox.state.getVariables().enterScope();
 
         /*
         *   When a function is defined, add all of the arguments to scope.
@@ -93,7 +91,7 @@ public class Listener extends MoxBaseListener
             for(int i = 0; i < node.getParams().size(); i++) {
                 ParameterNode param = node.getParams().get(i);
 
-                Mox.variables.add(new VariableNode(param.name, param.type));
+                Mox.state.getVariables().add(new VariableNode(param.name, param.type));
             }
 
         }
@@ -106,21 +104,21 @@ public class Listener extends MoxBaseListener
     public void enterClassBlock(MoxParser.ClassBlockContext ctx) {
         super.exitClassBlock(ctx);
 
-        Mox.variables.enterScope();
+        Mox.state.getVariables().enterScope();
     }
 
     @Override
     public void exitClassBlock(MoxParser.ClassBlockContext ctx) {
         super.exitClassBlock(ctx);
 
-        Mox.variables.exitScope();
+        Mox.state.getVariables().exitScope();
     }
 
     @Override
     public void exitBlock(MoxParser.BlockContext ctx) {
         super.exitBlock(ctx);
 
-        Mox.variables.exitScope();
+        Mox.state.getVariables().exitScope();
 
         if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
             Mox.state.getProgram().current().buffer.push("}\n");
@@ -344,9 +342,9 @@ public class Listener extends MoxBaseListener
         }
 
         // doesn't start with self., and the first keyword is a class instance.
-        if(initial == 0 && Mox.variables.hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.classes.
+        if(initial == 0 && Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.state.getClasses().
             if(numberOfElements > 1) {
-                classNode = findClass(Mox.variables.getTypeOf(ctx.NAME(0).getText()));
+                classNode = findClass(Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
@@ -484,7 +482,7 @@ public class Listener extends MoxBaseListener
         if(ctx.type().templateType() != null)
             templateType = ctx.type().templateType().type().NAME().getText();
 
-        if (!Registry.saveVariable(name) && Mox.variables.hasClassInstanceNamed(name)) {
+        if (!Registry.saveVariable(name) && Mox.state.getVariables().hasClassInstanceNamed(name)) {
             Logger.error("Redefinition of variable " + name + "!");
         }
 
@@ -493,6 +491,8 @@ public class Listener extends MoxBaseListener
         if(type.equals("Pointer")) {
             type = templateType;
             isPointer = true;
+
+            //Generator.createTypeFromPointer(ctx.type());
 
             if(templateType.equals("any")) {
                 // any is equivalent to a void*
@@ -510,7 +510,7 @@ public class Listener extends MoxBaseListener
         if(isPointer)
             node.makePointer();
 
-        Mox.variables.add(node);
+        Mox.state.getVariables().add(node);
         Mox.state.getProgram().push(node);
     }
 
@@ -598,7 +598,7 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        if(!inScope && !Mox.variables.hasClassInstanceNamed(ctx.NAME(initial).getText())
+        if(!inScope && !Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(initial).getText())
                 && !External.variableExists(ctx.NAME(initial).getText())) {
 
             Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
@@ -614,7 +614,7 @@ public class Listener extends MoxBaseListener
                     else
                         node.setName(node.getName() + delim);
                 } else if(i == initial) {
-                    if(Mox.variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.classes.
+                    if(Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(i).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.state.getClasses().
                         if(ctx.NAME().size() > 1) {
                             delim = "->";
                         }
@@ -633,7 +633,7 @@ public class Listener extends MoxBaseListener
                 if(i > initial)
                     Mox.state.getProgram().current().buffer.push(delim);
                 else if(i == initial) {
-                    if(Mox.variables.hasClassInstanceNamed(ctx.NAME(i).getText())) {
+                    if(Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(i).getText())) {
                         if(ctx.NAME().size() > 1) {
                             delim = "->";
                         }
@@ -666,7 +666,7 @@ public class Listener extends MoxBaseListener
                 /*
                 *   Get the root node variable (ROOT.variable.variable...) --> get type --> get class definition
                 * */
-                VariableNode rootNode = Mox.variables.getVariableWithName(ctx.NAME(0).getText());
+                VariableNode rootNode = Mox.state.getVariables().getVariableWithName(ctx.NAME(0).getText());
                 String rootNodeType = rootNode.getType();
                 classNode = findClass(rootNodeType);
             }
@@ -744,8 +744,8 @@ public class Listener extends MoxBaseListener
 
         DeleteNode node = (DeleteNode) Mox.state.getProgram().pop();
 
-        if(Mox.variables.hasClassInstanceNamed(node.buffer.getCode()) && node.getTarget() != null) {
-            node.setTarget(Mox.variables.getVariableWithName(node.buffer.getCode()));
+        if(Mox.state.getVariables().hasClassInstanceNamed(node.buffer.getCode()) && node.getTarget() != null) {
+            node.setTarget(Mox.state.getVariables().getVariableWithName(node.buffer.getCode()));
             Mox.state.getProgram().current().buffer.push(node.code());
         } else {
             Mox.state.getProgram().current().buffer.push(node.code());
@@ -791,8 +791,14 @@ public class Listener extends MoxBaseListener
     public void enterClassDecl(MoxParser.ClassDeclContext ctx) {
         super.enterClassDecl(ctx);
 
-        Mox.state.getProgram().push(new ClassNode(ctx.NAME().getText()));
-        Generator.enterContext(new Context(ctx.NAME().getText(), ContextTypes.CLASS));
+        String className = ctx.NAME().getText();
+
+        if(findClass(className) != null) {
+            Logger.error("Redefinition of class '" + className + "'");
+        }
+
+        Mox.state.getProgram().push(new ClassNode(className));
+        Generator.enterContext(new Context(className, ContextTypes.CLASS));
     }
 
     @Override
@@ -800,8 +806,8 @@ public class Listener extends MoxBaseListener
         super.exitClassDecl(ctx);
 
         ClassNode classNode = (ClassNode) Mox.state.getProgram().pop();
-        
-        Mox.classes.add(classNode);
+
+        Mox.state.getClasses().add(classNode);
         Mox.state.getProgram().current().buffer.push(classNode.code());
 
         Generator.exitContext();
@@ -879,7 +885,7 @@ public class Listener extends MoxBaseListener
         Mox.state.getProgram().push(new ForNode(iterator));
         Mox.state.getProgram().current().buffer.push("for(int " + iterator + " = ");
 
-        Mox.variables.add(new VariableNode(iterator, "int"));
+        Mox.state.getVariables().add(new VariableNode(iterator, "int"));
     }
 
 

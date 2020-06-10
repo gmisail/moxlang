@@ -1,5 +1,9 @@
 package me.gmisail.codegen;
 
+import me.gmisail.core.Logger;
+import me.gmisail.parser.MoxParser;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.util.Stack;
 
 public class Generator
@@ -90,6 +94,24 @@ public class Generator
         output += type + " " + name;
 
         return output;
+    }
+
+    public static String createTypeFromPointer(MoxParser.TypeContext ctx) {
+        MoxParser.TypeContext type = ctx;
+        int numPointers = 0;
+
+        while(type.templateType() != null) {
+            numPointers++;
+            type = type.templateType().type();
+        }
+
+        String outputType = type.NAME().getText();
+
+        for(int i = 0; i < numPointers; i++) {
+            outputType += "*";
+        }
+
+        return outputType;
     }
 
     public static String dereference(String pointer) {

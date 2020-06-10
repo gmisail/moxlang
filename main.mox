@@ -1,40 +1,27 @@
-class Array
+class Coordinate
 
-    var data : Pointer<int>
-    var length : int
+    var x : int
+    var y : int
 
-    function init(length : int)
-        self.length = length
-        self.data = malloc(self.length * size(int))
+    function init()
+        self.x = 0
+        self.y = 0
     end
 
-    function set(index : int, value : int)
-        self.data[index] = value
-    end
-
-    function get(index : int) -> int
-        return self.data[index]
+    function print()
+        # print the pair
     end
 
     function destroy()
-        free(self.data)
+
     end
 
 end
 
+class Coordinate end
+
 function main() -> int
-    var array : Array = new Array(4)
 
-    array.set(0, 0)
-    array.set(1, 0)
-    array.set(2, 4)
-    array.set(3, 8)
-
-    for(i from 0 to 4)
-        printf("%i", array.get(i))
-    end
-
-    delete array
 
     return 0
 end
