@@ -1,0 +1,11 @@
+class Array
+
+    function init()
+        printf("this is an array test!")
+    end
+
+    function destroy()
+
+    end
+
+end

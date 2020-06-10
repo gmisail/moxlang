@@ -28,52 +28,20 @@ public class Listener extends MoxBaseListener
         this.file = file;
     }
 
-    public ClassNode findClass(String name)
-    {
-        name = Generator.dereference(name);
-
-        for(int i = 0; i < Mox.state.getClasses().size(); i++)
-        {
-            if(Mox.state.getClasses().get(i).getName().equals(name))
-            {
-                return Mox.state.getClasses().get(i);
-            }
-        }
-
-        return null;
-    }
-
-
     @Override
     public void enterProgram(MoxParser.ProgramContext ctx) {
         super.enterProgram(ctx);
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
-
-        /* before generation, set up includes */
-        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdio.h"));
-        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdlib.h"));
-        Mox.state.getProgram().current().buffer.push(Generator.createInclude("string.h"));
     }
 
     @java.lang.Override
     public void exitProgram(MoxParser.ProgramContext ctx) {
         super.exitProgram(ctx);
 
-        Node root = Mox.state.getProgram().pop();
+//        Node root = Mox.state.getProgram().pop();
 
         /* if there is an error, then do *not* overwrite the original code */
-
-        try {
-            file.write(root.buffer.getCode());
-            file.close();
-
-            Process compilation = Runtime.getRuntime().exec("gcc main.c -o main");
-
-        } catch (IOException e) {
-            Logger.error("Error writing to file.");
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -319,12 +287,12 @@ public class Listener extends MoxBaseListener
                     String subclassType = Generator.dereference(subclassVariable.getType());
 
                     // if we are accessing the class in which it is defined, then it will
-                    // not show up in findClass. So, we save the parent class and then
+                    // not show up in Mox.state.getClasses()().find(). So, we save the parent class and then
                     // check to see if they match. If so, then set it to classNode.
                     if(subclassType.equals(parentClassNode.getName()))
                         classNode = parentClassNode;
                     else
-                        classNode = findClass(subclassType);
+                        classNode = Mox.state.getClasses().find(subclassType);
                 }
 
                 name = classNode.getName() + delim;
@@ -344,7 +312,7 @@ public class Listener extends MoxBaseListener
         // doesn't start with self., and the first keyword is a class instance.
         if(initial == 0 && Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(0).getText())) {                    // if the first keyword is a class instance, then all following statements must also be pointers to Mox.state.getClasses().
             if(numberOfElements > 1) {
-                classNode = findClass(Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
+                classNode = Mox.state.getClasses().find(Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
@@ -356,7 +324,7 @@ public class Listener extends MoxBaseListener
 
                     String subclassType = Generator.dereference(subclassVariable.getType());
 
-                    classNode = findClass(subclassType);
+                    classNode = Mox.state.getClasses().find(subclassType);
                 }
 
                 name = classNode.getName() + delim;
@@ -668,7 +636,7 @@ public class Listener extends MoxBaseListener
                 * */
                 VariableNode rootNode = Mox.state.getVariables().getVariableWithName(ctx.NAME(0).getText());
                 String rootNodeType = rootNode.getType();
-                classNode = findClass(rootNodeType);
+                classNode = Mox.state.getClasses().find(rootNodeType);
             }
 
             for(int i = 1; i < ctx.NAME().size(); i++) {
@@ -680,7 +648,7 @@ public class Listener extends MoxBaseListener
                 }
 
                 String subclassType = Generator.dereference(subclassVariable.getType());
-                classNode = findClass(subclassType);
+                classNode = Mox.state.getClasses().find(subclassType);
             }
 
             delete.setTarget(new VariableNode(Mox.state.getProgram().current().buffer.getCode(), classNode.getName()));
@@ -793,7 +761,7 @@ public class Listener extends MoxBaseListener
 
         String className = ctx.NAME().getText();
 
-        if(findClass(className) != null) {
+        if(Mox.state.getClasses().find(className) != null) {
             Logger.error("Redefinition of class '" + className + "'");
         }
 
@@ -988,5 +956,18 @@ public class Listener extends MoxBaseListener
 
         Mox.state.getProgram().current().buffer.push(type);
         Mox.state.getProgram().current().buffer.push(")");
+    }
+
+    @Override
+    public void enterImportStatement(MoxParser.ImportStatementContext ctx) {
+        super.enterImportStatement(ctx);
+
+        String path = Generator.createDataFromString(ctx.STRING().getText());
+
+        try {
+            Mox.execute("./" + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

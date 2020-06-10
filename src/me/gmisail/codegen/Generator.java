@@ -51,6 +51,10 @@ public class Generator
         return "0";
     }
 
+    public static String createDataFromString(String input) {
+        return input.replace("\"", "");
+    }
+
     /*
     *   Create a global variable declaration.
     * */

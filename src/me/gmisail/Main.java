@@ -21,16 +21,17 @@ public class Main
 
     public static void main(String[] args) throws IOException
     {
-        // get filename, load from there at first
+        Mox.create();
+
         setup();
 
-        CharStream chars = CharStreams.fromFileName("./main.mox");
-        MoxLexer lexer = new MoxLexer(chars);
-        CommonTokenStream cts = new CommonTokenStream(lexer);
-        MoxParser parser = new MoxParser(cts);
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdio.h"));
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdlib.h"));
+        Mox.state.getProgram().current().buffer.push(Generator.createInclude("string.h"));
 
-        FileWriter file = new FileWriter("./main.c");
-        ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
+        Mox.execute("./main.mox");
+
+        Mox.export();
     }
 
 
@@ -39,8 +40,6 @@ public class Main
     * */
     private static void setup()
     {
-        Mox.create();
-
         Registry.create();
         Generator.create();
         External.create();

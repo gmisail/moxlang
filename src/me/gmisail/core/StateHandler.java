@@ -9,12 +9,12 @@ public class StateHandler {
     ProgramStack program;
     VariableStack variables;
 
-    ArrayList<ClassNode> classes;
+    ClassHandler classes;
 
     public StateHandler() {
         program = new ProgramStack();
         variables = new VariableStack();
-        classes = new ArrayList<ClassNode>();
+        classes = new ClassHandler();
     }
 
     public ProgramStack getProgram() {
@@ -25,6 +25,6 @@ public class StateHandler {
         return variables;
     }
 
-    public ArrayList<ClassNode> getClasses() { return classes; }
+    public ClassHandler getClasses() { return classes; }
 
 }

@@ -1,3 +1,5 @@
+import "main2.mox"
+
 class Coordinate
 
     var x : int
@@ -18,10 +20,10 @@ class Coordinate
 
 end
 
-class Coordinate end
-
 function main() -> int
+    var array : Array = new Array()
 
+    delete array
 
     return 0
 end
