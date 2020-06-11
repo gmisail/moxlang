@@ -1,0 +1,10 @@
+###
+
+       math implementation
+
+       abstraction over math.h
+
+###
+
+include "main.h"
+
