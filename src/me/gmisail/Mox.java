@@ -49,7 +49,7 @@ public class Mox {
             file.write(root.buffer.getCode());
             file.close();
 
-            Process compilation = Runtime.getRuntime().exec("gcc main.c -o main");
+            Process compilation = Runtime.getRuntime().exec("gcc main.c -o main.out");
 
         } catch (IOException e) {
             Logger.error("Error writing to file.");
