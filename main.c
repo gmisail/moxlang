@@ -78,6 +78,9 @@ Vector* vec = Vector_alloc();
 Vector_push(vec, 0);
 Vector_push(vec, 3);
 Vector_push(vec, 6);
+for(int i = 0; i < Vector_count(vec); i++){
+printf("%i is %i\n", i, Vector_get(vec, i));
+}
 Vector_destroy(vec);
 free(vec);
 }

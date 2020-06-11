@@ -7,5 +7,9 @@ function main() -> int
     vec.push(3)
     vec.push(6)
 
+    for(i from 0 to vec.count())
+        printf("%i is %i\n", i, vec.get(i))
+    end
+
     delete vec
 end

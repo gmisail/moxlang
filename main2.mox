@@ -1,3 +1,0 @@
-function say_hello()
-    printf("hello!\n")
-end

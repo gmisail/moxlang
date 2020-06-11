@@ -316,6 +316,8 @@ public class Listener extends MoxBaseListener
                     classNode = Mox.state.getClasses().find(subclassType);
                 }
 
+
+
                 name = classNode.getName() + delim;
 
                 // the calling object is every element followed by '->', minus the function
@@ -954,7 +956,7 @@ public class Listener extends MoxBaseListener
         String path = Generator.createDataFromString(ctx.STRING().getText());
 
         try {
-            Mox.execute("./" + path);
+            Mox.execute(path);
         } catch (IOException e) {
             e.printStackTrace();
         }

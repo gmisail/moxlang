@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -21,10 +22,18 @@ public class Mox {
 
     public static void create() throws IOException {
         state = new StateHandler();
-        file = new FileWriter("./main.c");
+        file = new FileWriter(getWorkingDirectory() + "/main.c");
     }
 
     public static void execute(String filename) throws IOException {
+        if(new File(getWorkingDirectory() + "/" + filename).isFile()) {
+            filename = getWorkingDirectory() + "/" + filename;
+        } else if(new File(filename).isFile() == false) {
+            Logger.error("Cannot locate file '" + filename + "'");
+
+            return;
+        }
+
         CharStream chars = CharStreams.fromFileName(filename);
         MoxLexer lexer = new MoxLexer(chars);
         CommonTokenStream cts = new CommonTokenStream(lexer);
@@ -33,7 +42,7 @@ public class Mox {
         ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
     }
 
-    public static void export() throws IOException {
+    public static void export() {
         Node root = state.getProgram().pop();
 
         try {
@@ -46,5 +55,9 @@ public class Mox {
             Logger.error("Error writing to file.");
             e.printStackTrace();
         }
+    }
+
+    private static String getWorkingDirectory() {
+        return System.getProperty("user.dir");
     }
 }
