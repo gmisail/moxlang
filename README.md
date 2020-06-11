@@ -8,6 +8,16 @@ Mox's syntax is similar to that of Lua with hints of Java and Haxe. Instead of b
 
 Features & Updates : [Trello page](https://trello.com/b/elTGCpm0/mox-programming-language)
 
+### Installation
+
+Mox is distributed through NPM. It can be installed using the: `npm install moxlang -g` command (you may need to add `sudo`.) To compile, you use the following command.
+
+```
+moxc build main.mox
+```
+
+The output will be two files; `main.c` and `main.out`. The former is the C output, while `main.out` is your outputted program which can be executed.
+
 ### Code Examples
 
 #### Declaring Variables & Functions
