@@ -1,4 +1,5 @@
-import "vector.mox"
+import "examples/vector.mox"
+import "examples/coordinate.mox"
 
 function main() -> int
     var vec : Vector = new Vector()
@@ -11,5 +12,10 @@ function main() -> int
         printf("%i is %i\n", i, vec.get(i))
     end
 
+    var coord : Coordinate = new Coordinate(10, 5)
+
+    printf("(%i, %i)\n", coord.x, coord.y)
+
+    delete coord
     delete vec
 end
