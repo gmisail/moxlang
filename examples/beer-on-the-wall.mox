@@ -1,0 +1,32 @@
+function bottles(num : int)
+	if(num == 1)
+		printf("1 bottle ")
+	else
+		printf("%i bottles ", num)
+	end
+end
+
+function main() -> int
+	var initial : int = 100
+	var i : int = initial
+
+	while(i > 0)
+		bottles(i)
+		printf("of beer on the wall, \n")
+		bottles(i)
+		printf("of beer.\nTake one down, pass it around, ")		
+		i = i - 1
+
+		if(i == 0)
+			printf("no more bottles of beer on the wall!\n\n")
+		else
+			bottles(i)
+			printf("of beer on the wall.\n\n")
+		end
+	end
+
+	printf("No more bottles of beer on the wall, no more bottles of beer.\n")
+	printf("Go to the store and buy some more, %i bottles of beer on the wall!\n", initial)
+		
+	return 0
+end
