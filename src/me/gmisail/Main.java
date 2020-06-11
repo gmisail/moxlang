@@ -21,9 +21,9 @@ public class Main
 
     public static void main(String[] args) throws IOException
     {
-        Mox.create();
-
         setup();
+
+        Mox.create();
 
         Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdio.h"));
         Mox.state.getProgram().current().buffer.push(Generator.createInclude("stdlib.h"));

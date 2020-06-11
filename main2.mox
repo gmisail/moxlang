@@ -1,11 +1,3 @@
-class Array
-
-    function init()
-        printf("this is an array test!")
-    end
-
-    function destroy()
-
-    end
-
+function say_hello()
+    printf("hello!\n")
 end

@@ -1,29 +1,11 @@
-import "main2.mox"
-
-class Coordinate
-
-    var x : int
-    var y : int
-
-    function init()
-        self.x = 0
-        self.y = 0
-    end
-
-    function print()
-        # print the pair
-    end
-
-    function destroy()
-
-    end
-
-end
+import "vector.mox"
 
 function main() -> int
-    var array : Array = new Array()
+    var vec : Vector = new Vector()
 
-    delete array
+    vec.push(0)
+    vec.push(3)
+    vec.push(6)
 
-    return 0
+    delete vec
 end

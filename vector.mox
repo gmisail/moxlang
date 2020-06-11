@@ -1,10 +1,9 @@
 extern NULL -> any
-extern int -> any
 
 class Vector
 
     var data : Pointer<int> = NULL
-    var size : int = 0
+    var len : int = 0
     var count : int = 0
 
     function init()
@@ -20,18 +19,18 @@ class Vector
     end
 
     function push(value : int)
-        if(self.size == 0)
-            self.size = 4
-            self.data = calloc(self.size, sizeof(int))
+        if(self.len == 0)
+            self.len = 4
+            self.data = calloc(self.len, size(int))
 
-            for(i from 0 to self.size)
+            for(i from 0 to self.len)
                 self.data[i] = 0
             end
         end
 
-        if(self.size == self.count)
-            self.size = self.size * 2
-            self.data = realloc(self.data, sizeof(int) * self.size)
+        if(self.len == self.count)
+            self.len = self.len * 2
+            self.data = realloc(self.data, size(int) * self.len)
         end
 
         self.data[self.count] = value
@@ -73,20 +72,4 @@ class Vector
         printf("]\n")
     end
 
-end
-
-function main() -> int
-    var vector : Vector = new Vector()
-
-    for(i from 0 to 5)
-        vector.push(i)
-        vector.print()
-    end
-
-    for(i from 0 to 5)
-        vector.pop()
-        vector.print()
-    end
-
-    delete vector
 end

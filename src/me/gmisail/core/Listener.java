@@ -31,17 +31,6 @@ public class Listener extends MoxBaseListener
     @Override
     public void enterProgram(MoxParser.ProgramContext ctx) {
         super.enterProgram(ctx);
-
-        Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
-    }
-
-    @java.lang.Override
-    public void exitProgram(MoxParser.ProgramContext ctx) {
-        super.exitProgram(ctx);
-
-//        Node root = Mox.state.getProgram().pop();
-
-        /* if there is an error, then do *not* overwrite the original code */
     }
 
     @Override
