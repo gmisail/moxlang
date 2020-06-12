@@ -14,4 +14,9 @@ public class Logger {
         System.out.println("[moxc] " + message);
     }
 
+    public static void list(String[] messages) {
+        for(int i = 0; i < messages.length; i++) {
+            System.out.println(" - " + messages[i]);
+        }
+    }
 }

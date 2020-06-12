@@ -19,10 +19,12 @@ public class Mox {
 
     public static StateHandler state;
     public static FileWriter file;
+    public static CLI cli;
 
-    public static void create() throws IOException {
+    public static void create(String[] arguments) throws IOException {
         state = new StateHandler();
         file = new FileWriter(getWorkingDirectory() + "/main.c");
+        cli = new CLI(arguments);
     }
 
     public static void execute(String filename) throws IOException {
