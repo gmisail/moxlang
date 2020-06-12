@@ -186,6 +186,18 @@ public class MoxBaseListener implements MoxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterVariableDestructor(MoxParser.VariableDestructorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableDestructor(MoxParser.VariableDestructorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVariableDelete(MoxParser.VariableDeleteContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -565,6 +577,18 @@ public class MoxBaseListener implements MoxListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBool(MoxParser.BoolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEquals(MoxParser.EqualsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEquals(MoxParser.EqualsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

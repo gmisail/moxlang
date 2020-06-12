@@ -1,10 +1,7 @@
 package me.gmisail.core;
 
 import me.gmisail.Mox;
-import me.gmisail.codegen.Context;
-import me.gmisail.codegen.ContextTypes;
-import me.gmisail.codegen.Generator;
-import me.gmisail.codegen.Registry;
+import me.gmisail.codegen.*;
 import me.gmisail.nodes.*;
 import me.gmisail.parser.MoxBaseListener;
 import me.gmisail.parser.MoxParser;
@@ -75,7 +72,20 @@ public class Listener extends MoxBaseListener
     public void exitBlock(MoxParser.BlockContext ctx) {
         super.exitBlock(ctx);
 
-        Mox.state.getVariables().exitScope();
+        Scope outOfScopeVars = Mox.state.getVariables().exitScope();
+
+        for(int i = 0; i < outOfScopeVars.size(); i++) {
+            VariableNode variable = outOfScopeVars.getVariableAt(i);
+
+            if(variable.isAutomaticallyDestroyed()) {
+                DeleteNode node = new DeleteNode();
+                node.buffer.push(variable.getName());
+                node.setTarget(variable);
+
+                Mox.state.getProgram().current().buffer.push(node.code());
+            }
+        }
+
 
         if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
             Mox.state.getProgram().current().buffer.push("}\n");
@@ -678,6 +688,22 @@ public class Listener extends MoxBaseListener
 
         String name = ctx.NAME().getText() + "_alloc";
         FunctionCallNode createVariable = new FunctionCallNode(name);
+
+        /*
+        *   The current variable is set to be automatically destructed when it goes out
+        *   of scope. So, we must mark it as self-destructing.
+        * */
+        if(ctx.variableDestructor() != null) {
+            for(int i = 0; i < Mox.state.getProgram().size(); i++) {
+                if(Mox.state.getProgram().at(i).type == NodeTypes.VARIABLE) {
+                    ((VariableNode) Mox.state.getProgram().at(i)).makeAutomaticallyDestroyed();
+
+                    // check type to make sure that it is a class pointer
+
+                    break;
+                }
+            }
+        }
 
         Mox.state.getProgram().push(createVariable);
     }

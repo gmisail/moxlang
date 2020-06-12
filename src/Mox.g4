@@ -64,9 +64,11 @@ moduleDecl: 'module' NAME classBlock 'end';
 variable: 'var' NAME ':' type variableAssignment?;
 variableAssignmentStatement: variableAccess variableAssignment;
 variableArrayAssignment: variableArrayAccess variableAssignment;
-variableAssignment: ' = ' (expr | variableCreate);
+variableAssignment: equals (expr | variableCreate);
 variableAccess: NAME ('.' NAME)*;
-variableCreate: 'new' NAME '(' functionCallParams ')';
+variableCreate: 'new' NAME '(' functionCallParams ')' (variableDestructor)?;
+variableDestructor: '!';
+
 variableDelete: 'delete' variableAccess;
 variableArrayAccess: variableAccess '[' expr ']';
 
@@ -114,6 +116,7 @@ operatorAnd: 'and';
 operatorOr: 'or';
 mulDivMod: '*' | '/' | '%';
 bool: 'true' | 'false';
+equals: '=';
 
 conditionals: '==' | '>=' | '<=' | '!=' | '<' | '>' ;
 

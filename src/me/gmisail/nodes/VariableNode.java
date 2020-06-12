@@ -17,6 +17,8 @@ public class VariableNode extends Node {
      */
     boolean isMemberVariable = false;
 
+    boolean isAutomaticallyDestroyed = false;
+
     int scope = 0;
 
     public VariableNode(String name, String type) {
@@ -36,11 +38,13 @@ public class VariableNode extends Node {
     public void makeMemberVariable() {
         isMemberVariable = true;
     }
+    public void makeAutomaticallyDestroyed() { isAutomaticallyDestroyed = true; }
 
     public boolean isPointer() {
         return isPointer;
     }
     public boolean isMemberVariable() { return isMemberVariable; }
+    public boolean isAutomaticallyDestroyed(){ return isAutomaticallyDestroyed; }
 
     public void setScope(int scope) { this.scope = scope; }
     public int getScope() { return scope; }

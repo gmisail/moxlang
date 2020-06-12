@@ -12,6 +12,8 @@ public class Scope {
         variables = new ArrayList<VariableNode>();
     }
 
+    public int size() { return variables.size(); }
+
     public void addVariable(VariableNode node) {
         variables.add(node);
     }
@@ -31,13 +33,12 @@ public class Scope {
         return null;
     }
 
-    public boolean hasVariable(String name) {
-        for(int i = 0; i < variables.size(); i++) {
-            if(variables.get(i).getName().equals(name))
-                return true;
-        }
+    public VariableNode getVariableAt(int i) {
+        return variables.get(i);
+    }
 
-        return false;
+    public boolean hasVariable(String name) {
+        return getVariable(name) != null;
     }
 
 }

@@ -150,6 +150,16 @@ public interface MoxListener extends ParseTreeListener {
 	 */
 	void exitVariableCreate(MoxParser.VariableCreateContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MoxParser#variableDestructor}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDestructor(MoxParser.VariableDestructorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#variableDestructor}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDestructor(MoxParser.VariableDestructorContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MoxParser#variableDelete}.
 	 * @param ctx the parse tree
 	 */
@@ -469,6 +479,16 @@ public interface MoxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBool(MoxParser.BoolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MoxParser#equals}.
+	 * @param ctx the parse tree
+	 */
+	void enterEquals(MoxParser.EqualsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MoxParser#equals}.
+	 * @param ctx the parse tree
+	 */
+	void exitEquals(MoxParser.EqualsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MoxParser#conditionals}.
 	 * @param ctx the parse tree

@@ -29,10 +29,10 @@ public class VariableStack {
         stack.push(new Scope());
     }
 
-    public void exitScope() {
+    public Scope exitScope() {
         scope--;
 
-        stack.pop();
+        return stack.pop();
     }
 
     public void printVariablesInScope() {
@@ -65,14 +65,7 @@ public class VariableStack {
     }
 
     public boolean hasClassInstanceNamed(String name) {
-        for(int i = 0; i < stack.size(); i++) {
-            VariableNode node = stack.elementAt(i).getVariable(name);
-            if(node != null) {
-                return true;
-            }
-        }
-
-        return false;
+        return getVariableWithName(name) != null;
     }
 
 }
