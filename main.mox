@@ -8,7 +8,7 @@ class TestClass
 
     var vec : Vector = new Vector()!
     var vec2 : Vector = new Vector()!
-    var coord : Coordinate = new Coordinate()!
+    var coord : Coordinate = new Coordinate(0, 0)!
 
     function init(x : int, y : int)
         self.x = x
@@ -16,22 +16,13 @@ class TestClass
     end
 
     function destroy()
-        
+
     end
 
 end
 
 function main() -> int
-    var vec : Vector = new Vector()!
-    var coord : Coordinate = new Coordinate(10, 5)!
-
-    vec.push(0)
-    vec.push(3)
-    vec.push(6)
-
-    for(i from 0 to vec.count())
-        printf("%i is %i\n", i, vec.get(i))
-    end
-
-    printf("(%i, %i)\n", coord.x, coord.y)
+    var test : TestClass = new TestClass(0, 0)!
+    test.vec.push(10)
+    test.vec2.push(10)
 end

@@ -92,9 +92,13 @@ public class Listener extends MoxBaseListener
                 VariableNode variable = parentClass.getMemberVariables().get(i);
 
                 if(variable.isAutomaticallyDestroyed()) {
+                    /*
+                    *   this exploits the fact that since these are all member variables,
+                    *   we can prefix it with self->.
+                    * */
                     DeleteNode node = new DeleteNode();
-                    node.buffer.push(variable.getName());
-                    node.setTarget(variable);
+                    node.buffer.push("self->" + variable.getName());
+                    node.setTarget(new VariableNode("self->" + variable.getName(), variable.getType()));
 
                     parentFunc.buffer.push(node.code());
                 }
