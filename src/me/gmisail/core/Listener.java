@@ -74,18 +74,44 @@ public class Listener extends MoxBaseListener
 
         Scope outOfScopeVars = Mox.state.getVariables().exitScope();
 
-        for(int i = 0; i < outOfScopeVars.size(); i++) {
-            VariableNode variable = outOfScopeVars.getVariableAt(i);
+        /*
+         *   The 'destroy' function is contained within a class. Append all variables that are marked to be automatically
+         *   destroyed   i.e.   var v : Vector = new Vector()!
+         * */
+        ClassNode parentClass = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+        FunctionNode parentFunc = (FunctionNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.FUNCTION);
 
-            if(variable.isAutomaticallyDestroyed()) {
-                DeleteNode node = new DeleteNode();
-                node.buffer.push(variable.getName());
-                node.setTarget(variable);
+        /*
+        *   Ensure that this is a function block, a parent class and function exist, and the function's name is destroy
+        * */
+        if(Mox.state.getProgram().currentType() == NodeTypes.FUNCTION && parentClass != null && parentFunc != null
+                && parentFunc.getLocalName().equals("destroy")) {
 
-                Mox.state.getProgram().current().buffer.push(node.code());
+            /* create a destructor for every class that is marked with a auto-destructor  */
+            for(int i = 0; i < parentClass.getMemberVariables().size(); i++) {
+                VariableNode variable = parentClass.getMemberVariables().get(i);
+
+                if(variable.isAutomaticallyDestroyed()) {
+                    DeleteNode node = new DeleteNode();
+                    node.buffer.push(variable.getName());
+                    node.setTarget(variable);
+
+                    parentFunc.buffer.push(node.code());
+                }
+            }
+        } else {
+            for(int i = 0; i < outOfScopeVars.size(); i++) {
+                VariableNode variable = outOfScopeVars.getVariableAt(i);
+
+                if(variable.isAutomaticallyDestroyed()) {
+                    DeleteNode node = new DeleteNode();
+                    node.buffer.push(variable.getName());
+                    node.setTarget(variable);
+
+                    Mox.state.getProgram().current().buffer.push(node.code());
+                }
             }
         }
-
 
         if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
             Mox.state.getProgram().current().buffer.push("}\n");

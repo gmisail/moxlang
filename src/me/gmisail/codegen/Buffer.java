@@ -21,6 +21,10 @@ public class Buffer {
 
     public void erase() { this.code = ""; }
 
+    public void cut(int index) {
+        code = code.substring(0, index);
+    }
+
     public String getCode() { return code; };
 
 }
