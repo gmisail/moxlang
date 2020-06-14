@@ -723,17 +723,32 @@ public class Listener extends MoxBaseListener
         *   The current variable is set to be automatically destructed when it goes out
         *   of scope. So, we must mark it as self-destructing.
         * */
+
+        /*
         if(ctx.variableDestructor() != null) {
             for(int i = 0; i < Mox.state.getProgram().size(); i++) {
                 if(Mox.state.getProgram().at(i).type == NodeTypes.VARIABLE) {
                     ((VariableNode) Mox.state.getProgram().at(i)).makeAutomaticallyDestroyed();
 
-                    // check type to make sure that it is a class pointer
+                    break;
+                } else if(Mox.state.getProgram().at(i).type == NodeTypes.VARIABLE_ASSIGNMENT) {
+                    VariableAssignmentNode assignmentNode = (VariableAssignmentNode) Mox.state.getProgram().at(i);
+
+                    VariableNode target = Mox.state.getVariables().getVariableWithName(assignmentNode.getName());
+
+
+                    if(target == null) {
+                        Logger.error("Can't mark variable '" + assignmentNode.getName() + "' as self-destructing.");
+                        break;
+                    }
+
+                    target.makeAutomaticallyDestroyed();
 
                     break;
                 }
             }
         }
+        */
 
         Mox.state.getProgram().push(createVariable);
     }

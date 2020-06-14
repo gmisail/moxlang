@@ -1,28 +1,7 @@
-import "examples/vector.mox"
-import "examples/coordinate.mox"
-
-class TestClass
-
-    var x : int = 0
-    var y : int = 0
-
-    var vec : Vector = new Vector()!
-    var vec2 : Vector = new Vector()!
-    var coord : Coordinate = new Coordinate(0, 0)!
-
-    function init(x : int, y : int)
-        self.x = x
-        self.y = y
-    end
-
-    function destroy()
-
-    end
-
-end
+import "examples/fizz-buzz.mox"
 
 function main() -> int
-    var test : TestClass = new TestClass(0, 0)!
-    test.vec.push(10)
-    test.vec2.push(10)
+    run_fizz_buzz(30)
+
+    return 0
 end
