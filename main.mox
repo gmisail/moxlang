@@ -1,7 +1,9 @@
-import "examples/fizz-buzz.mox"
+import "mox/string.mox"
 
 function main() -> int
-    run_fizz_buzz(30)
+	
+	var name : String = new String("hello world!")
 
-    return 0
+	delete name
+
 end
