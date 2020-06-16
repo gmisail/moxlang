@@ -1,5 +1,6 @@
 package me.gmisail.nodes;
 
+import me.gmisail.codegen.Generator;
 import me.gmisail.core.Types;
 
 import java.util.ArrayList;
@@ -32,7 +33,11 @@ public class FunctionNode extends Node {
             if(i > 0) output += ", ";
 
             if(!this.params.get(i).name.equals("self") && !Types.exists(this.params.get(i).type)) {
-                output += this.params.get(i).type + "* " + this.params.get(i).name;
+                /*
+                *   if the input is a pointer, then dereference and add another asterisk. It is kinda
+                *   hacky but gets the correct result.
+                * */
+                output += Generator.dereference(this.params.get(i).type) + "* " + this.params.get(i).name;
             } else {
                 if(this.params.get(i).type.equals("any")) {
                     output += "void*";
