@@ -87,6 +87,8 @@ function main() -> int
     printf("(%i, %i)\n", pair.x, pair.y)
 
     delete pair
+
+    return 0
 end
 ```
 
@@ -183,6 +185,8 @@ function main() -> int
     end
 
     delete vector
+
+    return 0
 end
 ```
 
