@@ -3,38 +3,32 @@ package me.gmisail.codegen;
 import me.gmisail.nodes.VariableNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Scope {
 
-    private ArrayList<VariableNode> variables;
+    private HashMap<String, VariableNode> variables;
 
     public Scope() {
-        variables = new ArrayList<VariableNode>();
+        variables = new HashMap<String, VariableNode>();
     }
 
     public int size() { return variables.size(); }
 
     public void addVariable(VariableNode node) {
-        variables.add(node);
+        variables.put(node.getName(), node);
     }
 
     public void printVariables() {
-        for(int i = 0; i < variables.size(); i++) {
-            System.out.println("variable: " + variables.get(i).getName());
-        }
+        // dep
     }
 
     public VariableNode getVariable(String name) {
-        for(int i = 0; i < variables.size(); i++) {
-            if(variables.get(i).getName().equals(name))
-                return variables.get(i);
-        }
-
-        return null;
+        return variables.get(name);
     }
 
-    public VariableNode getVariableAt(int i) {
-        return variables.get(i);
+    public HashMap<String, VariableNode> getVariables() {
+        return variables;
     }
 
     public boolean hasVariable(String name) {

@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Stack;
 
 public class Listener extends MoxBaseListener
@@ -104,8 +106,12 @@ public class Listener extends MoxBaseListener
                 }
             }
         } else {
-            for(int i = 0; i < outOfScopeVars.size(); i++) {
-                VariableNode variable = outOfScopeVars.getVariableAt(i);
+            Iterator iterator = outOfScopeVars.getVariables().entrySet().iterator();
+
+            while (iterator.hasNext()) {
+                Map.Entry element = (Map.Entry) iterator.next();
+
+                VariableNode variable = (VariableNode) element.getValue();
 
                 if(variable.isAutomaticallyDestroyed()) {
                     DeleteNode node = new DeleteNode();

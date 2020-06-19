@@ -3,6 +3,8 @@ import "mox/string.mox"
 function main() -> int
 	
 	var name : String = new String("hello world!")
+		var name : String = new String("hello world!")
+
 
 	delete name
 

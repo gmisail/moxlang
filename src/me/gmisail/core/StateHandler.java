@@ -11,12 +11,14 @@ public class StateHandler {
 
     ProgramStack program;
     VariableStack variables;
+    VariableStack functions;
 
     ClassHandler classes;
 
     public StateHandler() {
         program = new ProgramStack();
         variables = new VariableStack();
+        functions = new VariableStack();
         classes = new ClassHandler();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
