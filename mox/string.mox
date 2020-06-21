@@ -11,13 +11,21 @@ class String
 
 	function init(data : Pointer<char>)
 		self.len = strlen(data)
-        self.data = calloc(self.len, size(char))
+        self.data = calloc(self.len, __size(char))
 
         for(i from 0 to self.len + 1)
             self.data[i] = data[i]
         end
 
         printf("%s", self.data)
+	end
+
+	function setCharacter(index : int, element : char)
+	    self.data[index] = element
+	end
+
+	function print()
+	    printf("%s", self.data)
 	end
 
 	function destroy()

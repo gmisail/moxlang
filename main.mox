@@ -4,6 +4,12 @@ function main() -> int
 	
 	var name : String = new String("hello world!")
 
+	name.setCharacter(0, __char("X"))
+    name.setCharacter(1, __char("Y"))
+    name.setCharacter(2, __char("Z"))
+
+    name.print()
+
 	delete name
 
 end

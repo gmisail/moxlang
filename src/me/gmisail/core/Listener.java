@@ -6,18 +6,14 @@ import me.gmisail.nodes.*;
 import me.gmisail.parser.MoxBaseListener;
 import me.gmisail.parser.MoxParser;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Stack;
 
 public class Listener extends MoxBaseListener
 {
     private MoxParser parser;
-
     private FileWriter file;
 
     public Listener(MoxParser parser, FileWriter file) {
@@ -1032,6 +1028,21 @@ public class Listener extends MoxBaseListener
 
         Mox.state.getProgram().current().buffer.push(type);
         Mox.state.getProgram().current().buffer.push(")");
+    }
+
+    @Override
+    public void enterFuncChar(MoxParser.FuncCharContext ctx) {
+        super.enterFuncChar(ctx);
+
+        String character = Generator.createDataFromString(ctx.STRING().getText());
+
+        if(character.equals("\n") || character.equals("\r") || character.equals("\0")) {
+            Mox.state.getProgram().current().buffer.push("'" + character + "'");
+        } else if(character.length() == 1) {
+            Mox.state.getProgram().current().buffer.push("'" + character + "'");
+        } else {
+            Logger.error("Invalid character '" + character + "'");
+        }
     }
 
     @Override

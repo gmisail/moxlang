@@ -270,6 +270,18 @@ public class MoxBaseListener implements MoxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBuiltInFunctions(MoxParser.BuiltInFunctionsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBuiltInFunctions(MoxParser.BuiltInFunctionsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFuncSize(MoxParser.FuncSizeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -277,6 +289,18 @@ public class MoxBaseListener implements MoxListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFuncSize(MoxParser.FuncSizeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFuncChar(MoxParser.FuncCharContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncChar(MoxParser.FuncCharContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

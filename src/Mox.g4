@@ -45,7 +45,7 @@ expr: bool
      | variableAccess
      | variableArrayAccess
      | functionCall
-     | funcSize
+     | builtInFunctions
      | boundedExpr
      | expr mulDivMod expr
      | expr addSub expr
@@ -78,7 +78,9 @@ funcReturnType: '->' type;
 funcParam: NAME ':' type;
 funcParams: '(' paramList? ')';
 
-funcSize: 'size' '(' type ')';
+builtInFunctions: funcChar | funcSize;
+funcSize: '__size' '(' type ')';
+funcChar: '__char' '(' STRING ')';
 
 /* External */
 extern: funcExtern | varExtern;
