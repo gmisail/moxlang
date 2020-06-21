@@ -31,6 +31,7 @@ public class StateHandler {
     public VariableStack getVariables() {
         return variables;
     }
+    public VariableStack getFunctions() { return functions; }
 
     public ClassHandler getClasses() { return classes; }
 

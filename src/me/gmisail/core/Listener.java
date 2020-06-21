@@ -37,6 +37,7 @@ public class Listener extends MoxBaseListener
         super.enterBlock(ctx);
 
         Mox.state.getVariables().enterScope();
+        Mox.state.getFunctions().enterScope();
 
         /*
         *   When a function is defined, add all of the arguments to scope.
@@ -68,6 +69,7 @@ public class Listener extends MoxBaseListener
         super.exitClassBlock(ctx);
 
         Mox.state.getVariables().exitScope();
+        Mox.state.getFunctions().exitScope();
     }
 
     @Override
@@ -231,6 +233,8 @@ public class Listener extends MoxBaseListener
         }
 
         String name = ctx.NAME().getText();
+
+        Mox.state.getFunctions().add(new VariableNode(Generator.currentContext().getName() + "_" + name, type));
 
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
             Logger.error("Redefinition of function " + name);
