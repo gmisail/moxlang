@@ -62,6 +62,7 @@ public class Listener extends MoxBaseListener
         super.exitClassBlock(ctx);
 
         Mox.state.getVariables().enterScope();
+        Mox.state.getFunctions().enterScope();
     }
 
     @Override
@@ -77,6 +78,9 @@ public class Listener extends MoxBaseListener
         super.exitBlock(ctx);
 
         Scope outOfScopeVars = Mox.state.getVariables().exitScope();
+
+        Mox.state.getFunctions().printVariablesInScope();
+        Mox.state.getFunctions().exitScope();
 
         /*
          *   The 'destroy' function is contained within a class. Append all variables that are marked to be automatically

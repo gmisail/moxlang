@@ -1,9 +1,13 @@
 package me.gmisail.codegen;
 
+import me.gmisail.Mox;
+import me.gmisail.nodes.DeleteNode;
 import me.gmisail.nodes.VariableNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Scope {
 
@@ -20,7 +24,15 @@ public class Scope {
     }
 
     public void printVariables() {
-        // dep
+        Iterator iterator = variables.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry element = (Map.Entry) iterator.next();
+
+            VariableNode variable = (VariableNode) element.getValue();
+
+            System.out.println(variable.getName() + " -> " + variable.getType());
+        }
     }
 
     public VariableNode getVariable(String name) {
