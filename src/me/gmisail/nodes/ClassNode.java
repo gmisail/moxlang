@@ -8,6 +8,10 @@ import java.util.ArrayList;
 public class ClassNode extends Node {
 
     String name;
+
+    String templateType;
+    boolean templated;
+
     ArrayList<VariableNode> memberVariables;
     ArrayList<FunctionNode> functions;
 
@@ -22,6 +26,14 @@ public class ClassNode extends Node {
     }
 
     public String getName() { return name; }
+    public String getTemplateType() { return templateType; }
+
+    public boolean isTemplated() { return templated; }
+
+    public void makeTemplated(String templateType) {
+        this.templateType = templateType;
+        this.templated = true;
+    }
 
     public boolean hasVariable(String name)
     {

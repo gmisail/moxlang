@@ -232,6 +232,19 @@ public class Listener extends MoxBaseListener
             }
         }
 
+        if(Generator.currentContext().getType() == ContextTypes.CLASS) {
+            ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+
+            if(parent == null) {
+                Logger.error("Could not find class named " + Generator.currentContext().getName());
+            } else {
+                Logger.write(parent.getName() + " " + parent.getTemplateType());
+                if(parent.isTemplated() && type.equals(parent.getTemplateType())) {
+                    type = "void*";
+                }
+            }
+        }
+
         String name = ctx.NAME().getText();
 
         Mox.state.getFunctions().add(new VariableNode(Generator.currentContext().getName() + "_" + name, type));
@@ -831,13 +844,18 @@ public class Listener extends MoxBaseListener
     public void enterClassDecl(MoxParser.ClassDeclContext ctx) {
         super.enterClassDecl(ctx);
 
-        String className = ctx.NAME().getText();
+        String className = ctx.type().NAME().getText();
 
         if(Mox.state.getClasses().find(className) != null) {
             Logger.error("Redefinition of class '" + className + "'");
         }
 
-        Mox.state.getProgram().push(new ClassNode(className));
+        ClassNode classNode = new ClassNode(className);
+
+        if(ctx.type().templateType() != null)
+            classNode.makeTemplated(ctx.type().templateType().type().NAME().getText());
+
+        Mox.state.getProgram().push(classNode);
         Generator.enterContext(new Context(className, ContextTypes.CLASS));
     }
 

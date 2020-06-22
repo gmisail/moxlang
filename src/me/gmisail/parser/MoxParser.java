@@ -761,7 +761,9 @@ public class MoxParser extends Parser {
 	}
 
 	public static class ClassDeclContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MoxParser.NAME, 0); }
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
 		public ClassBlockContext classBlock() {
 			return getRuleContext(ClassBlockContext.class,0);
 		}
@@ -788,7 +790,7 @@ public class MoxParser extends Parser {
 			setState(190);
 			match(T__2);
 			setState(191);
-			match(NAME);
+			type();
 			setState(192);
 			classBlock();
 			setState(193);
@@ -3197,22 +3199,22 @@ public class MoxParser extends Parser {
 		"\2\2\u00b7\u00af\3\2\2\2\u00b7\u00b3\3\2\2\2\u00b8\u00bb\3\2\2\2\u00b9"+
 		"\u00b7\3\2\2\2\u00b9\u00ba\3\2\2\2\u00ba\13\3\2\2\2\u00bb\u00b9\3\2\2"+
 		"\2\u00bc\u00bd\7\3\2\2\u00bd\u00be\5\n\6\2\u00be\u00bf\7\4\2\2\u00bf\r"+
-		"\3\2\2\2\u00c0\u00c1\7\5\2\2\u00c1\u00c2\7\64\2\2\u00c2\u00c3\5\6\4\2"+
-		"\u00c3\u00c4\7\6\2\2\u00c4\17\3\2\2\2\u00c5\u00c6\7\7\2\2\u00c6\u00c7"+
-		"\7\64\2\2\u00c7\u00c8\5\6\4\2\u00c8\u00c9\7\6\2\2\u00c9\21\3\2\2\2\u00ca"+
-		"\u00cb\7\b\2\2\u00cb\u00cc\7\64\2\2\u00cc\u00cd\7\t\2\2\u00cd\u00cf\5"+
-		"h\65\2\u00ce\u00d0\5\30\r\2\u00cf\u00ce\3\2\2\2\u00cf\u00d0\3\2\2\2\u00d0"+
-		"\23\3\2\2\2\u00d1\u00d2\5\32\16\2\u00d2\u00d3\5\30\r\2\u00d3\25\3\2\2"+
-		"\2\u00d4\u00d5\5\"\22\2\u00d5\u00d6\5\30\r\2\u00d6\27\3\2\2\2\u00d7\u00da"+
-		"\5d\63\2\u00d8\u00db\5\n\6\2\u00d9\u00db\5\34\17\2\u00da\u00d8\3\2\2\2"+
-		"\u00da\u00d9\3\2\2\2\u00db\31\3\2\2\2\u00dc\u00e1\7\64\2\2\u00dd\u00de"+
-		"\7\n\2\2\u00de\u00e0\7\64\2\2\u00df\u00dd\3\2\2\2\u00e0\u00e3\3\2\2\2"+
-		"\u00e1\u00df\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\33\3\2\2\2\u00e3\u00e1"+
-		"\3\2\2\2\u00e4\u00e5\7\13\2\2\u00e5\u00e6\7\64\2\2\u00e6\u00e7\7\3\2\2"+
-		"\u00e7\u00e8\5<\37\2\u00e8\u00e9\7\4\2\2\u00e9\35\3\2\2\2\u00ea\u00eb"+
-		"\7\f\2\2\u00eb\37\3\2\2\2\u00ec\u00ed\7\r\2\2\u00ed\u00ee\5\32\16\2\u00ee"+
-		"!\3\2\2\2\u00ef\u00f0\5\32\16\2\u00f0\u00f1\7\16\2\2\u00f1\u00f2\5\n\6"+
-		"\2\u00f2\u00f3\7\17\2\2\u00f3#\3\2\2\2\u00f4\u00f5\7\20\2\2\u00f5\u00f6"+
+		"\3\2\2\2\u00c0\u00c1\7\5\2\2\u00c1\u00c2\5h\65\2\u00c2\u00c3\5\6\4\2\u00c3"+
+		"\u00c4\7\6\2\2\u00c4\17\3\2\2\2\u00c5\u00c6\7\7\2\2\u00c6\u00c7\7\64\2"+
+		"\2\u00c7\u00c8\5\6\4\2\u00c8\u00c9\7\6\2\2\u00c9\21\3\2\2\2\u00ca\u00cb"+
+		"\7\b\2\2\u00cb\u00cc\7\64\2\2\u00cc\u00cd\7\t\2\2\u00cd\u00cf\5h\65\2"+
+		"\u00ce\u00d0\5\30\r\2\u00cf\u00ce\3\2\2\2\u00cf\u00d0\3\2\2\2\u00d0\23"+
+		"\3\2\2\2\u00d1\u00d2\5\32\16\2\u00d2\u00d3\5\30\r\2\u00d3\25\3\2\2\2\u00d4"+
+		"\u00d5\5\"\22\2\u00d5\u00d6\5\30\r\2\u00d6\27\3\2\2\2\u00d7\u00da\5d\63"+
+		"\2\u00d8\u00db\5\n\6\2\u00d9\u00db\5\34\17\2\u00da\u00d8\3\2\2\2\u00da"+
+		"\u00d9\3\2\2\2\u00db\31\3\2\2\2\u00dc\u00e1\7\64\2\2\u00dd\u00de\7\n\2"+
+		"\2\u00de\u00e0\7\64\2\2\u00df\u00dd\3\2\2\2\u00e0\u00e3\3\2\2\2\u00e1"+
+		"\u00df\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\33\3\2\2\2\u00e3\u00e1\3\2\2"+
+		"\2\u00e4\u00e5\7\13\2\2\u00e5\u00e6\7\64\2\2\u00e6\u00e7\7\3\2\2\u00e7"+
+		"\u00e8\5<\37\2\u00e8\u00e9\7\4\2\2\u00e9\35\3\2\2\2\u00ea\u00eb\7\f\2"+
+		"\2\u00eb\37\3\2\2\2\u00ec\u00ed\7\r\2\2\u00ed\u00ee\5\32\16\2\u00ee!\3"+
+		"\2\2\2\u00ef\u00f0\5\32\16\2\u00f0\u00f1\7\16\2\2\u00f1\u00f2\5\n\6\2"+
+		"\u00f2\u00f3\7\17\2\2\u00f3#\3\2\2\2\u00f4\u00f5\7\20\2\2\u00f5\u00f6"+
 		"\7\64\2\2\u00f6\u00f8\5*\26\2\u00f7\u00f9\5&\24\2\u00f8\u00f7\3\2\2\2"+
 		"\u00f8\u00f9\3\2\2\2\u00f9\u00fa\3\2\2\2\u00fa\u00fb\5\4\3\2\u00fb\u00fc"+
 		"\7\6\2\2\u00fc%\3\2\2\2\u00fd\u00fe\7\21\2\2\u00fe\u00ff\5h\65\2\u00ff"+

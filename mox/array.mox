@@ -3,3 +3,27 @@
     array implementation (abstraction over pointer manip.)
 
 ###
+
+class Array
+
+    var len : int
+    var data : Pointer<any>
+
+    function init(len : int)
+        self.len = len
+        self.data = malloc(len * __size(any))
+    end
+
+    function set(index : int, element : any)
+        self.data[index] = element
+    end
+
+    function get(index : int) -> any
+        return self.data[index]
+    end
+
+    function destroy()
+        free(self.data)
+    end
+
+end

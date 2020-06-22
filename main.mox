@@ -1,15 +1,18 @@
-import "mox/string.mox"
+import "mox/array.mox"
 
 function main() -> int
-	
-	var name : String = new String("hello world!")
+    var arr : Array<int> = new Array<int>(10)
+    var sum : int = 0
 
-	name.setCharacter(0, __char("X"))
-    name.setCharacter(1, __char("Y"))
-    name.setCharacter(2, __char("Z"))
+    for(i from 0 to 10)
+        arr.set(i, i)
+    end
 
-    name.print()
+    for(i from 0 to 10)
+        sum = sum + arr.get(i)
+    end
 
-	delete name
+    delete arr
 
+    return 0
 end

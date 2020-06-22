@@ -57,7 +57,7 @@ expr: bool
 
 boundedExpr: '(' expr ')';
 
-classDecl: 'class' NAME classBlock 'end';
+classDecl: 'class' type classBlock 'end';
 moduleDecl: 'module' NAME classBlock 'end';
 
 /* Variables */
