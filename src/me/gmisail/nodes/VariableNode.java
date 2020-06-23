@@ -5,6 +5,8 @@ import me.gmisail.codegen.Buffer;
 public class VariableNode extends Node {
 
     String returnType;
+    String templateType;
+
     String name;
 
     /*
@@ -17,7 +19,15 @@ public class VariableNode extends Node {
      */
     boolean isMemberVariable = false;
 
+    /*
+    *  Is this variable automatically destroyed?
+    */
     boolean isAutomaticallyDestroyed = false;
+
+    /*
+    *   Does this variable have a template type?
+    * */
+    boolean isTemplated = false;
 
     int scope = 0;
 
@@ -25,6 +35,7 @@ public class VariableNode extends Node {
         this.name = name;
         this.type = NodeTypes.VARIABLE;
         this.returnType = type;
+        this.templateType = "void*";
     }
 
     /*
@@ -39,6 +50,11 @@ public class VariableNode extends Node {
         isMemberVariable = true;
     }
     public void makeAutomaticallyDestroyed() { isAutomaticallyDestroyed = true; }
+
+    public void makeTemplated(String templateType) {
+        this.isTemplated = true;
+        this.templateType = templateType;
+    }
 
     public boolean isPointer() {
         return isPointer;
@@ -61,4 +77,5 @@ public class VariableNode extends Node {
         return buffer;
     }
 
+    public String getTemplateType() { return templateType; }
 }

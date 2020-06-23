@@ -541,7 +541,7 @@ public class Listener extends MoxBaseListener
         super.exitVariable(ctx);
 
         VariableNode variable = (VariableNode) Mox.state.getProgram().pop();
-
+        
         if(Mox.state.getProgram().current() != null && Mox.state.getProgram().currentType() == NodeTypes.MODULE) {
             ModuleNode moduleNode = (ModuleNode) Mox.state.getProgram().current();
             moduleNode.addVariable(variable);
@@ -739,8 +739,15 @@ public class Listener extends MoxBaseListener
 
         // ensure that the type you are allocating is equal to the type that you are assigning it too. Also, change the type of the variable to a pointer of the original
 
-        String name = ctx.NAME().getText() + "_alloc";
+        String name = ctx.type().NAME().getText() + "_alloc";
         FunctionCallNode createVariable = new FunctionCallNode(name);
+
+        if(ctx.type().templateType() != null) {
+            String templateType = ctx.type().templateType().type().NAME().getText();
+
+            VariableNode node = (VariableNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.VARIABLE);
+            node.makeTemplated(templateType);
+        }
 
         /*
         *   The current variable is set to be automatically destructed when it goes out

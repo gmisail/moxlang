@@ -1133,7 +1133,9 @@ public class MoxParser extends Parser {
 	}
 
 	public static class VariableCreateContext extends ParserRuleContext {
-		public TerminalNode NAME() { return getToken(MoxParser.NAME, 0); }
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
 		public FunctionCallParamsContext functionCallParams() {
 			return getRuleContext(FunctionCallParamsContext.class,0);
 		}
@@ -1160,7 +1162,7 @@ public class MoxParser extends Parser {
 			setState(226);
 			match(T__8);
 			setState(227);
-			match(NAME);
+			type();
 			setState(228);
 			match(T__0);
 			setState(229);
@@ -3210,7 +3212,7 @@ public class MoxParser extends Parser {
 		"\u00d9\3\2\2\2\u00db\31\3\2\2\2\u00dc\u00e1\7\64\2\2\u00dd\u00de\7\n\2"+
 		"\2\u00de\u00e0\7\64\2\2\u00df\u00dd\3\2\2\2\u00e0\u00e3\3\2\2\2\u00e1"+
 		"\u00df\3\2\2\2\u00e1\u00e2\3\2\2\2\u00e2\33\3\2\2\2\u00e3\u00e1\3\2\2"+
-		"\2\u00e4\u00e5\7\13\2\2\u00e5\u00e6\7\64\2\2\u00e6\u00e7\7\3\2\2\u00e7"+
+		"\2\u00e4\u00e5\7\13\2\2\u00e5\u00e6\5h\65\2\u00e6\u00e7\7\3\2\2\u00e7"+
 		"\u00e8\5<\37\2\u00e8\u00e9\7\4\2\2\u00e9\35\3\2\2\2\u00ea\u00eb\7\f\2"+
 		"\2\u00eb\37\3\2\2\2\u00ec\u00ed\7\r\2\2\u00ed\u00ee\5\32\16\2\u00ee!\3"+
 		"\2\2\2\u00ef\u00f0\5\32\16\2\u00f0\u00f1\7\16\2\2\u00f1\u00f2\5\n\6\2"+

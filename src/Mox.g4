@@ -66,7 +66,7 @@ variableAssignmentStatement: variableAccess variableAssignment;
 variableArrayAssignment: variableArrayAccess variableAssignment;
 variableAssignment: equals (expr | variableCreate);
 variableAccess: NAME ('.' NAME)*;
-variableCreate: 'new' NAME '(' functionCallParams ')';
+variableCreate: 'new' type '(' functionCallParams ')';
 variableDestructor: '!';
 
 variableDelete: 'delete' variableAccess;
