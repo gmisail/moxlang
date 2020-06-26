@@ -235,7 +235,7 @@ public class Listener extends MoxBaseListener
             ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
 
             if(parent == null) {
-                Logger.error("Could not find class named " + Generator.currentContext().getName());
+                Mox.logger.error("Could not find class named " + Generator.currentContext().getName());
             } else {
                 if(parent.isTemplated() && type.equals(parent.getTemplateType())) {
                     type = "void*";
@@ -254,7 +254,7 @@ public class Listener extends MoxBaseListener
         Mox.state.getFunctions().add(functionNode);
 
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
-            Logger.error("Redefinition of function " + name);
+            Mox.logger.error("Redefinition of function " + name);
         }
 
         FunctionNode func = new FunctionNode(Generator.createFunction(type, name), type);
@@ -300,8 +300,6 @@ public class Listener extends MoxBaseListener
         String delim = "_";
         int initial = 0;
 
-        Mox.state.getFunctions().printVariablesInScope();
-
         ClassNode classNode = null;
 
         int numberOfElements = ctx.NAME().size();
@@ -338,7 +336,7 @@ public class Listener extends MoxBaseListener
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
 
                     if(subclassVariable == null) {
-                        Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
+                        Mox.logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
                         return;
                     }
 
@@ -376,7 +374,7 @@ public class Listener extends MoxBaseListener
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
 
                     if(subclassVariable == null) {
-                        Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
+                        Mox.logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
                         return;
                     }
 
@@ -409,8 +407,8 @@ public class Listener extends MoxBaseListener
 
         functionCallNode.setName(name);
 
-        if(!Mox.state.getFunctions().hasClassInstanceNamed(name)) {
-            Logger.error("Cannot find function of name '" + name + "'");
+        if(!Mox.state.getFunctions().hasClassInstanceNamed(name) && !External.functionExists(name)) {
+            Mox.logger.error("Cannot find function of name '" + name + "'");
         }
 
         Mox.state.getProgram().push(functionCallNode);
@@ -516,7 +514,7 @@ public class Listener extends MoxBaseListener
             templateType = ctx.type().templateType().type().NAME().getText();
 
         if (!Registry.saveVariable(name) && Mox.state.getVariables().hasClassInstanceNamed(name)) {
-            Logger.error("Redefinition of variable " + name + "!");
+            Mox.logger.error("Redefinition of variable " + name + "!");
         }
 
         boolean isPointer = false;
@@ -634,7 +632,7 @@ public class Listener extends MoxBaseListener
         if(!inScope && !Mox.state.getVariables().hasClassInstanceNamed(ctx.NAME(initial).getText())
                 && !External.variableExists(ctx.NAME(initial).getText())) {
 
-            Logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
+            Mox.logger.error("Cannot find variable '" + ctx.NAME(initial).getText() + "'!");
         }
 
         for(int i = initial; i < ctx.NAME().size(); i++) {
@@ -708,7 +706,7 @@ public class Listener extends MoxBaseListener
                 VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
 
                 if(subclassVariable == null) {
-                    Logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
+                    Mox.logger.error("Cannot find variable '" + ctx.NAME(i).getText() + "' in type '" + classNode.getName() + "'");
                     return;
                 }
 
@@ -779,7 +777,7 @@ public class Listener extends MoxBaseListener
 
 
                     if(target == null) {
-                        Logger.error("Can't mark variable '" + assignmentNode.getName() + "' as self-destructing.");
+                        Mox.logger.error("Can't mark variable '" + assignmentNode.getName() + "' as self-destructing.");
                         break;
                     }
 
@@ -834,7 +832,7 @@ public class Listener extends MoxBaseListener
         super.enterModuleDecl(ctx);
 
         if(!Registry.saveModule(ctx.NAME().getText())) {
-            Logger.error("Redefinition of module '" + ctx.NAME().getText() + "'");
+            Mox.logger.error("Redefinition of module '" + ctx.NAME().getText() + "'");
         }
 
         Generator.enterContext(new Context(ctx.NAME().getText(), ContextTypes.MODULE));
@@ -865,7 +863,7 @@ public class Listener extends MoxBaseListener
         String className = ctx.type().NAME().getText();
 
         if(Mox.state.getClasses().find(className) != null) {
-            Logger.error("Redefinition of class '" + className + "'");
+            Mox.logger.error("Redefinition of class '" + className + "'");
         }
 
         ClassNode classNode = new ClassNode(className);
@@ -1000,7 +998,12 @@ public class Listener extends MoxBaseListener
 
         FunctionNode node = (FunctionNode) Mox.state.getProgram().pop();
 
-        // register function
+        /*
+        *  TODO: sanitize the arguments
+        * */
+
+        Mox.state.getFunctions().add(new VariableNode(node.getName(), node.getReturnType()));
+        External.addFunction(node);
     }
 
     @Override
@@ -1077,7 +1080,7 @@ public class Listener extends MoxBaseListener
         } else if(character.length() == 1) {
             Mox.state.getProgram().current().buffer.push("'" + character + "'");
         } else {
-            Logger.error("Invalid character '" + character + "'");
+            Mox.logger.error("Invalid character '" + character + "'");
         }
     }
 

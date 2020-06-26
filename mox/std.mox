@@ -6,4 +6,18 @@
 
 ###
 
+#
+#   Memory
+#
+#   These functions are reserved for the underlying libraries
+#
 extern function malloc(size : int) -> any
+extern function calloc(num : int, size : int) -> any
+extern function realloc(target : any, size : int) -> any
+extern function free(target : any) -> void
+
+#
+#   I/O
+#
+
+extern function printf(msg : Pointer<char>) -> void

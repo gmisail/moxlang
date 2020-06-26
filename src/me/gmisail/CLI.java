@@ -24,8 +24,8 @@ public class CLI {
 
     public void run() {
         if(!isValid()) {
-            Logger.write("Mox Programming Language");
-            Logger.list(commands);
+            Mox.logger.write("Mox Programming Language");
+            Mox.logger.list(commands);
 
             return;
         }

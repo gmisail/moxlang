@@ -20,18 +20,20 @@ public class Mox {
     public static StateHandler state;
     public static FileWriter file;
     public static CLI cli;
+    public static Logger logger;
 
     public static void create(String[] arguments) throws IOException {
         state = new StateHandler();
         file = new FileWriter(getWorkingDirectory() + "/main.c");
         cli = new CLI(arguments);
+        logger = new Logger();
     }
 
     public static void execute(String filename) throws IOException {
         if(new File(getWorkingDirectory() + "/" + filename).isFile()) {
             filename = getWorkingDirectory() + "/" + filename;
         } else if(new File(filename).isFile() == false) {
-            Logger.error("Cannot locate file '" + filename + "'");
+            Mox.logger.error("Cannot locate file '" + filename + "'");
 
             return;
         }
@@ -54,7 +56,7 @@ public class Mox {
             Process compilation = Runtime.getRuntime().exec("gcc main.c -o main.out");
 
         } catch (IOException e) {
-            Logger.error("Error writing to file.");
+            Mox.logger.error("Error writing to file.");
             e.printStackTrace();
         }
     }

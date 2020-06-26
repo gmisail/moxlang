@@ -1,5 +1,6 @@
 package me.gmisail.nodes;
 
+import me.gmisail.Mox;
 import me.gmisail.core.Logger;
 import me.gmisail.core.Types;
 
@@ -52,7 +53,7 @@ public class ClassNode extends Node {
 
     public void addVariable(VariableNode var) {
         if(hasVariable(var.name)) {
-            Logger.error("Redefinition of variable '" + var.name + "' in class '" + name + "'");
+            Mox.logger.error("Redefinition of variable '" + var.name + "' in class '" + name + "'");
         } else {
             memberVariables.add(var);
         }

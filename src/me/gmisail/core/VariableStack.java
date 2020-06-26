@@ -1,5 +1,6 @@
 package me.gmisail.core;
 
+import me.gmisail.Mox;
 import me.gmisail.nodes.NodeTypes;
 import me.gmisail.codegen.Scope;
 import me.gmisail.nodes.VariableNode;
@@ -21,8 +22,6 @@ public class VariableStack {
     public void add(VariableNode node) {
         node.setScope(scope);
 
-        Logger.write(scope + " " + node.getName());
-
         if(stack.size() == 0)
             stack.push(new Scope());
 
@@ -42,7 +41,7 @@ public class VariableStack {
     }
 
     public void printVariablesInScope() {
-        Logger.write("--------------------");
+        Mox.logger.write("--------------------");
         for(int i = 0; i < stack.size(); i++) {
             stack.elementAt(i).printVariables();
         }

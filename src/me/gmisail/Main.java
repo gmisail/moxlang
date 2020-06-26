@@ -25,7 +25,7 @@ public class Main {
 
             Mox.export();
         } else {
-            Logger.error("Unrecognized or unimplemented command.");
+            Mox.logger.error("Unrecognized or unimplemented command.");
         }
     }
 
