@@ -75,7 +75,6 @@ public class Listener extends MoxBaseListener
 
         Scope outOfScopeVars = Mox.state.getVariables().exitScope();
 
-        Mox.state.getFunctions().printVariablesInScope();
         Mox.state.getFunctions().exitScope();
 
         /*
@@ -238,7 +237,6 @@ public class Listener extends MoxBaseListener
             if(parent == null) {
                 Logger.error("Could not find class named " + Generator.currentContext().getName());
             } else {
-                Logger.write(parent.getName() + " " + parent.getTemplateType());
                 if(parent.isTemplated() && type.equals(parent.getTemplateType())) {
                     type = "void*";
                 }
@@ -247,7 +245,13 @@ public class Listener extends MoxBaseListener
 
         String name = ctx.NAME().getText();
 
-        Mox.state.getFunctions().add(new VariableNode(Generator.currentContext().getName() + "_" + name, type));
+        VariableNode functionNode = new VariableNode(Generator.currentContext().getName() + "_" + name, type);
+
+        if(Mox.state.getProgram().currentType() == NodeTypes.CLASS) {
+            functionNode.makeMemberVariable();
+        }
+
+        Mox.state.getFunctions().add(functionNode);
 
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
             Logger.error("Redefinition of function " + name);
@@ -295,6 +299,8 @@ public class Listener extends MoxBaseListener
         String name = "";
         String delim = "_";
         int initial = 0;
+
+        Mox.state.getFunctions().printVariablesInScope();
 
         ClassNode classNode = null;
 
@@ -402,6 +408,11 @@ public class Listener extends MoxBaseListener
         }
 
         functionCallNode.setName(name);
+
+        if(!Mox.state.getFunctions().hasClassInstanceNamed(name)) {
+            Logger.error("Cannot find function of name '" + name + "'");
+        }
+
         Mox.state.getProgram().push(functionCallNode);
     }
 

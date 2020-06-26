@@ -10,9 +10,9 @@ import java.util.Stack;
 public class VariableStack {
 
     // global scope = 0
-    private int scope = 0;
+    protected int scope = 0;
 
-    private Stack<Scope> stack;
+    protected Stack<Scope> stack;
 
     public VariableStack() {
         stack = new Stack<Scope>();
@@ -20,6 +20,12 @@ public class VariableStack {
 
     public void add(VariableNode node) {
         node.setScope(scope);
+
+        Logger.write(scope + " " + node.getName());
+
+        if(stack.size() == 0)
+            stack.push(new Scope());
+
         stack.peek().addVariable(node);
     }
 

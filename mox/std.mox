@@ -5,3 +5,5 @@
     i.e. print, input, etc.
 
 ###
+
+extern function malloc(size : int) -> any
