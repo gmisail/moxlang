@@ -33,7 +33,6 @@ public class Listener extends MoxBaseListener
         super.enterBlock(ctx);
 
         Mox.state.getVariables().enterScope();
-        Mox.state.getFunctions().enterScope();
 
         /*
         *   When a function is defined, add all of the arguments to scope.
@@ -58,7 +57,6 @@ public class Listener extends MoxBaseListener
         super.exitClassBlock(ctx);
 
         Mox.state.getVariables().enterScope();
-        Mox.state.getFunctions().enterScope();
     }
 
     @Override
@@ -66,7 +64,6 @@ public class Listener extends MoxBaseListener
         super.exitClassBlock(ctx);
 
         Mox.state.getVariables().exitScope();
-        Mox.state.getFunctions().exitScope();
     }
 
     @Override
@@ -74,8 +71,6 @@ public class Listener extends MoxBaseListener
         super.exitBlock(ctx);
 
         Scope outOfScopeVars = Mox.state.getVariables().exitScope();
-
-        Mox.state.getFunctions().exitScope();
 
         /*
          *   The 'destroy' function is contained within a class. Append all variables that are marked to be automatically
@@ -245,13 +240,7 @@ public class Listener extends MoxBaseListener
 
         String name = ctx.NAME().getText();
 
-        VariableNode functionNode = new VariableNode(Generator.currentContext().getName() + "_" + name, type);
 
-        if(Mox.state.getProgram().currentType() == NodeTypes.CLASS) {
-            functionNode.makeMemberVariable();
-        }
-
-        Mox.state.getFunctions().add(functionNode);
 
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
             Mox.logger.error("Redefinition of function " + name);
@@ -271,6 +260,7 @@ public class Listener extends MoxBaseListener
         }
 
         Mox.state.getProgram().push(func);
+        Mox.state.getFunctions().add(func);
     }
 
     @Override
@@ -407,7 +397,7 @@ public class Listener extends MoxBaseListener
 
         functionCallNode.setName(name);
 
-        if(!Mox.state.getFunctions().hasClassInstanceNamed(name) && !External.functionExists(name)) {
+        if(Mox.state.getFunctions().find(name) == null && !External.functionExists(name)) {
             Mox.logger.error("Cannot find function of name '" + name + "'");
         }
 
@@ -1002,7 +992,6 @@ public class Listener extends MoxBaseListener
         *  TODO: sanitize the arguments
         * */
 
-        Mox.state.getFunctions().add(new VariableNode(node.getName(), node.getReturnType()));
         External.addFunction(node);
     }
 

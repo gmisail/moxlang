@@ -17,5 +17,7 @@ function main() -> int
 
     delete arr
 
+    print("hello from the mox standard library!")
+
     return 0
 end

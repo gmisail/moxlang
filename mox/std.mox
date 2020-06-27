@@ -1,23 +1,26 @@
 ###
-
-    general standard library functions
-
-    i.e. print, input, etc.
-
+    C bindings
 ###
 
-#
-#   Memory
-#
-#   These functions are reserved for the underlying libraries
-#
 extern function malloc(size : int) -> any
 extern function calloc(num : int, size : int) -> any
 extern function realloc(target : any, size : int) -> any
 extern function free(target : any) -> void
 
+extern function printf(msg : Pointer<char>) -> void
+
 #
-#   I/O
+#   Mox Standard Library
+#   2020, Graham Misail
 #
 
-extern function printf(msg : Pointer<char>) -> void
+var x : int = 0
+
+function print(message : Pointer<char>)
+    printf("%s", message)
+end
+
+function input()
+    ## get input and return as string
+end
+

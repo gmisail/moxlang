@@ -1,5 +1,6 @@
 package me.gmisail.core;
 
+import me.gmisail.Mox;
 import me.gmisail.codegen.Scope;
 import me.gmisail.nodes.VariableNode;
 
@@ -30,9 +31,8 @@ public class FunctionStack extends VariableStack {
 
             VariableNode variable = (VariableNode) element.getValue();
 
-            if(variable.isMemberVariable()) {
+            if(variable.isMemberVariable())
                 add(variable);
-            }
         }
 
         return poppedScope;
