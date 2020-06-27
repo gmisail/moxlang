@@ -29,6 +29,14 @@ public class Mox {
         logger = new Logger();
     }
 
+    public static String getFileType(String filename) throws IOException {
+        if(new File(getWorkingDirectory() + "/" + filename).isFile()) {
+            filename = getWorkingDirectory() + "/" + filename;
+        }
+
+        return getFileExtension(filename);
+    }
+
     public static void execute(String filename) throws IOException {
         if(new File(getWorkingDirectory() + "/" + filename).isFile()) {
             filename = getWorkingDirectory() + "/" + filename;
@@ -44,6 +52,14 @@ public class Mox {
         MoxParser parser = new MoxParser(cts);
 
         ParseTreeWalker.DEFAULT.walk(new Listener(parser, file), parser.program());
+    }
+
+    public static String getLocality(String filename) throws IOException {
+        if(new File(getWorkingDirectory() + "/" + filename).isFile()) {
+            return "local";
+        }
+
+        return "global";
     }
 
     public static void export() {
@@ -63,5 +79,11 @@ public class Mox {
 
     private static String getWorkingDirectory() {
         return System.getProperty("user.dir");
+    }
+
+    private static String getFileExtension(String fileName) {
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".")+1);
+        else return "";
     }
 }

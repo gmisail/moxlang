@@ -111,6 +111,7 @@ forRangeLoop: 'for' '(' NAME forFromExpr forToExpr')' block 'end';
 
 importStatement: 'import' STRING;
 
+
 /* Operations */
 bitwise: '&' | '|' | '~' | '<<' | '>>';
 addSub: '+' | '-';

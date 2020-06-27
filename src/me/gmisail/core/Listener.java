@@ -6,6 +6,7 @@ import me.gmisail.nodes.*;
 import me.gmisail.parser.MoxBaseListener;
 import me.gmisail.parser.MoxParser;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
@@ -1080,7 +1081,15 @@ public class Listener extends MoxBaseListener
         String path = Generator.createDataFromString(ctx.STRING().getText());
 
         try {
-            Mox.execute(path);
+            if(Mox.getFileType(path).equals("mox"))
+                Mox.execute(path);
+            else if(Mox.getFileType(path).equals("h")) {
+                if(Mox.getLocality(path).equals("global")){
+                    Mox.state.getProgram().current().buffer.push("#include <" + path + ">\n");
+                } else {
+                    Mox.state.getProgram().current().buffer.push(Generator.createInclude(path));
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

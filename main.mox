@@ -1,3 +1,4 @@
+import "mox/math.mox"
 import "mox/std.mox"
 import "mox/array.mox"
 
@@ -13,11 +14,13 @@ function main() -> int
         sum = sum + arr.get(i)
     end
 
-    printf("the sum is %i", sum)
+    printf("the sum is %i\n", sum)
 
     delete arr
 
-    print("hello from the mox standard library!")
+    print("hello from the mox standard library!\n")
+
+    printf("the distance between (1, 4) and (5, 9) is %f", dist(1, 4, 5, 9))
 
     return 0
 end

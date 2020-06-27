@@ -9,13 +9,6 @@ extern function free(target : any) -> void
 
 extern function printf(msg : Pointer<char>) -> void
 
-#
-#   Mox Standard Library
-#   2020, Graham Misail
-#
-
-var x : int = 0
-
 function print(message : Pointer<char>)
     printf("%s", message)
 end

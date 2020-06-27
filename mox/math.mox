@@ -6,5 +6,25 @@
 
 ###
 
-include "main.h"
+import "math.h"
 
+#
+#   trig functions
+#
+extern function sin(x : double) -> double
+extern function cos(x : double) -> double
+extern function tan(x : double) -> double
+
+#
+#   square roots / exponents
+#
+extern function pow(x : double, y : double) -> double
+extern function sqrt(x : double) -> double
+
+#
+#   helper functions
+#
+
+function dist(x : double, y : double, x2 : double, y2 : double) -> double
+    return sqrt(pow(x2 - x, 2) + pow(y2 - y, 2))
+end
