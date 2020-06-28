@@ -1,15 +1,18 @@
 package me.gmisail.core;
 
-import me.gmisail.parser.MoxBaseListener;
-import me.gmisail.parser.MoxParser;
+import java.util.HashMap;
+import java.util.HashSet;
 
-public class ImportHandler extends MoxBaseListener {
+public class ImportHandler  {
 
-    @Override
-    public void enterImportStatement(MoxParser.ImportStatementContext ctx) {
-        super.enterImportStatement(ctx);
+    private HashSet<String> imports;
 
-        System.out.println("importing " + ctx.STRING().getText());
+    public ImportHandler() {
+        imports = new HashSet<String>();
+    }
+
+    public boolean addImport(String filename) {
+        return imports.add(filename);
     }
 
 }

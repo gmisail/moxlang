@@ -1080,6 +1080,12 @@ public class Listener extends MoxBaseListener
 
         String path = Generator.createDataFromString(ctx.STRING().getText());
 
+        if(!Mox.state.getImports().addImport(path)) {
+            Mox.logger.warn("File '" + path + "' already imported. Ignoring.");
+
+            return;
+        }
+
         try {
             if(Mox.getFileType(path).equals("mox"))
                 Mox.execute(path);

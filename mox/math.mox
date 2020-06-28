@@ -25,6 +25,16 @@ extern function sqrt(x : double) -> double
 #   helper functions
 #
 
+function min(x : double, y : double) -> double
+    if(x > y)
+        return x
+    else if(x < y)
+        return y
+    end
+
+    return x
+end
+
 function dist(x : double, y : double, x2 : double, y2 : double) -> double
     return sqrt(pow(x2 - x, 2) + pow(y2 - y, 2))
 end

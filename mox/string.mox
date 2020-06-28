@@ -4,6 +4,12 @@
 
 ###
 
+#
+#   string.h externs
+#   you can use these if you really want, but it is not recommended
+#
+
+
 class String
 
 	var data : Pointer<char>
@@ -16,8 +22,6 @@ class String
         for(i from 0 to self.len + 1)
             self.data[i] = data[i]
         end
-
-        printf("%s", self.data)
 	end
 
 	function setCharacter(index : int, element : char)

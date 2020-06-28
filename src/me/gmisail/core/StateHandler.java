@@ -14,12 +14,14 @@ public class StateHandler {
 
     FunctionHandler functions;
     ClassHandler classes;
+    ImportHandler imports;
 
     public StateHandler() {
         program = new ProgramStack();
         variables = new VariableStack();
         functions = new FunctionHandler();
         classes = new ClassHandler();
+        imports = new ImportHandler();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
     }
@@ -27,12 +29,11 @@ public class StateHandler {
     public ProgramStack getProgram() {
         return program;
     }
-
     public VariableStack getVariables() {
         return variables;
     }
-
     public FunctionHandler getFunctions() { return functions; }
     public ClassHandler getClasses() { return classes; }
+    public ImportHandler getImports() { return imports; }
 
 }
