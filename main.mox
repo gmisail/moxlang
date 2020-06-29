@@ -1,26 +1,26 @@
-import "mox/math.mox"
 import "mox/std.mox"
-import "mox/array.mox"
+import "mox/string.mox"
 
 function main() -> int
-    var arr : Array = new Array(10)
-    var sum : int = 0
+    var str : String = new String("hello world from moxlang!")
+    var other : String = new String("bello borld brom boxlang")
 
-    for(i from 0 to 10)
-        arr.set(i, i)
+    print("this is string number one: ")
+    print(str.data())
+
+    print("\nthis is string number two: ")
+    print(other.data())
+
+    print("\nare string one and two equal?")
+
+    if(str.equals(other))
+        print("yes! \n")
+    else
+        print("nope! \n")
     end
 
-    for(i from 0 to 10)
-        sum = sum + arr.get(i)
-    end
-
-    printf("the sum is %i\n", sum)
-
-    delete arr
-
-    print("hello from the mox standard library!\n")
-
-    printf("the distance between (1, 4) and (5, 9) is %f", dist(1, 4, 5, 9))
-
-    return 0
+    delete str
+    delete other
 end
+
+

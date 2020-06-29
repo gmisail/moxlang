@@ -9,6 +9,8 @@
 #   you can use these if you really want, but it is not recommended
 #
 
+extern function strlen(data : Pointer<char>) -> int
+extern function strcmp(s1 : Pointer<char>, s2 : Pointer<char>) -> int
 
 class String
 
@@ -24,13 +26,19 @@ class String
         end
 	end
 
-	function setCharacter(index : int, element : char)
-	    self.data[index] = element
+	function data() -> Pointer<char>
+	    return self.data
 	end
 
-	function print()
-	    printf("%s", self.data)
-	end
+    function equals(val : String) -> int
+        #
+        #   if val does not exist in class scope, check if it exists in function scope
+        #
+
+        #strcmp(self.data(), val.data())
+
+        return false
+    end
 
 	function destroy()
 		free(self.data)

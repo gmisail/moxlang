@@ -222,7 +222,19 @@ public class Listener extends MoxBaseListener
         if(ctx.funcReturnType() != null) {
             type = ctx.funcReturnType().type().NAME().getText();
 
-            if(type.equals("any")) {
+            if(ctx.funcReturnType().type().templateType() != null) {
+                boolean isPointer = false;
+
+                if(type.equals("Pointer")) {
+                    isPointer = true;
+                }
+
+                type = ctx.funcReturnType().type().templateType().type().NAME().getText();
+
+                if(isPointer)
+                    type += "*";
+
+            } else if(type.equals("any")) {
                 type = "void*";
             }
         }
@@ -241,8 +253,6 @@ public class Listener extends MoxBaseListener
 
         String name = ctx.NAME().getText();
 
-
-
         if(!Registry.saveFunction(Generator.currentContext().getName() + "_" + name + "_" + type)) {
             Mox.logger.error("Redefinition of function " + name);
         }
@@ -252,8 +262,7 @@ public class Listener extends MoxBaseListener
         if(Generator.currentContext().getType().equals(ContextTypes.CLASS)) {
             func.addParam("self", Generator.currentContext().getName() + "*");
 
-            if(Mox.state.getProgram().currentType() == NodeTypes.CLASS)
-            {
+            if(Mox.state.getProgram().currentType() == NodeTypes.CLASS) {
                 ClassNode node = (ClassNode) Mox.state.getProgram().current();
                 func.setLocalName(name);
                 node.addFunction(func);
