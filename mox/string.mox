@@ -1,9 +1,3 @@
-###
-
-    string implementation
-
-###
-
 #
 #   string.h externs
 #   you can use these if you really want, but it is not recommended
@@ -11,6 +5,11 @@
 
 extern function strlen(data : Pointer<char>) -> int
 extern function strcmp(s1 : Pointer<char>, s2 : Pointer<char>) -> int
+
+#
+#   String is a layer over string.h that makes it easier and safer to use
+#   strings in Mox.
+#
 
 class String
 
@@ -35,7 +34,9 @@ class String
         #   if val does not exist in class scope, check if it exists in function scope
         #
 
-        #strcmp(self.data(), val.data())
+        if(strcmp(self.data(), val.data()) == 0)
+            return true
+        end
 
         return false
     end

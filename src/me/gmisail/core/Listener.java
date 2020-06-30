@@ -343,7 +343,7 @@ public class Listener extends MoxBaseListener
                     String subclassType = Generator.dereference(subclassVariable.getType());
 
                     // if we are accessing the class in which it is defined, then it will
-                    // not show up in Mox.state.getClasses()().find(). So, we save the parent class and then
+                    // not show up in Mox.state.getClasses().find(). So, we save the parent class and then
                     // check to see if they match. If so, then set it to classNode.
                     if(subclassType.equals(parentClassNode.getName()))
                         classNode = parentClassNode;
@@ -370,6 +370,12 @@ public class Listener extends MoxBaseListener
             if(numberOfElements > 1) {
                 classNode = Mox.state.getClasses().find(Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
 
+                Mox.logger.write("looking for " + Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
+                Mox.logger.write("have: ");
+                Mox.state.getVariables().printVariablesInScope();
+
+                Mox.logger.write("exists: " + (classNode != null));
+
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
 
@@ -382,8 +388,6 @@ public class Listener extends MoxBaseListener
 
                     classNode = Mox.state.getClasses().find(subclassType);
                 }
-
-
 
                 name = classNode.getName() + delim;
 
