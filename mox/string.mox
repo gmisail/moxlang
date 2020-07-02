@@ -30,10 +30,6 @@ class String
 	end
 
     function equals(val : String) -> int
-        #
-        #   if val does not exist in class scope, check if it exists in function scope
-        #
-
         if(strcmp(self.data(), val.data()) == 0)
             return true
         end

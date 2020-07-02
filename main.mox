@@ -1,6 +1,13 @@
-import "mox/sdl/sdl.mox"
+import "mox/std.mox"
+import "mox/string.mox"
 
 function main() -> int
+    var str : String = new String("hello world")
+
+
+    print(str.data())
+
+    delete str
 
     return 0
 end
