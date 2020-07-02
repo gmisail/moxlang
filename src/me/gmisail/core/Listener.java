@@ -387,7 +387,7 @@ public class Listener extends MoxBaseListener
 
                     classNode = Mox.state.getClasses().find(subclassType);
                 }
-                
+
                 name = classNode.getName() + delim;
 
                 // the calling object is every element followed by '->', minus the function

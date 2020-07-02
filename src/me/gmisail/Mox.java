@@ -68,9 +68,6 @@ public class Mox {
         try {
             file.write(root.buffer.getCode());
             file.close();
-
-            Process compilation = Runtime.getRuntime().exec("gcc main.c -o main.out");
-
         } catch (IOException e) {
             Mox.logger.error("Error writing to file.");
             e.printStackTrace();
