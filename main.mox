@@ -3,6 +3,7 @@ import "mox/string.mox"
 
 function main() -> int
     var str : String = new String("hello world from moxlang!")
+    var another : String = new String("hello world from moxlang!")
     var other : String = new String("bello borld brom boxlang")
 
     print("this is string number one: ")
@@ -11,7 +12,10 @@ function main() -> int
     print("\nthis is string number two: ")
     print(other.data())
 
-    print("\nare string one and two equal?")
+    print("\nthis is string number three: ")
+    print(another.data())
+
+    print("\nare string one and two equal? ")
 
     if(str.equals(other))
         print("yes! \n")
@@ -19,7 +23,16 @@ function main() -> int
         print("nope! \n")
     end
 
+    print("\nare string one and three equal? ")
+
+    if(str.equals(another))
+        print("yes! \n")
+    else
+        print("nope! \n")
+    end
+
     delete str
+    delete another
     delete other
 end
 

@@ -308,13 +308,14 @@ public class Listener extends MoxBaseListener
 
         // TODO: validate that the function is valid.
 
-        if(Generator.currentContext().getType() == ContextTypes.CLASS) {
+        if(Generator.currentContext().getType() == ContextTypes.CLASS && ctx.NAME(0).getText().equals("self")) {
             // the first NAME being "self" implies that it is a call to itself
             // self.print()
             if(ctx.NAME(0).getText().equals("self") && numberOfElements <= 2) {
                 initial = 1;
                 name += Generator.currentContext().getName() + delim;
-                functionCallNode.buffer.push("self, ");
+                functionCallNode.buffer.push("self");
+                functionCallNode.addParamCount();
             }
 
             // calling a function from a member class object
@@ -322,7 +323,7 @@ public class Listener extends MoxBaseListener
             //     self.foo.sayHello()     # <------ 3 elements!
             // should be:
             //     Foo_sayHello(self->foo);
-            if(ctx.NAME(0).getText().equals("self") && numberOfElements > 2) {
+            else if(ctx.NAME(0).getText().equals("self") && numberOfElements > 2) {
                 // find class def in the program stack
                 ClassNode parentClassNode = null;
                 for(int i = 0; i < Mox.state.getProgram().size(); i++) {
@@ -370,11 +371,9 @@ public class Listener extends MoxBaseListener
             if(numberOfElements > 1) {
                 classNode = Mox.state.getClasses().find(Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
 
-                Mox.logger.write("looking for " + Mox.state.getVariables().getTypeOf(ctx.NAME(0).getText()));
-                Mox.logger.write("have: ");
-                Mox.state.getVariables().printVariablesInScope();
-
-                Mox.logger.write("exists: " + (classNode != null));
+                if(classNode == null) {
+                    classNode = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+                }
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
                     VariableNode subclassVariable = classNode.getVariable(ctx.NAME(i).getText());
@@ -431,11 +430,6 @@ public class Listener extends MoxBaseListener
             /* if it is not a standalone statement, then it must be used within another expression. Thus, add it to the parent */
             Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
         }
-    }
-
-    @Override
-    public void enterFunctionCallParams(MoxParser.FunctionCallParamsContext ctx) {
-        super.enterFunctionCallParams(ctx);
     }
 
     @Override
