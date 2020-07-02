@@ -1,0 +1,27 @@
+class Point
+    var x : float
+    var y : float
+
+    function init(x : float, y : float)
+        self.x = x
+        self.y = y
+    end
+
+    function dot(p : Point) -> float
+        return (self.x * p.x) + (self.y * p.y)
+    end
+
+    function add(p : Point)
+        self.x = self.x + p.x
+        self.y = self.y + p.y
+    end
+
+    function sub(p : Point)
+        self.x = self.x - p.x
+        self.y = self.y - p.y
+    end
+
+    function destroy()
+
+    end
+end

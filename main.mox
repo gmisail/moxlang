@@ -1,7 +1,12 @@
 import "mox/std.mox"
 import "mox/string.mox"
+import "point.mox"
 
 function main() -> int
+    #
+    #   Strings
+    #
+
     var str : String = new String("hello world from moxlang!")
     var another : String = new String("hello world from moxlang!")
     var other : String = new String("bello borld brom boxlang")
@@ -34,6 +39,25 @@ function main() -> int
     delete str
     delete another
     delete other
+
+    #
+    #   Points
+    #
+
+    var i : Point = new Point(0, 0)
+    var j : Point = new Point(10, 5)
+
+    i.add(j)
+
+    printf("adding: (%f, %f)\n", i.x, i.y)
+
+    i.sub(j)
+    i.sub(j)
+
+    printf("subtracting: (%f, %f)\n", i.x, i.y)
+
+    delete i
+    delete j
 end
 
 

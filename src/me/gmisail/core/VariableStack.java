@@ -59,6 +59,8 @@ public class VariableStack {
     }
 
     public String getTypeOf(String name) {
+
+
         for(int i = 0; i < stack.size(); i++) {
             VariableNode node = stack.elementAt(i).getVariable(name);
             if(node != null) {
