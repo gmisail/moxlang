@@ -3,3 +3,96 @@
     vector implementation
 
 ###
+
+import "mox/std.mox"
+import "mox/array.mox"
+
+class Vector
+
+    var data : Pointer<any>
+    var len : int
+    var size : int
+
+    function init()
+        self.len = 0
+        self.size = 0
+    end
+
+    #
+    #   Returns the number of elements in the vector
+    #
+    function length() -> int
+        return self.len
+    end
+
+    #
+    #   Set value at index
+    #
+    function set(index : int, value : any)
+        if(index >= self.len)
+            return
+        end
+
+        self.data[index] = value
+    end
+
+    #
+    #   Get value at index
+    #
+    function get(index : int) -> any
+        if(index >= self.len)
+            return NULL
+        end
+
+        return self.data[index]
+    end
+
+    #
+    #   Add an element to the back of the vector
+    #
+    function add(element : any)
+        if(self.size == 0)
+            self.size = 8
+            self.data = malloc(__size(any) * self.size)
+        end
+
+        if (self.size == self.len)
+            self.size = self.size * 2
+            self.data = realloc(self.data, __size(any) * self.size)
+        end
+
+        self.data[self.len] = element
+        self.len = self.len + 1
+    end
+
+    #
+    #   Delete an element at an index
+    #
+    function remove(index : int)
+        if(index >= self.size)
+            return
+        end
+
+        self.data[index] = NULL
+
+        var temp : Pointer<any> = malloc(__size(any) * self.len * 2)
+        var j : int = 0
+        for(i from 0 to self.len)
+            if(self.data[i] != NULL)
+                temp[j] = self.data[i]
+                j = j + 1
+            end
+        end
+
+        free(self.data)
+
+        self.data = temp
+        self.len = self.len - 1
+    end
+
+
+    function destroy()
+        free(self.data)
+    end
+
+end
