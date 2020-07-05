@@ -1,5 +1,6 @@
 package me.gmisail.nodes;
 
+import me.gmisail.Mox;
 import me.gmisail.codegen.Generator;
 import me.gmisail.core.Types;
 
@@ -27,6 +28,43 @@ public class FunctionNode extends Node {
 
     @Override
     public String code() {
+
+        /*
+        *   Okay, so here is the lowdown:
+        *
+        *   First, we are going to check if it is a ~templated~ function. In which case, we will generate the
+        *   function as a macro, as opposed to a normal function. Before the function CALL however, we will need to
+        *   #define TYPE WhateverType to ensure that the compiler is using the correct type.
+        *
+        *   If it is not, then we will check if it is a class function. If so, generate as normal. Same for normal functions.
+        * */
+
+        ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+        boolean parentTemplated = false;
+
+        if(parent != null) {
+            parentTemplated = parent.isTemplated();
+
+            /*
+            *   class Array<T> ...
+            *
+            *   function get(i : int) -> T
+            *
+            *   end
+            *
+            *   This will be true when the return type is a placeholder for the template class.
+            *
+            *   Macro is formatted in accordance to this web-page: http://arnold.uthar.net/index.php?n=Work.TemplatesC
+            *   as well as here: http://blog.pkh.me/p/20-templating-in-c.html
+            *
+            * */
+            if (parentTemplated && parent.getTemplateType().equals(returnType)) {
+                /* SETUP FUNCTION MACRO HERE */
+
+                
+            }
+        }
+
         String output = returnType + " " + name + "(";
 
         for(int i = 0; i < this.params.size(); i++) {
