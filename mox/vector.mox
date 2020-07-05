@@ -53,12 +53,12 @@ class Vector
     function add(element : any)
         if(self.size == 0)
             self.size = 8
-            self.data = malloc(__size(any) * self.size)
+            self.data = malloc(@size(any) * self.size)
         end
 
         if (self.size == self.len)
             self.size = self.size * 2
-            self.data = realloc(self.data, __size(any) * self.size)
+            self.data = realloc(self.data, @size(any) * self.size)
         end
 
         self.data[self.len] = element
@@ -75,7 +75,7 @@ class Vector
 
         self.data[index] = NULL
 
-        var temp : Pointer<any> = malloc(__size(any) * self.len * 2)
+        var temp : Pointer<any> = malloc(@size(any) * self.len * 2)
         var j : int = 0
         for(i from 0 to self.len)
             if(self.data[i] != NULL)

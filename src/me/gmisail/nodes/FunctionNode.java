@@ -12,6 +12,9 @@ public class FunctionNode extends Node {
     private String localName;
     private String returnType;
 
+    private boolean isTemplated;
+    private String templateType;
+
     public FunctionNode(String name, String type) {
         super();
 
@@ -19,12 +22,17 @@ public class FunctionNode extends Node {
         this.type = NodeTypes.FUNCTION;
         this.returnType = type;
         this.params = new ArrayList<ParameterNode>();
+        this.isTemplated = false;
+        this.templateType = "";
     }
 
     public void setLocalName(String localName) { this.localName = localName; }
     public String getLocalName() { return localName; }
     public String getName() { return name; }
     public String getReturnType() { return returnType; }
+
+    public void setTemplateType(String templateType){ this.templateType = templateType; }
+    public String getTemplateType() { return templateType; }
 
     @Override
     public String code() {
@@ -85,11 +93,8 @@ public class FunctionNode extends Node {
             *   printf("%i", Array_get_int(a, 0));
             *
             * */
-            if (parentTemplated && parent.getTemplateType().equals(returnType)) {
-                /* SETUP FUNCTION MACRO HERE */
 
-
-            }
+            
         }
 
         String output = returnType + " " + name + "(";

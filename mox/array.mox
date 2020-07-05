@@ -11,7 +11,7 @@ class Array
 
     function init(len : int)
         self.len = len
-        self.data = malloc(len * __size(any))
+        self.data = malloc(len * @size(any))
     end
 
     function set(index : int, element : any)

@@ -73,14 +73,14 @@ variableDelete: 'delete' variableAccess;
 variableArrayAccess: variableAccess '[' expr ']';
 
 /* Functions */
-function: 'function' NAME funcParams funcReturnType? block 'end';
+function: 'function' NAME ('<' type '>')? funcParams funcReturnType? block 'end';
 funcReturnType: '->' type;
 funcParam: NAME ':' type;
 funcParams: '(' paramList? ')';
 
 builtInFunctions: funcChar | funcSize;
-funcSize: '__size' '(' type ')';
-funcChar: '__char' '(' STRING ')';
+funcSize: '@size' '(' type ')';
+funcChar: '@char' '(' STRING ')';
 
 /* External */
 extern: funcExtern | varExtern;
