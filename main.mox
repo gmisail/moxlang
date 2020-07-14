@@ -42,6 +42,8 @@ function main() -> int
     ###
 
     printf("%i", add<int>(10, 5))
+    printf("%d", add<float>(10.4, 5.3))
+    printf("%d", add<double>(10.61, 5.42))
 
     return 0
 end

@@ -10,17 +10,27 @@ public class FunctionCallNode extends Node {
     /* tracks the number of parameters */
     private int numParams;
 
+    private boolean isTemplated;
+    private String templateType;
+
     public FunctionCallNode(String name) {
         super();
 
         this.numParams = 0;
         this.type = NodeTypes.FUNCTION_CALL;
         this.name = name;
+        this.isTemplated = false;
+        this.templateType = "";
     }
 
     public void addParamCount() { numParams++; }
     public int getParamCount() {
         return numParams;
+    }
+
+    public void makeTemplated(String templateType) {
+        this.isTemplated = true;
+        this.templateType = templateType;
     }
 
     public String getBody() {
@@ -32,12 +42,16 @@ public class FunctionCallNode extends Node {
         *   If not, percolate up and define it globally.
         * */
 
-        if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null)
-            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_add(int)\n");
-        else
-            Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_add(int)\n");
+        if(isTemplated) {
+            if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null)
+                Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+            else
+                Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
 
-        return buffer.getCode();
+            this.name += "_" + this.templateType;
+        }
+
+        return name + "(" + buffer.getCode() + ")";
     }
 
     public String getName() { return name; }

@@ -306,6 +306,12 @@ public class Listener extends MoxBaseListener
 
         FunctionCallNode functionCallNode = new FunctionCallNode(name);
 
+
+        /* function call has a template type */
+        if(ctx.type() != null) {
+            functionCallNode.makeTemplated(ctx.type().getText());
+        }
+
         // TODO: validate that the function is valid.
 
         if(Generator.currentContext().getType() == ContextTypes.CLASS && ctx.NAME(0).getText().equals("self")) {
@@ -425,10 +431,10 @@ public class Listener extends MoxBaseListener
 
         /* when the function is called, is it called as a statement or expression? If it is a statement, the it must have a semicolon */
         if(parser.getRuleNames()[ctx.getParent().getRuleIndex()].equals("statement")) {
-            Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ");\n");
+            Mox.state.getProgram().current().buffer.push(functionCall.getBody() + ";\n");
         } else {
             /* if it is not a standalone statement, then it must be used within another expression. Thus, add it to the parent */
-            Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
+            Mox.state.getProgram().current().buffer.push(functionCall.getBody());
         }
     }
 
