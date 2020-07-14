@@ -88,7 +88,7 @@ funcExtern: 'extern' 'function' NAME funcParams funcReturnType?;
 varExtern: 'extern' NAME '->' type;
 
 /* Function Call */
-functionCall: NAME ('.' NAME)* '(' functionCallParams ')';
+functionCall: NAME ('.' NAME)* ('<' type '>')? '(' functionCallParams ')';
 functionCallParam: expr;
 functionCallParams: (functionCallParam (',' functionCallParam)*)?;
 
