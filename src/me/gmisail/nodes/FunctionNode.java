@@ -118,9 +118,10 @@ public class FunctionNode extends Node {
 
         if(isTemplated) {
             output += "#define declare_" + name + "(" + templateType + ") \\ \n";
+            output += returnType + " " + name + "_##" + templateType + "(";
+        } else {
+            output += returnType + " " + name + "(";
         }
-
-        output += returnType + " " + name + "(";
 
         for(int i = 0; i < this.params.size(); i++) {
             if(i > 0) output += ", ";

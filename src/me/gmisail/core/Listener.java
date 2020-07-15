@@ -448,7 +448,8 @@ public class Listener extends MoxBaseListener
 
         /* when the function is called, is it called as a statement or expression? If it is a statement, the it must have a semicolon */
         if(parser.getRuleNames()[ctx.getParent().getRuleIndex()].equals("statement")) {
-            Mox.state.getProgram().current().buffer.push(functionCall.getBody() + ";\n");
+            Mox.state.getProgram().current().buffer.push(functionCall.getBody() + Generator.newline());
+
         } else {
             /* if it is not a standalone statement, then it must be used within another expression. Thus, add it to the parent */
             Mox.state.getProgram().current().buffer.push(functionCall.getBody());
@@ -481,7 +482,7 @@ public class Listener extends MoxBaseListener
 
         ReturnNode ret = (ReturnNode) Mox.state.getProgram().pop();
 
-        Mox.state.getProgram().current().buffer.push("return " + ret.buffer.getCode() + ";\n");
+        Mox.state.getProgram().current().buffer.push("return " + ret.buffer.getCode() + Generator.newline());
     }
 
     @Override
@@ -588,9 +589,9 @@ public class Listener extends MoxBaseListener
 
             // var <name> : <type> = <value>. If value is undefined, then do not output it.
             if(variable.getValue().getCode().length() > 0)
-                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + ";\n");
+                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + " = " + variable.getValue().getCode() + Generator.newline());
             else
-                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + ";\n");
+                Mox.state.getProgram().current().buffer.push(variable.getType() + " " + variable.getName() + Generator.newline());
         }
     }
 
@@ -607,7 +608,7 @@ public class Listener extends MoxBaseListener
 
         VariableAssignmentNode assignment = (VariableAssignmentNode) Mox.state.getProgram().pop();
 
-        Mox.state.getProgram().current().buffer.push(assignment.getName() + " = " + assignment.getValue().getCode() + ";\n");
+        Mox.state.getProgram().current().buffer.push(assignment.getName() + " = " + assignment.getValue().getCode() + Generator.newline());
     }
 
     @Override

@@ -22,8 +22,8 @@ public class DeleteNode extends Node {
     public String code() {
         String output = "";
 
-        output += Generator.dereference(target.getType()) + "_destroy(" + target.getName() + ");\n";
-        output += "free(" + buffer.getCode() + ");\n";
+        output += Generator.dereference(target.getType()) + "_destroy(" + target.getName() + ")" + Generator.newline();
+        output += "free(" + buffer.getCode() + ")" + Generator.newline();
 
         return output;
     }

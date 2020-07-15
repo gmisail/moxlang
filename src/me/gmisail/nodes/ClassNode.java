@@ -1,6 +1,7 @@
 package me.gmisail.nodes;
 
 import me.gmisail.Mox;
+import me.gmisail.codegen.Generator;
 import me.gmisail.core.Logger;
 import me.gmisail.core.Types;
 
@@ -86,9 +87,9 @@ public class ClassNode extends Node {
                     memberVariables.get(i).makePointer();
             }
 
-            output += memberVariables.get(i).getType() + " " + variableName + ";\n";
+            output += memberVariables.get(i).getType() + " " + variableName + Generator.newline();
         }
-        output += "} " + this.name + ";\n";
+        output += "} " + this.name + Generator.newline();
 
         /*
         *   Class methods
@@ -140,10 +141,10 @@ public class ClassNode extends Node {
         }
 
         output += ") {\n";
-        output += name + "*" + " self = malloc(sizeof(" + name + "));\n";
+        output += name + "*" + " self = malloc(sizeof(" + name + "))" + Generator.newline();
         for(int i = 0; i < memberVariables.size(); i++) {
             if(!memberVariables.get(i).getValue().getCode().equals(""))
-                output += "self->" + memberVariables.get(i).getName() + " = " + memberVariables.get(i).getValue().getCode() + ";\n";
+                output += "self->" + memberVariables.get(i).getName() + " = " + memberVariables.get(i).getValue().getCode() + Generator.newline();
         }
         output += name + "_init" + "(self";
 
@@ -164,8 +165,8 @@ public class ClassNode extends Node {
             }
         }
 
-        output += ");\n";
-        output += "return self;\n";
+        output += ")" + Generator.newline();
+        output += "return self" + Generator.newline();
         output += "}\n";
 
         return output;

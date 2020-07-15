@@ -1,5 +1,7 @@
 package me.gmisail.nodes;
 
+import me.gmisail.codegen.Generator;
+
 public class ArrayAssignmentNode extends Node {
 
     private ArrayAccessNode variable;
@@ -21,7 +23,7 @@ public class ArrayAssignmentNode extends Node {
 
     @Override
     public String code() {
-        return variable.code() + " = " + this.buffer.getCode() + ";\n";
+        return variable.code() + " = " + this.buffer.getCode() + Generator.newline();
     }
 
 }

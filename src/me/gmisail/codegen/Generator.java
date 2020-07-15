@@ -42,7 +42,7 @@ public class Generator
         return "#include<" + file + ">\n";
     }
 
-    public static String createSemicolon() {
+    public static String newline() {
         return ";\n";
     }
 
