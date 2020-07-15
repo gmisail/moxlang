@@ -37,6 +37,10 @@ public class FunctionNode extends Node {
         setTemplateType(templateType);
     }
 
+    public boolean isTemplated() {
+        return isTemplated;
+    }
+
     public void setTemplateType(String templateType){ this.templateType = templateType; }
     public String getTemplateType() { return templateType; }
 
@@ -132,8 +136,11 @@ public class FunctionNode extends Node {
                 *   if the input is a pointer, then dereference and add another asterisk. It is kinda
                 *   hacky but gets the correct result. As far as I know at least...
                 * */
+                if(!isTemplated)
+                    output += Generator.dereference(paramType) + "* " + this.params.get(i).name;
+                else
+                    output += paramType + " " + this.params.get(i).name;
 
-                output += Generator.dereference(paramType) + "* " + this.params.get(i).name;
             } else {
                 if(this.params.get(i).type.equals("any")) {
                     output += "void*";

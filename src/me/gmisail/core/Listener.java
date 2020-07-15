@@ -49,8 +49,21 @@ public class Listener extends MoxBaseListener
 
         }
 
-        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
-            Mox.state.getProgram().current().buffer.push("{\n");
+        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT) {
+            Mox.state.getProgram().current().buffer.push("{");
+
+            if(Mox.state.getProgram().currentType() == NodeTypes.FUNCTION ) {
+                FunctionNode node = (FunctionNode) Mox.state.getProgram().current();
+
+                if(node.isTemplated()) {
+                    Mox.state.getProgram().current().buffer.push("\\\n");
+                } else {
+                    Mox.state.getProgram().current().buffer.push("\n");
+                }
+            } else {
+                Mox.state.getProgram().current().buffer.push("\n");
+            }
+        }
     }
 
     @Override
