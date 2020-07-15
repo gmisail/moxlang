@@ -117,7 +117,7 @@ public class FunctionNode extends Node {
         String output = "";
 
         if(isTemplated) {
-            output += "#define declare_" + name + "(" + templateType + ") \\ \n";
+            output += "#define declare_" + name + "(" + templateType + ") \\\n";
             output += returnType + " " + name + "_##" + templateType + "(";
         } else {
             output += returnType + " " + name + "(";

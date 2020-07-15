@@ -6,6 +6,10 @@ function add<T>(a : T, b : T) -> T
     return a + b
 end
 
+function sub<T>(a : T, b : T) -> T
+    return a - b
+end
+
 function main() -> int
     ###
         Strings

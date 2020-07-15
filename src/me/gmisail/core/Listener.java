@@ -274,6 +274,8 @@ public class Listener extends MoxBaseListener
 
         if(ctx.type() != null) {
             func.makeTemplated(ctx.type().NAME().getText());
+
+            Generator.enterMacro();
         }
 
         if(Generator.currentContext().getType().equals(ContextTypes.CLASS)) {
@@ -297,6 +299,8 @@ public class Listener extends MoxBaseListener
         FunctionNode func = (FunctionNode) Mox.state.getProgram().pop();
 
         Mox.state.getProgram().current().buffer.push(func.buffer.getCode());
+
+        Generator.exitMacro();
     }
 
     /*
@@ -819,7 +823,7 @@ public class Listener extends MoxBaseListener
         super.exitVariableCreate(ctx);
 
         FunctionCallNode functionCall = (FunctionCallNode) Mox.state.getProgram().pop();
-        Mox.state.getProgram().current().buffer.push(functionCall.getName() + "(" + functionCall.getBody() + ")");
+        Mox.state.getProgram().current().buffer.push(functionCall.getBody());
     }
 
     @Override

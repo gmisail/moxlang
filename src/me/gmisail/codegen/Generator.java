@@ -11,6 +11,8 @@ public class Generator
     private static Stack<Context> context;
     private static int indentation;
 
+    private static boolean isMacro = false;
+
     public static void create() {
         indentation = 0;
         context = new Stack<Context>();
@@ -38,12 +40,26 @@ public class Generator
         return context.pop();
     }
 
+    public static void enterMacro() {
+        isMacro = true;
+    }
+
+    public static void exitMacro() {
+        isMacro = false;
+    }
+
     public static String createInclude(String file) {
         return "#include<" + file + ">\n";
     }
 
     public static String newline() {
-        return ";\n";
+        String out = ";";
+
+        if(isMacro)
+            out += "\\";
+        out += "\n";
+
+        return out;
     }
 
     public static String createBoolean(String bool) {
