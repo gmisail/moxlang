@@ -128,7 +128,7 @@ public class FunctionNode extends Node {
             String paramType = this.params.get(i).type;
 
             if(paramType.equals(templateType)) {
-                paramType = "##" + templateType + "##";
+                paramType = templateType + "##";
             }
 
             if(!this.params.get(i).name.equals("self") && !Types.exists(this.params.get(i).type)) {

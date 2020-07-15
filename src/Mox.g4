@@ -69,6 +69,10 @@ variableAccess: NAME ('.' NAME)*;
 variableCreate: 'new' type '(' functionCallParams ')';
 variableDestructor: '!';
 
+// TODO: Casting
+// (vector as Vector).set(0, 40)
+// ^^^^^^^^^^^^^^^^^
+
 variableDelete: 'delete' variableAccess;
 variableArrayAccess: variableAccess '[' expr ']';
 
