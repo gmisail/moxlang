@@ -43,6 +43,11 @@ public class FunctionCallNode extends Node {
         * */
 
         if(isTemplated) {
+
+            /*
+            *   TODO: Check if macro has been defined already. If not, declare it. If so, declaring it.
+            * */
+
             if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null)
                 Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
             else

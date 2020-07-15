@@ -259,6 +259,10 @@ public class Listener extends MoxBaseListener
 
         FunctionNode func = new FunctionNode(Generator.createFunction(type, name), type);
 
+        if(ctx.type() != null) {
+            func.makeTemplated(ctx.type().NAME().getText());
+        }
+
         if(Generator.currentContext().getType().equals(ContextTypes.CLASS)) {
             func.addParam("self", Generator.currentContext().getName() + "*");
 

@@ -31,6 +31,12 @@ public class FunctionNode extends Node {
     public String getName() { return name; }
     public String getReturnType() { return returnType; }
 
+    public void makeTemplated(String templateType) {
+        this.isTemplated = true;
+
+        setTemplateType(templateType);
+    }
+
     public void setTemplateType(String templateType){ this.templateType = templateType; }
     public String getTemplateType() { return templateType; }
 
@@ -63,7 +69,7 @@ public class FunctionNode extends Node {
             *   This will be true when the return type is a placeholder for the template class.
             *
             *   Macro is formatted in accordance to this web-page: http://arnold.uthar.net/index.php?n=Work.TemplatesC
-            *   as well as here: http://blog.pkh.me/p/20-templating-in-c.html
+            *   as well as here: http://blog.pkh.me/p/w20-templating-in-c.html
             *
             *   On a function call, have:
             *
@@ -104,22 +110,39 @@ public class FunctionNode extends Node {
             
         }
 
-        String output = returnType + " " + name + "(";
+        String output = "";
+
+        if(isTemplated) {
+            output += "#define declare_" + name + "(" + templateType + ") \\ \n";
+        }
+
+        if(returnType.equals(templateType)) {
+            returnType = templateType + "##";
+        }
+
+        output += returnType + " " + name + "(";
 
         for(int i = 0; i < this.params.size(); i++) {
             if(i > 0) output += ", ";
 
+            String paramType = this.params.get(i).type;
+
+            if(paramType.equals(templateType)) {
+                paramType = "##" + templateType + "##";
+            }
+
             if(!this.params.get(i).name.equals("self") && !Types.exists(this.params.get(i).type)) {
                 /*
                 *   if the input is a pointer, then dereference and add another asterisk. It is kinda
-                *   hacky but gets the correct result.
+                *   hacky but gets the correct result. As far as I know at least...
                 * */
-                output += Generator.dereference(this.params.get(i).type) + "* " + this.params.get(i).name;
+
+                output += Generator.dereference(paramType) + "* " + this.params.get(i).name;
             } else {
                 if(this.params.get(i).type.equals("any")) {
                     output += "void*";
                 } else {
-                    output += this.params.get(i).type;
+                    output += paramType;
                 }
 
                 output += " " + this.params.get(i).name;
@@ -127,6 +150,9 @@ public class FunctionNode extends Node {
         }
 
         output += ")";
+
+        if(isTemplated)
+            output += " \\";
 
         return output;
     }
