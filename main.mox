@@ -2,12 +2,22 @@ import "mox/std.mox"
 import "mox/vector.mox"
 import "mox/string.mox"
 
-function add<T>(a : T, b : T) -> T
+function something<T>(a : T, b : T) -> T
+    if(a < b)
+        return b - a
+    end
+
     return a + b
 end
 
-function sub<T>(a : T, b : T) -> T
-    return a - b
+function another_func<T>(a : T, b : T) -> T
+    if(a < b)
+        return b - a
+    else if(b > a)
+        return a - b
+    end
+
+    return a
 end
 
 function main() -> int
@@ -20,34 +30,16 @@ function main() -> int
     delete str
 
     ###
-        Vectors
-    ###
-
-    var vec : Vector = new Vector()
-
-    for(i from 0 to 10)
-        vec.add(i)
-    end
-
-    for(i from 0 to 10)
-        if(i % 2 == 0)
-            vec.remove(i)
-        end
-    end
-
-    for(i from 0 to vec.length())
-        printf("%s", vec.get(i))
-    end
-
-    delete vec
-
-    ###
         Templates / Generics
     ###
 
-    printf("%i", add<int>(10, 5))
-    printf("%d", add<float>(10.4, 5.3))
-    printf("%d", add<double>(10.61, 5.42))
+    printf("%i", something<int>(10, 5))
+    printf("%f", something<float>(10.4, 5.3))
+    printf("%f", something<double>(10.61, 5.42))
+
+    printf("%i", another_func<int>(10, 5))
+    printf("%f", another_func<float>(10.4, 5.3))
+    printf("%f", another_func<double>(10.61, 5.42))
 
     return 0
 end

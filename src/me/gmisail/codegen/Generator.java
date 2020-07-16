@@ -48,6 +48,8 @@ public class Generator
         isMacro = false;
     }
 
+    public static boolean isMacro() { return isMacro; }
+
     public static String createInclude(String file) {
         return "#include<" + file + ">\n";
     }

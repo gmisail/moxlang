@@ -133,8 +133,15 @@ public class Listener extends MoxBaseListener
             }
         }
 
-        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT)
-            Mox.state.getProgram().current().buffer.push("}\n");
+        if(Mox.state.getProgram().currentType() != NodeTypes.DEFAULT) {
+            Mox.state.getProgram().current().buffer.push("}");
+
+            if(Generator.isMacro()) {
+                Mox.state.getProgram().current().buffer.push("\\\n");
+            } else {
+                Mox.state.getProgram().current().buffer.push("\n");
+            }
+        }
     }
 
     /*
@@ -298,7 +305,19 @@ public class Listener extends MoxBaseListener
 
         FunctionNode func = (FunctionNode) Mox.state.getProgram().pop();
 
-        Mox.state.getProgram().current().buffer.push(func.buffer.getCode());
+        /*
+        * hacky, I know. Since we don't *really* know when the macro is supposed to end,
+        * chop off the last \ and re-add the newline.
+        * */
+
+        String code = func.buffer.getCode();
+
+        if(func.isTemplated()) {
+            code = code.substring(0, code.length() - 2);
+            code += "\n";
+        }
+
+        Mox.state.getProgram().current().buffer.push(code);
 
         Generator.exitMacro();
     }
