@@ -48,10 +48,17 @@ public class FunctionCallNode extends Node {
             *   TODO: Check if macro has been defined already. If not, declare it. If so, declaring it.
             * */
 
-            if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null)
-                Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
-            else
-                Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+            if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
+                Mox.state.getTemplates().add(this.name + "_" + this.templateType);
+
+                Mox.logger.write("registering function " + this.name + "_" + this.templateType);
+
+                if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
+                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+                } else {
+                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+                }
+            }
 
             this.name += "_" + this.templateType;
         }

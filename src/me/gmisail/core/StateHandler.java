@@ -15,13 +15,16 @@ public class StateHandler {
     FunctionHandler functions;
     ClassHandler classes;
     ImportHandler imports;
+    TemplateHandler templates;
 
     public StateHandler() {
         program = new ProgramStack();
         variables = new VariableStack();
+
         functions = new FunctionHandler();
         classes = new ClassHandler();
         imports = new ImportHandler();
+        templates = new TemplateHandler();
 
         Generator.enterContext(new Context("global", ContextTypes.GLOBAL));
     }
@@ -35,5 +38,6 @@ public class StateHandler {
     public FunctionHandler getFunctions() { return functions; }
     public ClassHandler getClasses() { return classes; }
     public ImportHandler getImports() { return imports; }
+    public TemplateHandler getTemplates() { return templates; }
 
 }
