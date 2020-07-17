@@ -68,14 +68,11 @@ public class VariableNode extends Node {
     public String getType() {
         return returnType;
     }
-
     public String getName() {
         return name;
     }
-
     public Buffer getValue() {
         return buffer;
     }
-
     public String getTemplateType() { return templateType; }
 }

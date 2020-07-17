@@ -607,8 +607,13 @@ public class Listener extends MoxBaseListener
         } else {
             // not a member function, so just spit it out.
 
-            if(!Types.exists(variable.getType()) && !variable.isPointer())
-                variable.makePointer();
+            if(!Types.exists(variable.getType()) && !variable.isPointer()) {
+                FunctionNode func = (FunctionNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.FUNCTION);
+
+                if(func != null && func.isTemplated() && !variable.getType().equals(func.getTemplateType())) {
+                    variable.makePointer();
+                }
+            }
 
             // var <name> : <type> = <value>. If value is undefined, then do not output it.
             if(variable.getValue().getCode().length() > 0)

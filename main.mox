@@ -2,22 +2,8 @@ import "mox/std.mox"
 import "mox/vector.mox"
 import "mox/string.mox"
 
-function something<T>(a : T, b : T) -> T
-    if(a < b)
-        return b - a
-    end
-
-    return a + b
-end
-
-function another_func<T>(a : T, b : T) -> T
-    if(a < b)
-        return b - a
-    else if(b > a)
-        return a - b
-    end
-
-    return a
+function max<T>(a : T, b : T) -> T
+    var x : T = a
 end
 
 function main() -> int
@@ -33,21 +19,9 @@ function main() -> int
         Templates / Generics
     ###
 
-    printf("%i", something<int>(10, 5))
-    printf("%f", something<float>(10.4, 5.3))
-    printf("%f", something<double>(10.61, 5.42))
-
-    printf("%i", another_func<int>(10, 5))
-    printf("%f", another_func<float>(10.4, 5.3))
-    printf("%f", another_func<double>(10.61, 5.42))
-
-    printf("%i", something<int>(10, 5))
-    printf("%f", something<float>(10.4, 5.3))
-    printf("%f", something<double>(10.61, 5.42))
-
-    printf("%i", another_func<int>(10, 5))
-    printf("%f", another_func<float>(10.4, 5.3))
-    printf("%f", another_func<double>(10.61, 5.42))
+    printf("%i", max<int>(10, 5))
+    printf("%f", max<float>(10.4, 5.3))
+    printf("%f", max<double>(10.61, 5.42))
 
     return 0
 end

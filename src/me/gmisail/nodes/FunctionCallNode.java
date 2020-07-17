@@ -51,8 +51,6 @@ public class FunctionCallNode extends Node {
             if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
                 Mox.state.getTemplates().add(this.name + "_" + this.templateType);
 
-                Mox.logger.write("registering function " + this.name + "_" + this.templateType);
-
                 if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
                     Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
                 } else {
