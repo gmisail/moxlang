@@ -4,21 +4,21 @@
 
 ###
 
-class Array
+class Array<T>
 
     var len : int
-    var data : Pointer<any>
+    var data : Pointer<T>
 
     function init(len : int)
         self.len = len
         self.data = malloc(len * @size(any))
     end
 
-    function set(index : int, element : any)
+    function set<T>(index : int, element : any)
         self.data[index] = element
     end
 
-    function get(index : int) -> any
+    function get<T>(index : int) -> any
         return self.data[index]
     end
 

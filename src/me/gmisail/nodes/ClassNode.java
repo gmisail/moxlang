@@ -73,8 +73,20 @@ public class ClassNode extends Node {
         *   us to drop the 'struct' keyword when referencing it, but it also allows the user to have references to itself
         *   within each class.
         * */
+
+        if(isTemplated()){
+            output += "#define declare_class_" + this.name + "(" + this.templateType + ") \\\n";
+        }
+
         output += "typedef struct " + this.name;
-        output += " {\n";
+
+        if(templated) output += "_##" + this.templateType + " ";
+
+        output += " {";
+
+        if(templated) output += "\\\n";
+        else output += "\n";
+
         for(int i = 0; i < memberVariables.size(); i++) {
             String variableName = memberVariables.get(i).getName();
 
@@ -87,7 +99,10 @@ public class ClassNode extends Node {
                     memberVariables.get(i).makePointer();
             }
 
-            output += memberVariables.get(i).getType() + " " + variableName + Generator.newline();
+            output += memberVariables.get(i).getType() + " " + variableName;
+
+            if(templated) output += "\\\n";
+            else output += "\n";
         }
         output += "} " + this.name + Generator.newline();
 
