@@ -121,8 +121,7 @@ public class ClassNode extends Node {
         FunctionNode initFunc = null;
         FunctionNode destroyFunc = null;
 
-        for(int i = 0; i < functions.size(); i++)
-        {
+        for(int i = 0; i < functions.size(); i++) {
             /*
              *   Ensure that the class has a function with the name init.
              * */

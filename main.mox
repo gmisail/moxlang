@@ -25,5 +25,7 @@ function main() -> int
     printf("%f", max<float>(10.4, 5.3))
     printf("%f", max<double>(10.61, 5.42))
 
+    printf("%s", max<String>("hello", "world"))
+
     return 0
 end

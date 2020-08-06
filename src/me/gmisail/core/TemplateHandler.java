@@ -10,13 +10,23 @@ import java.util.Set;
 public class TemplateHandler {
 
     Set<String> templates;
+    Set<String> typedefs;
 
     public TemplateHandler() {
         templates = new HashSet<String>();
+        typedefs = new HashSet<String>();
     }
 
     public void add(String node) {
         templates.add(node);
+    }
+
+    public void addTypedef(String type) {
+        typedefs.add(type);
+    }
+
+    public boolean hasTypedef(String type) {
+        return typedefs.contains(type);
     }
 
     public boolean has(String name) {

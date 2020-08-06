@@ -2,6 +2,7 @@ package me.gmisail.nodes;
 
 import me.gmisail.Mox;
 import me.gmisail.codegen.Buffer;
+import me.gmisail.core.Types;
 
 public class FunctionCallNode extends Node {
 
@@ -50,6 +51,15 @@ public class FunctionCallNode extends Node {
 
             if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
                 Mox.state.getTemplates().add(this.name + "_" + this.templateType);
+
+                if (!Types.exists(this.templateType)) {
+                    if (!Mox.state.getTemplates().hasTypedef(this.templateType + "_p")) {
+                        Mox.state.getTemplates().addTypedef(this.templateType + "_p");
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef " + this.templateType + "_p " + this.templateType + "*;\n");
+
+                        this.templateType += "_p";
+                    }
+                }
 
                 if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
                     Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
