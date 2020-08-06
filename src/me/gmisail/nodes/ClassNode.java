@@ -99,7 +99,7 @@ public class ClassNode extends Node {
                     memberVariables.get(i).makePointer();
             }
 
-            output += memberVariables.get(i).getType() + " " + variableName;
+            output += memberVariables.get(i).getType() + " " + variableName + ";";
 
             if(templated) output += "\\\n";
             else output += "\n";

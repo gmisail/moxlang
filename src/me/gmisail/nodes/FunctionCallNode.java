@@ -55,7 +55,7 @@ public class FunctionCallNode extends Node {
                 if (!Types.exists(this.templateType)) {
                     if (!Mox.state.getTemplates().hasTypedef(this.templateType + "_p")) {
                         Mox.state.getTemplates().addTypedef(this.templateType + "_p");
-                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef " + this.templateType + "_p " + this.templateType + "*;\n");
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef " + this.templateType + "* " + this.templateType + "_p;\n");
 
                         this.templateType += "_p";
                     }
