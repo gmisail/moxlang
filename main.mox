@@ -1,5 +1,5 @@
 import "mox/std.mox"
-import "mox/string.mox"
+import "mox/array.mox"
 
 function max<T>(a : T, b : T) -> T
     var x : T = a
@@ -8,19 +8,19 @@ function max<T>(a : T, b : T) -> T
 end
 
 function main() -> int
-
     printf("%i\n", max<int>(10, 5))
     printf("%f\n", max<float>(10.4, 5.3))
     printf("%f\n", max<double>(10.61, 5.42))
 
-    var a : String = new String("hello")
-    var b : String = new String("world")
-    
-    var c : String = max<String>(a, b)
-    printf("%s\n", c.data())
+    var my_array : Array<int> = new Array<int>(5)
 
-    delete a
-    delete b
+    for(i from 0 to 5)
+        my_array.set<int>(i, i)
+    end
+
+    for(i from 0 to 5)
+       # printf("%i", d.get<int>(i))
+    end
 
     return 0
 end

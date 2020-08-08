@@ -136,15 +136,35 @@ public class ClassNode extends Node {
 
         if(initFunc == null)
         {
-            output += "void " + name + "_init(" + name + "* self){}\n";
+            if(!this.templated) {
+                output += "void " + name + "_init(" + name + "* self){}\n";
+            } else {
+                output += "#define declare_" + name + "_init(T) \\\n";
+                output += "void " + name + "_init_##T(" + name + "_##T* self){}";
+            }
         }
 
         if(destroyFunc == null)
         {
-            output += "void " + name + "_destroy(" + name + "* self){}\n";
+            //output += "void " + name + "_destroy(" + name + "* self){}\n";
+
+            if(!this.templated) {
+                output += "void " + name + "_destroy(" + name + "* self){}\n";
+            } else {
+                output += "#define declare_" + name + "_destroy(T) \\\n";
+                output += "void " + name + "_destroy_##T(" + name + "_##T* self){}";
+            }
         }
 
-        output += name + "* " + name + "_alloc(";
+        if(!templated) output += name + "* " + name + "_alloc(";
+        else {
+            output += "#define declare_" + name + "_alloc(T)\\\n";
+            output += name + "_##T* " + name + "_alloc_##T(";
+        }
+
+        /*
+        *   TODO: when parameters are pushed, convert them to the templated form. So, Array<T> -> Array_T
+        * */
 
         if(initFunc != null) {
             for(int i = 1; i < initFunc.getParams().size(); i++) {
@@ -154,23 +174,34 @@ public class ClassNode extends Node {
             }
         }
 
-        output += ") {\n";
-        output += name + "*" + " self = malloc(sizeof(" + name + "))" + Generator.newline();
+        output += ") {";
+
+        /*
+        *                                     |
+        *   add separate function for this   \ /
+        *
+        * */
+
+        if(templated) output += "\\\n";
+        else output += "\n";
+
+        if(templated) {
+            output += name + "_##T*" + " self = malloc(sizeof(" + name + "_##T));";
+            output += "\\\n";
+        } else {
+            output += name + "*" + " self = malloc(sizeof(" + name + "));";
+            output += "\n";
+        }
+
         for(int i = 0; i < memberVariables.size(); i++) {
             if(!memberVariables.get(i).getValue().getCode().equals(""))
                 output += "self->" + memberVariables.get(i).getName() + " = " + memberVariables.get(i).getValue().getCode() + Generator.newline();
         }
-        output += name + "_init" + "(self";
 
-        for(int i = 0; i < functions.size(); i++)
-        {
-            /*
-            *   Ensure that the class has a function with the name init.
-            * */
-            if(functions.get(i).getLocalName().equals("init")) {
-                initFunc = functions.get(i);
-                break;
-            }
+        if(templated) {
+            output += name + "_init_##T" + "(self";
+        } else {
+            output += name + "_init" + "(self";
         }
 
         if(initFunc != null) {
@@ -179,8 +210,16 @@ public class ClassNode extends Node {
             }
         }
 
-        output += ")" + Generator.newline();
-        output += "return self" + Generator.newline();
+        output += ");";
+
+        if(templated) output += "\\\n";
+        else output += "\n";
+
+        output += "return self;";
+
+        if(templated) output += "\\\n";
+        else output += "\n";
+
         output += "}\n";
 
         return output;

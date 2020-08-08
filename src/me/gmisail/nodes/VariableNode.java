@@ -65,6 +65,7 @@ public class VariableNode extends Node {
     public void setScope(int scope) { this.scope = scope; }
     public int getScope() { return scope; }
 
+    public void setType(String type) { returnType = type; }
     public String getType() {
         return returnType;
     }

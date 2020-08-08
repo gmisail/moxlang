@@ -9,20 +9,20 @@ class Array<T>
     var len : int
     var data : Pointer<T>
 
-    function init(len : int)
+    function init<T>(len : int)
         self.len = len
         self.data = malloc(len * @size(any))
     end
 
-    function set<T>(index : int, element : any)
+    function set<T>(index : int, element : T)
         self.data[index] = element
     end
 
-    function get<T>(index : int) -> any
+    function get<T>(index : int) -> T
         return self.data[index]
     end
 
-    function destroy()
+    function destroy<T>()
         free(self.data)
     end
 

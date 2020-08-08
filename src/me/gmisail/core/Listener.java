@@ -264,10 +264,6 @@ public class Listener extends MoxBaseListener
 
             if(parent == null) {
                 Mox.logger.error("Could not find class named " + Generator.currentContext().getName());
-            } else {
-                if(parent.isTemplated() && type.equals(parent.getTemplateType())) {
-                    type = "void*";
-                }
             }
         }
 
@@ -419,6 +415,17 @@ public class Listener extends MoxBaseListener
 
                 if(classNode == null) {
                     classNode = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+
+                    if(classNode == null) {
+                        VariableNode variableNode = Mox.state.getVariables().getVariableWithName(ctx.NAME(0).getText());
+
+                        Mox.logger.write("looking for var " + ctx.NAME(0).getText());
+
+                        if(variableNode != null) {
+                            Mox.logger.write("looking for type " + variableNode.getType());
+                            classNode = Mox.state.getClasses().find(variableNode.getType());
+                        }
+                    }
                 }
 
                 for(int i = 1; i < numberOfElements - 1; i++) {
@@ -798,14 +805,28 @@ public class Listener extends MoxBaseListener
 
         // ensure that the type you are allocating is equal to the type that you are assigning it too. Also, change the type of the variable to a pointer of the original
 
+
+
         String name = ctx.type().NAME().getText() + "_alloc";
         FunctionCallNode createVariable = new FunctionCallNode(name);
 
         if(ctx.type().templateType() != null) {
             String templateType = ctx.type().templateType().type().NAME().getText();
-
             VariableNode node = (VariableNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.VARIABLE);
+
             node.makeTemplated(templateType);
+            node.setType(node.getType() + "_" + templateType);
+
+            createVariable.setName(ctx.type().NAME().getText() + "_alloc_" + templateType);
+
+            // TODO: register this function and class so it is not declared twice
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_class_" + ctx.type().NAME().getText() + "(" + templateType + ")\n");
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef" + " struct " + ctx.type().NAME().getText() + "_" + templateType + " " + ctx.type().NAME().getText() + "_" + templateType + ";\n");
+
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_init(" + templateType + ")\n");
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + name + "(" + templateType + ")\n");
+
+            Mox.state.getClasses().add(new ClassNode(ctx.type().NAME().getText() + "_" + templateType));
         }
 
         /*
