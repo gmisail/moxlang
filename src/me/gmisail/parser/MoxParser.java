@@ -487,14 +487,14 @@ public class MoxParser extends Parser {
 		public TerminalNode STRING() { return getToken(MoxParser.STRING, 0); }
 		public TerminalNode NUM() { return getToken(MoxParser.NUM, 0); }
 		public TerminalNode CHAR() { return getToken(MoxParser.CHAR, 0); }
+		public FunctionCallContext functionCall() {
+			return getRuleContext(FunctionCallContext.class,0);
+		}
 		public VariableAccessContext variableAccess() {
 			return getRuleContext(VariableAccessContext.class,0);
 		}
 		public VariableArrayAccessContext variableArrayAccess() {
 			return getRuleContext(VariableArrayAccessContext.class,0);
-		}
-		public FunctionCallContext functionCall() {
-			return getRuleContext(FunctionCallContext.class,0);
 		}
 		public BuiltInFunctionsContext builtInFunctions() {
 			return getRuleContext(BuiltInFunctionsContext.class,0);
@@ -585,19 +585,19 @@ public class MoxParser extends Parser {
 			case 5:
 				{
 				setState(150);
-				variableAccess();
+				functionCall();
 				}
 				break;
 			case 6:
 				{
 				setState(151);
-				variableArrayAccess();
+				variableAccess();
 				}
 				break;
 			case 7:
 				{
 				setState(152);
-				functionCall();
+				variableArrayAccess();
 				}
 				break;
 			case 8:
@@ -3221,7 +3221,7 @@ public class MoxParser extends Parser {
 		"\u008c\3\2\2\2\u0091\u008d\3\2\2\2\u0091\u008e\3\2\2\2\u0091\u008f\3\2"+
 		"\2\2\u0091\u0090\3\2\2\2\u0092\t\3\2\2\2\u0093\u0094\b\6\1\2\u0094\u009e"+
 		"\5b\62\2\u0095\u009e\7\65\2\2\u0096\u009e\7\67\2\2\u0097\u009e\7\66\2"+
-		"\2\u0098\u009e\5\32\16\2\u0099\u009e\5\"\22\2\u009a\u009e\58\35\2\u009b"+
+		"\2\u0098\u009e\58\35\2\u0099\u009e\5\32\16\2\u009a\u009e\5\"\22\2\u009b"+
 		"\u009e\5,\27\2\u009c\u009e\5\f\7\2\u009d\u0093\3\2\2\2\u009d\u0095\3\2"+
 		"\2\2\u009d\u0096\3\2\2\2\u009d\u0097\3\2\2\2\u009d\u0098\3\2\2\2\u009d"+
 		"\u0099\3\2\2\2\u009d\u009a\3\2\2\2\u009d\u009b\3\2\2\2\u009d\u009c\3\2"+

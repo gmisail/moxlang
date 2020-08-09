@@ -42,9 +42,9 @@ expr: bool
      | STRING
      | NUM
      | CHAR
+     | functionCall
      | variableAccess
      | variableArrayAccess
-     | functionCall
      | builtInFunctions
      | boundedExpr
      | expr mulDivMod expr

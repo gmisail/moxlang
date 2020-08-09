@@ -57,8 +57,6 @@ public class FunctionNode extends Node {
         *   If it is not, then we will check if it is a class function. If so, generate as normal. Same for normal functions.
         * */
 
-        System.out.println("name: " + this.name + " ret: " + this.returnType);
-
         ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
         boolean parentTemplated = false;
 

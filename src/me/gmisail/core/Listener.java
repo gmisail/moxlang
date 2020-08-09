@@ -342,7 +342,6 @@ public class Listener extends MoxBaseListener
 
         FunctionCallNode functionCallNode = new FunctionCallNode(name);
 
-
         /* function call has a template type */
         if(ctx.type() != null) {
             functionCallNode.makeTemplated(ctx.type().getText());
@@ -466,6 +465,8 @@ public class Listener extends MoxBaseListener
         if(Mox.state.getFunctions().find(name) == null && !External.functionExists(name)) {
             Mox.logger.error("Cannot find function of name '" + name + "'");
         }
+
+        Mox.logger.warn(name);
 
         Mox.state.getProgram().push(functionCallNode);
     }

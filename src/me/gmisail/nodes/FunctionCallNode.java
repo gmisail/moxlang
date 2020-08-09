@@ -36,6 +36,8 @@ public class FunctionCallNode extends Node {
 
     public String getBody() {
 
+        Mox.logger.warn("pushing " + this.name);
+
         /*
         *   Check is templated.
         *

@@ -13,14 +13,29 @@ function main() -> int
     printf("%f\n", max<double>(10.61, 5.42))
 
     var my_array : Array<int> = new Array<int>(5)
+    var j : int = my_array.get<int>(i)
+    j = my_array.get<int>(i)
+    j = my_array.get<int>(i, i)
+    j = my_array.get<int>(i, i, i)
+    j = max<int>(1, 4)
 
-    for(i from 0 to 5)
+    printf("%i\n", j)
+
+
+
+   ### for(i from 0 to 5)
         my_array.set<int>(i, i)
     end
 
     for(i from 0 to 5)
-       # printf("%i", d.get<int>(i))
+        var j : int = my_array.get<int>(i)
+        j = my_array.get<int>(i, i)
+        j = my_array.set<int>(i, i)
+        j = max<int>(1, 4)
+
+        printf("%i\n", j)
     end
+###
 
     return 0
 end
