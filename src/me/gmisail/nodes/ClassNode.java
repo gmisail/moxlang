@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class ClassNode extends Node {
 
-    String name;
-
-    String templateType;
+    String name;                // Array<T>
+    String baseType;            // Array<T>, where Array is baseType
+    String templateType;        //  Array<T>, where T is templateType
     boolean templated;
 
     ArrayList<VariableNode> memberVariables;
@@ -28,10 +28,10 @@ public class ClassNode extends Node {
     }
 
     public String getName() { return name; }
+    public String getBaseType() { return baseType; }
     public String getTemplateType() { return templateType; }
 
     public boolean isTemplated() { return templated; }
-
     public void makeTemplated(String templateType) {
         this.templateType = templateType;
         this.templated = true;
@@ -199,7 +199,7 @@ public class ClassNode extends Node {
         }
 
         if(templated) {
-            output += name + "_init_##T" + "(self";
+            output += name + "_##T##_init_##T" + "(self";
         } else {
             output += name + "_init" + "(self";
         }

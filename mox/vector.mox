@@ -7,13 +7,13 @@
 import "mox/std.mox"
 import "mox/array.mox"
 
-class Vector
+class Vector<T>
 
-    var data : Pointer<any>
+    var data : Pointer<T>
     var len : int
     var size : int
 
-    function init()
+    function init<U>()
         self.len = 0
         self.size = 0
     end
@@ -21,14 +21,14 @@ class Vector
     #
     #   Returns the number of elements in the vector
     #
-    function length() -> int
+    function length<U>() -> int
         return self.len
     end
 
     #
     #   Set value at index
     #
-    function set(index : int, value : any)
+    function set<U>(index : int, value : T)
         if(index >= self.len)
             return
         end
@@ -39,9 +39,9 @@ class Vector
     #
     #   Get value at index
     #
-    function get(index : int) -> any
+    function get<U>(index : int) -> T
         if(index >= self.len)
-            return NULL
+            return 0
         end
 
         return self.data[index]
@@ -50,15 +50,15 @@ class Vector
     #
     #   Add an element to the back of the vector
     #
-    function add(element : any)
+    function add<U>(element : T)
         if(self.size == 0)
             self.size = 8
-            self.data = malloc(@size(any) * self.size)
+            self.data = malloc(@size(T) * self.size)
         end
 
         if (self.size == self.len)
             self.size = self.size * 2
-            self.data = realloc(self.data, @size(any) * self.size)
+            self.data = realloc(self.data, @size(T) * self.size)
         end
 
         self.data[self.len] = element
@@ -68,14 +68,14 @@ class Vector
     #
     #   Delete an element at an index
     #
-    function remove(index : int)
+    function remove<U>(index : int)
         if(index >= self.size)
             return
         end
 
         self.data[index] = NULL
 
-        var temp : Pointer<any> = malloc(@size(any) * self.len * 2)
+        var temp : Pointer<T> = malloc(@size(T) * self.len * 2)
         var j : int = 0
         for(i from 0 to self.len)
             if(self.data[i] != NULL)
@@ -91,7 +91,7 @@ class Vector
     end
 
 
-    function destroy()
+    function destroy<U>()
         free(self.data)
     end
 

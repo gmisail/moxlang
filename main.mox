@@ -1,5 +1,6 @@
 import "mox/std.mox"
 import "mox/array.mox"
+import "mox/vector.mox"
 
 function max<T>(a : T, b : T) -> T
     var x : T = a
@@ -13,29 +14,24 @@ function main() -> int
     printf("%f\n", max<double>(10.61, 5.42))
 
     var my_array : Array<int> = new Array<int>(5)
-    var j : int = my_array.get<int>(i)
-    j = my_array.get<int>(i)
-    j = my_array.get<int>(i, i)
-    j = my_array.get<int>(i, i, i)
-    j = max<int>(1, 4)
 
-    printf("%i\n", j)
-
-
-
-   ### for(i from 0 to 5)
+    for(i from 0 to 5)
         my_array.set<int>(i, i)
     end
 
     for(i from 0 to 5)
-        var j : int = my_array.get<int>(i)
-        j = my_array.get<int>(i, i)
-        j = my_array.set<int>(i, i)
-        j = max<int>(1, 4)
-
-        printf("%i\n", j)
+        printf("%i\n", my_array.get<int>(i))
     end
-###
+
+    var vec : Vector<int> = new Vector<int>()
+
+    for(i from 0 to 5)
+        vec.add<int>(i)
+    end
+
+    for(i from 0 to 5)
+        printf("%i\n", vec.get<int>(i))
+    end
 
     return 0
 end

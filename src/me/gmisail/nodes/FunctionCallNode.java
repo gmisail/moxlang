@@ -14,6 +14,8 @@ public class FunctionCallNode extends Node {
     private boolean isTemplated;
     private String templateType;
 
+    private ClassNode parent;
+
     public FunctionCallNode(String name) {
         super();
 
@@ -22,6 +24,17 @@ public class FunctionCallNode extends Node {
         this.name = name;
         this.isTemplated = false;
         this.templateType = "";
+        this.parent = null;
+    }
+
+    public String getBaseFunction() {
+        int index = name.indexOf(templateType);
+        if(index != -1) {
+            String functionType = "_" + templateType;
+            return name.substring(0, index) + name.substring(index + functionType.length());
+        }
+
+        return name;
     }
 
     public void addParamCount() { numParams++; }
@@ -32,6 +45,10 @@ public class FunctionCallNode extends Node {
     public void makeTemplated(String templateType) {
         this.isTemplated = true;
         this.templateType = templateType;
+    }
+
+    public void setParent(ClassNode node) {
+        this.parent = node;
     }
 
     public String getBody() {
@@ -64,16 +81,20 @@ public class FunctionCallNode extends Node {
                 }
 
                 if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
-                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+                    if(parent != null) {
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
+                    } else {
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
+                    }
                 } else {
-                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + this.name + "(" + this.templateType + ")\n");
+                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                 }
             }
 
             this.name += "_" + this.templateType;
         }
 
-        return name + "(" + buffer.getCode() + ")";
+        return this.name + "(" + buffer.getCode() + ")";
     }
 
     public String getName() { return name; }

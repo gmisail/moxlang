@@ -64,15 +64,24 @@ public class FunctionNode extends Node {
             parentTemplated = parent.isTemplated();
 
             if(parentTemplated) {
-                this.params.get(0).type = Generator.dereference(this.params.get(0).type) + "_##" + templateType + "*";
+                this.params.get(0).type = Generator.dereference(this.params.get(0).type) + "_##" + parent.getTemplateType() + "*";
             }
         }
 
         String output = "";
 
         if(isTemplated) {
-            output += "#define declare_" + name + "(" + templateType + ") \\\n";
-            output += returnType + " " + name + "_##" + templateType + "(";
+            if(parentTemplated) {
+                if(templateType.equals(parent.getTemplateType())) {
+                    Mox.logger.error("Templated methods cannot have the same identifier names as their parent class.");
+                }
+
+                output += "#define declare_" + name + "(" + parent.getTemplateType() + ", " + templateType + ") \\\n";
+                output += returnType + " " + parent.getName() + "_##" + parent.getTemplateType() + "##_" + localName + "_##" + templateType + "(";
+            } else {
+                output += "#define declare_" + name + "(" + templateType + ") \\\n";
+                output += returnType + " " + name + "_##" + templateType + "(";
+            }
         } else {
             output += returnType + " " + name + "(";
         }

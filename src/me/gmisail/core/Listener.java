@@ -460,13 +460,12 @@ public class Listener extends MoxBaseListener
             name += ctx.NAME(i).getText();
         }
 
+        functionCallNode.setParent(classNode);
         functionCallNode.setName(name);
 
         if(Mox.state.getFunctions().find(name) == null && !External.functionExists(name)) {
             Mox.logger.error("Cannot find function of name '" + name + "'");
         }
-
-        Mox.logger.warn(name);
 
         Mox.state.getProgram().push(functionCallNode);
     }
@@ -824,7 +823,7 @@ public class Listener extends MoxBaseListener
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_class_" + ctx.type().NAME().getText() + "(" + templateType + ")\n");
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef" + " struct " + ctx.type().NAME().getText() + "_" + templateType + " " + ctx.type().NAME().getText() + "_" + templateType + ";\n");
 
-            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_init(" + templateType + ")\n");
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_init(" + templateType + ", " + templateType + ")\n");
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + name + "(" + templateType + ")\n");
 
             Mox.state.getClasses().add(new ClassNode(ctx.type().NAME().getText() + "_" + templateType));
