@@ -104,7 +104,13 @@ public class ClassNode extends Node {
             if(templated) output += "\\\n";
             else output += "\n";
         }
-        output += "} " + this.name + Generator.newline();
+
+        output += "} " + this.name;
+
+        if(templated)
+            output += "_##" + templateType;
+
+        output += Generator.newline();
 
         /*
         *   Class methods
