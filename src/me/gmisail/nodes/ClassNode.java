@@ -205,7 +205,7 @@ public class ClassNode extends Node {
         }
 
         if(templated) {
-            output += name + "_init_##T" + "(self";
+            output += name + "_##T##_init" + "(self";
         } else {
             output += name + "_init" + "(self";
         }

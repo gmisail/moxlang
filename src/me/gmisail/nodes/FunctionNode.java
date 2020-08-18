@@ -76,7 +76,12 @@ public class FunctionNode extends Node {
                 output += returnType + " " + parent.getName() + "_##" + parent.getTemplateType() + "##_" + localName + "_##" + templateType + "(";
             } else {
                 output += "#define declare_" + name + "(" + templateType + ") \\\n";
-                output += returnType + " " + name + "_##" + templateType + "(";
+
+                if(parentTemplated) {
+                    output += returnType + " " + parent.getName() + "_##" + templateType + "##_" + localName + "(";
+                } else {
+                    output += returnType + " " + name + "_##" + templateType + "(";
+                }
             }
         } else {
             output += returnType + " " + name + "(";

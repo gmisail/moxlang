@@ -22,10 +22,6 @@ class Array<T>
         return self.data[index]
     end
 
-    function hello()
-
-    end
-
     function destroy()
         free(self.data)
     end
