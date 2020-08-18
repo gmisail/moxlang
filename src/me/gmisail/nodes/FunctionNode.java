@@ -71,11 +71,7 @@ public class FunctionNode extends Node {
         String output = "";
 
         if(isTemplated) {
-            if(parentTemplated) {
-                if(templateType.equals(parent.getTemplateType())) {
-                    Mox.logger.error("Templated methods cannot have the same identifier names as their parent class.");
-                }
-
+            if(parentTemplated && !templateType.equals(parent.getTemplateType())) {
                 output += "#define declare_" + name + "(" + parent.getTemplateType() + ", " + templateType + ") \\\n";
                 output += returnType + " " + parent.getName() + "_##" + parent.getTemplateType() + "##_" + localName + "_##" + templateType + "(";
             } else {

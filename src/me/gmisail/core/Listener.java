@@ -291,6 +291,16 @@ public class Listener extends MoxBaseListener
             }
         }
 
+        if(!func.isTemplated()) {
+            ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+            if(parent != null) {
+                if(parent.isTemplated()) {
+                    func.makeTemplated(parent.getTemplateType());
+                    Generator.enterMacro();
+                }
+            }
+        }
+
         Mox.state.getProgram().push(func);
         Mox.state.getFunctions().add(func);
     }
@@ -823,7 +833,8 @@ public class Listener extends MoxBaseListener
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_class_" + ctx.type().NAME().getText() + "(" + templateType + ")\n");
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef" + " struct " + ctx.type().NAME().getText() + "_" + templateType + " " + ctx.type().NAME().getText() + "_" + templateType + ";\n");
 
-            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_init(" + templateType + ", " + templateType + ")\n");
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_init(" + templateType + ")\n");
+            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + ctx.type().NAME().getText() + "_destroy(" + templateType + ")\n");
             Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + name + "(" + templateType + ")\n");
 
             Mox.state.getClasses().add(new ClassNode(ctx.type().NAME().getText() + "_" + templateType));

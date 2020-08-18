@@ -43,6 +43,10 @@ function main() -> int
         printf("%i\n", vec.get<int>(i))
     end
 
+    delete my_array
+    delete myarr
+    delete vec
+
     return 0
 end
 
