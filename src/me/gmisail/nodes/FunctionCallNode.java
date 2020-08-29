@@ -52,9 +52,6 @@ public class FunctionCallNode extends Node {
     }
 
     public String getBody() {
-
-        Mox.logger.warn("pushing " + this.name);
-
         /*
         *   Check is templated.
         *
@@ -68,30 +65,49 @@ public class FunctionCallNode extends Node {
             *   TODO: Check if macro has been defined already. If not, declare it. If so, declaring it.
             * */
 
-            if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
-                Mox.state.getTemplates().add(this.name + "_" + this.templateType);
+            Mox.logger.write("--> " + this.name);
 
-                if (!Types.exists(this.templateType)) {
-                    if (!Mox.state.getTemplates().hasTypedef(this.templateType + "_p")) {
-                        Mox.state.getTemplates().addTypedef(this.templateType + "_p");
-                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef " + this.templateType + "* " + this.templateType + "_p;\n");
+            FunctionNode functionNode = Mox.state.getFunctions().find(getBaseFunction());
 
-                        this.templateType += "_p";
+            if(functionNode != null && functionNode.getTemplateType().equals(this.templateType)) {
+
+            } else {
+                if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
+                    Mox.state.getTemplates().add(this.name + "_" + this.templateType);
+
+                    if (!Types.exists(this.templateType)) {
+                        if (!Mox.state.getTemplates().hasTypedef(this.templateType + "_p")) {
+                            Mox.state.getTemplates().addTypedef(this.templateType + "_p");
+                            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("typedef " + this.templateType + "* " + this.templateType + "_p;\n");
+
+                            this.templateType += "_p";
+                        }
                     }
-                }
 
-                if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
-                    if(parent != null) {
-                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
+                    /*
+                    *   I know, I know, this is disgusting.
+                    * */
+                    if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
+                        if(parent != null) {
+                            if(functionNode != null) {
+                                if(functionNode.isTemplated() && parent.isTemplated() && parent.getTemplateType().equals(functionNode.getTemplateType())) {
+                                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
+                                } else {
+                                    Mox.logger.write("defining function for " + this.name);
+                                }
+                            } else {
+                                Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
+                            }
+                        } else {
+                            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
+                        }
                     } else {
-                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                     }
-                } else {
-                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                 }
-            }
 
-            this.name += "_" + this.templateType;
+                this.name += "_" + this.templateType;
+            }
         }
 
         return this.name + "(" + buffer.getCode() + ")";

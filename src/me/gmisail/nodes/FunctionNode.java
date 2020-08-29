@@ -64,6 +64,17 @@ public class FunctionNode extends Node {
             parentTemplated = parent.isTemplated();
 
             if(parentTemplated) {
+
+                Mox.logger.write(parent.getTemplateType() + " & " + templateType);
+
+                /*
+                *   TODO: why do some function macros format correctly and others do not?
+                *
+                *   Make sure that functions that do not require a template type are defined as such. For instance,
+                *   if I call Array_int_get, it must define define_Array_get(int) and not define_Array_get(int, int). In
+                *   this case, we need the function Array_int_get, not Array_int_get_int
+                * */
+
                 this.params.get(0).type = Generator.dereference(this.params.get(0).type) + "_##" + parent.getTemplateType() + "*";
             }
         }

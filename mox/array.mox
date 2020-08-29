@@ -18,7 +18,7 @@ class Array<T>
         self.data[index] = element
     end
 
-    function get<U>(index : int) -> T
+    function get(index : int) -> T
         return self.data[index]
     end
 
