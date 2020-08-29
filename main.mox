@@ -49,11 +49,3 @@ function main() -> int
 
     return 0
 end
-
-###
-    TODO:
-        - fix some of the macro construction
-        - set up testing
-        - default template types for functions
-        - fix passing template classes as arguments
-###

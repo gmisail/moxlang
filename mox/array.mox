@@ -14,7 +14,7 @@ class Array<T>
         self.data = malloc(len * @size(T))
     end
 
-    function set<U>(index : int, element : T)
+    function set(index : int, element : T)
         self.data[index] = element
     end
 

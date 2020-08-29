@@ -86,14 +86,17 @@ public class FunctionCallNode extends Node {
 
                     /*
                     *   I know, I know, this is disgusting.
+                    *
+                    *   TODO: condense this into an equivalent expression
                     * */
                     if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
                         if(parent != null) {
                             if(functionNode != null) {
                                 if(functionNode.isTemplated() && parent.isTemplated() && parent.getTemplateType().equals(functionNode.getTemplateType())) {
                                     Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
+                                    this.name += "_" + this.templateType;
                                 } else {
-                                    Mox.logger.write("defining function for " + this.name);
+                                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                                 }
                             } else {
                                 Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
@@ -105,7 +108,13 @@ public class FunctionCallNode extends Node {
                         Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                     }
                 }
+            }
 
+            /*
+            *   Corner case catches if templated function is not within a templated class. In any case, the function
+            *   type should be appended.
+            * */
+            if(parent == null) {
                 this.name += "_" + this.templateType;
             }
         }

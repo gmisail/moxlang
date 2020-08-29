@@ -21,14 +21,14 @@ class Vector<T>
     #
     #   Returns the number of elements in the vector
     #
-    function length<U>() -> int
+    function length() -> int
         return self.len
     end
 
     #
     #   Set value at index
     #
-    function set<U>(index : int, value : T)
+    function set(index : int, value : T)
         if(index >= self.len)
             return
         end
@@ -39,7 +39,7 @@ class Vector<T>
     #
     #   Get value at index
     #
-    function get<U>(index : int) -> T
+    function get(index : int) -> T
         if(index >= self.len)
             return 0
         end
@@ -50,7 +50,7 @@ class Vector<T>
     #
     #   Add an element to the back of the vector
     #
-    function add<U>(element : T)
+    function add(element : T)
         if(self.size == 0)
             self.size = 8
             self.data = malloc(@size(T) * self.size)
@@ -68,7 +68,7 @@ class Vector<T>
     #
     #   Delete an element at an index
     #
-    function remove<U>(index : int)
+    function remove(index : int)
         if(index >= self.size)
             return
         end
