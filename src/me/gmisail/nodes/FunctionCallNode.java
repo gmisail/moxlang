@@ -65,8 +65,6 @@ public class FunctionCallNode extends Node {
             *   TODO: Check if macro has been defined already. If not, declare it. If so, declaring it.
             * */
 
-            Mox.logger.write("--> " + this.name);
-
             FunctionNode functionNode = Mox.state.getFunctions().find(getBaseFunction());
 
             if(functionNode != null && functionNode.getTemplateType().equals(this.templateType)) {

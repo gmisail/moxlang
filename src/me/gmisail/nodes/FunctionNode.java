@@ -64,9 +64,6 @@ public class FunctionNode extends Node {
             parentTemplated = parent.isTemplated();
 
             if(parentTemplated) {
-
-                Mox.logger.write(parent.getTemplateType() + " & " + templateType);
-
                 /*
                 *   TODO: why do some function macros format correctly and others do not?
                 *

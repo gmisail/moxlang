@@ -3,49 +3,29 @@ import "mox/array.mox"
 import "mox/vector.mox"
 
 function max<T>(a : T, b : T) -> T
-    var x : T = a
+    if(a > b)
+        return a
+    end
 
-    return x
+    return b
+end
+
+function min<T>(a : T, b : T) -> T
+    if(a < b)
+        return a
+    end
+
+    return b
 end
 
 function main() -> int
-    printf("%i\n", max<int>(10, 5))
-    printf("%f\n", max<float>(10.4, 5.3))
-    printf("%f\n", max<double>(10.61, 5.42))
+    var i : int = 100
+    var j : int = 200
 
-    var my_array : Array<int> = new Array<int>(5)
+    var k : int = max<int>(i, j)
+    var l : int = min<int>(i, j)
 
-    for(i from 0 to 5)
-        my_array.set<int>(i, i)
-    end
-
-    for(i from 0 to 5)
-        printf("%i\n", my_array.get<int>(i))
-    end
-
-    var myarr : Array<double> = new Array<double>(5)
-
-    for(i from 0 to 5)
-        myarr.set<double>(i, i / 3)
-    end
-
-    for(i from 0 to 5)
-        printf("%f\n", myarr.get<double>(i))
-    end
-
-    var vec : Vector<int> = new Vector<int>()
-
-    for(i from 0 to 5)
-        vec.add<int>(i)
-    end
-
-    for(i from 0 to 5)
-        printf("%i\n", vec.get<int>(i))
-    end
-
-    delete my_array
-    delete myarr
-    delete vec
+    printf("%i > %i", k, l)
 
     return 0
 end

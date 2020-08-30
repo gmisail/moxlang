@@ -247,9 +247,13 @@ public class Listener extends MoxBaseListener
 
                 if(type.equals("Pointer")) {
                     isPointer = true;
-                }
 
-                type = ctx.funcReturnType().type().templateType().type().NAME().getText();
+                    type = ctx.funcReturnType().type().templateType().type().NAME().getText();
+                } else {
+                    isPointer = true;
+
+                    type += "_" + ctx.funcReturnType().type().templateType().type().NAME().getText();
+                }
 
                 if(isPointer)
                     type += "*";
@@ -530,6 +534,17 @@ public class Listener extends MoxBaseListener
         super.enterFuncParam(ctx);
 
         String type = ctx.type().NAME().getText();
+        String templateType = null;
+
+        if(ctx.type().templateType() != null) {
+            templateType = ctx.type().templateType().type().NAME().getText();
+
+            ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+
+            if(parent != null && parent.isTemplated() && parent.getTemplateType().equals(templateType)) {
+                templateType = "##" + templateType;
+            }
+        }
 
         if(type.equals("Pointer")) {
             String template = "void";
@@ -546,6 +561,13 @@ public class Listener extends MoxBaseListener
                 template = ctx.type().templateType().type().NAME().getText();
 
             type = template + "&";
+        } else if(templateType != null) {
+            type += "_" + templateType;
+
+            /*
+            *   In order for a parameter to be templated, it must be a class. Thus, it must be a pointer.
+            * */
+            type += "*";
         }
 
         FunctionNode func = (FunctionNode) Mox.state.getProgram().current();
@@ -1172,8 +1194,6 @@ public class Listener extends MoxBaseListener
         String path = Generator.createDataFromString(ctx.STRING().getText());
 
         if(!Mox.state.getImports().addImport(path)) {
-            Mox.logger.warn("File '" + path + "' already imported. Ignoring.");
-
             return;
         }
 

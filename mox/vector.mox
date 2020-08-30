@@ -90,6 +90,10 @@ class Vector<T>
         self.len = self.len - 1
     end
 
+    function concat(vec : Vector<T>)
+        
+    end
+
 
     function destroy()
         free(self.data)
