@@ -91,9 +91,11 @@ class Vector<T>
     end
 
     function concat(vec : Vector<T>)
-        
+        var vec_len : int = vec.length<T>()
+        for(i from 0 to vec_len)
+            self.add<T>(vec.get<T>(i))
+        end
     end
-
 
     function destroy()
         free(self.data)

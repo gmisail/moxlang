@@ -68,7 +68,14 @@ public class FunctionCallNode extends Node {
             FunctionNode functionNode = Mox.state.getFunctions().find(getBaseFunction());
 
             if(functionNode != null && functionNode.getTemplateType().equals(this.templateType)) {
-
+                /*
+                 *   TODO: register this function
+                 * */
+                if(parent != null) {
+                    this.name = parent.getName() + "_##" + this.templateType + "##_" + functionNode.getLocalName();
+                } else {
+                    Mox.logger.write(this.name);
+                }
             } else {
                 if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
                     Mox.state.getTemplates().add(this.name + "_" + this.templateType);

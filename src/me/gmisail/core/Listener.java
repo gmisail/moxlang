@@ -368,7 +368,14 @@ public class Listener extends MoxBaseListener
             // self.print()
             if(ctx.NAME(0).getText().equals("self") && numberOfElements <= 2) {
                 initial = 1;
+
+                ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+
                 name += Generator.currentContext().getName() + delim;
+
+                if(parent != null)
+                    functionCallNode.setParent(parent);
+
                 functionCallNode.buffer.push("self");
                 functionCallNode.addParamCount();
             }
