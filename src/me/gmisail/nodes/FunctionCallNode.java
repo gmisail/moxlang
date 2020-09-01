@@ -71,14 +71,24 @@ public class FunctionCallNode extends Node {
                 /*
                  *   TODO: register this function
                  * */
-                if(parent != null) {
-                    this.name = parent.getName() + "_##" + this.templateType + "##_" + functionNode.getLocalName();
-                } else {
-                    Mox.logger.write(this.name);
-                }
+
+                FunctionNode func = Mox.state.getFunctions().find(this.name);
+                String baseType = func.getParent().getName();
+
+               /* register the function */
+
+                Mox.logger.write(baseType);
+
+                this.name = baseType + "_##" + this.templateType + "##_" + func.getLocalName();
             } else {
                 if(!Mox.state.getTemplates().has(this.name + "_" + this.templateType)) {
                     Mox.state.getTemplates().add(this.name + "_" + this.templateType);
+
+                    Mox.logger.write(this.name);
+
+                    /*
+                    * fix when and where it adds the type 
+                    * */
 
                     if (!Types.exists(this.templateType)) {
                         if (!Mox.state.getTemplates().hasTypedef(this.templateType + "_p")) {
@@ -89,39 +99,26 @@ public class FunctionCallNode extends Node {
                         }
                     }
 
-                    /*
-                    *   I know, I know, this is disgusting.
-                    *
-                    *   TODO: condense this into an equivalent expression
-                    * */
-                    if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null) {
-                        if(parent != null) {
-                            if(functionNode != null) {
-                                if(functionNode.isTemplated() && parent.isTemplated() && parent.getTemplateType().equals(functionNode.getTemplateType())) {
-                                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
-                                    this.name += "_" + this.templateType;
-                                } else {
-                                    Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
-                                }
-                            } else {
-                                Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
-                            }
-                        } else {
-                            Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
-                        }
+                    if(Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS) == null &&
+                            parent != null &&
+                            functionNode != null &&
+                            functionNode.isTemplated() && parent.isTemplated() &&
+                            parent.getTemplateType().equals(functionNode.getTemplateType())) {
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ", " + this.templateType + ")\n");
+                        this.name += "_" + this.templateType;
                     } else {
-                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
+
+                        Mox.state.getProgram().getParentNodeOfType(NodeTypes.DEFAULT).buffer.push("declare_" + getBaseFunction() + "(" + this.templateType + ")\n");
                     }
                 }
             }
-
             /*
             *   Corner case catches if templated function is not within a templated class. In any case, the function
             *   type should be appended.
             * */
-            if(parent == null) {
-                this.name += "_" + this.templateType;
-            }
+          //  if(appendType) {
+           //     this.name += "_" + this.templateType;
+            //}
         }
 
         return this.name + "(" + buffer.getCode() + ")";

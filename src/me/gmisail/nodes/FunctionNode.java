@@ -44,6 +44,12 @@ public class FunctionNode extends Node {
     public void setTemplateType(String templateType){ this.templateType = templateType; }
     public String getTemplateType() { return templateType; }
 
+    public ClassNode getParent() {
+        ClassNode parent = (ClassNode) Mox.state.getProgram().getParentNodeOfType(NodeTypes.CLASS);
+
+        return parent;
+    }
+
     @Override
     public String code() {
 

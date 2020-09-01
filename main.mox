@@ -27,5 +27,16 @@ function main() -> int
 
     printf("%i > %i", k, l)
 
+    var a : Vector<int> = new Vector<int>()
+    var b : Vector<int> = new Vector<int>()
+
+    a.add<int>(0)
+    a.add<int>(1)
+    a.add<int>(2)
+    a.add<int>(3)
+
+    delete a
+    delete b
+
     return 0
 end
